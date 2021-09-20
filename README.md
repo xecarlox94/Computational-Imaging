@@ -1,12 +1,9 @@
-# Todos
-
-+ sign up for google jupyter notebook codelabs
-+ set up public database for academics
-
-
 # Aims
 
 The project's aims are to:
+
+
+Yet to fill in
 
 
 # Objectives
@@ -40,9 +37,21 @@ The project's aims are to:
 
 # Challenges
 
+to fill in !!!!
+
 # Limitations
 
-- Will require Human agent to verify and validate data collection
+- Human agent must verify and validate data collection
+- Human agent must input match meta data
+- Human agent must supervise/calibrate video processing
+- Tracking broadcast is affected by zoom/replays and camera changes
+
+# Todos
+
++ sign up for google jupyter notebook codelabs
++ set up public database for academics
++ when downloading copyrighted recordings or process data, reference source and its copyright
++ save collected data in public database
 
 
 # Research materials and resources
