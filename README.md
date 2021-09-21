@@ -17,6 +17,10 @@ The project's aims are to collect track and event data from football footage. Th
     + detect its geometry
     + detect corner flags
     + detect goals
++ collect data
+    + collect event data
+    + collect tracking data
+    + synchronise event and tracking data
 
 
 
