@@ -1,9 +1,6 @@
 # Aims
 
-The project's aims are to:
-
-
-Yet to fill in
+The project's aims are to collect track and event data from football footage. The ultimate goal is to be able to process any kind of footage but, for now, it will only process broadcast football matches.
 
 
 # Objectives
@@ -37,7 +34,20 @@ Yet to fill in
 
 # Challenges
 
-to fill in !!!!
++ synchronise event and tracking data
++ geometry reconstruction
++ optical distortion
++ player's numbers extraction
++ predict possible position of off sight players
++ weather and light visual conditions
++ different camera/editing/perspective
++ action detection
++ positioning flipping
++ 3D ball positioning estimation using physics model
++ low quality footage
++ deal with processing power
++ synchronise footage and data timestamps
+
 
 # Limitations
 
@@ -46,7 +56,7 @@ to fill in !!!!
 - Human agent must supervise/calibrate video processing
 - Tracking broadcast is affected by zoom/replays and camera changes
 
-# Todos
+# To dos
 
 + sign up for google jupyter notebook codelabs
 + set up public database for academics
