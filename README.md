@@ -122,3 +122,15 @@ The project's aims are to collect track and event data from football footage. Th
 
 [https://notebook.xbdev.net/index.php?page=bodypix&](https://notebook.xbdev.net/index.php?page=bodypix&)
 
+
+
+
+
+
+
+
+
+
+https://stackoverflow.com/questions/62067694/how-to-generate-skeleton-view-using-human-pose-estimation
+
+https://www.pyimagesearch.com/2015/01/19/find-distance-camera-objectmarker-using-python-opencv/
