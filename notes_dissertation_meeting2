@@ -1,0 +1,13 @@
+draw two 2d top down pitch map
+
+draw frustrum view top-down perspectviwe
+
+mapping transform
+
+
+machine learning (passing examples, highlight regions) use the frustum view
+
+
+
+for arc detection!!!
+For example you can detect the circular arcs using the circle Hough transform.
