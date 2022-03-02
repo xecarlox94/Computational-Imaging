@@ -1,73 +1,3 @@
-# Aims
-
-The project's aims are to collect track and event data from football footage. The ultimate goal is to be able to process any kind of footage but, for now, it will only process broadcast football matches.
-
-
-# Objectives
-
-+ detect humans
-    + filter out referee(s)
-    + detect players
-    + identify players numbers
-    + determine players position
-+ detect ball
-    + determine its position
-    + track its position
-+ detect pitch
-    + detect its geometry
-    + detect corner flags
-    + detect goals
-+ collect data
-    + collect event data
-    + collect tracking data
-    + synchronise event and tracking data
-
-
-
-# Techniques
-
-+ Image Processing
-+ Object detection (YOLO v4)
-+ Object interaction tracking
-+ Object motion tracking
-+ Multi-algorithm implementation (Detection -> tracking -> identification)
-+ Machine learning (Extrapolation; training against current data)
-+ Human pose estimation
-+ grid positioning
-+ 3D human interaction
-
-# Challenges
-
-+ synchronise event and tracking data
-+ geometry reconstruction
-+ optical distortion
-+ player's numbers extraction
-+ predict possible position of off sight players
-+ weather and light visual conditions
-+ different camera/editing/perspective
-+ action detection
-+ positioning flipping
-+ 3D ball positioning estimation using physics model
-+ low quality footage
-+ deal with processing power
-+ synchronise footage and data timestamps
-
-
-# Limitations
-
-- Human agent must verify and validate data collection
-- Human agent must input match meta data
-- Human agent must supervise/calibrate video processing
-- Tracking broadcast is affected by zoom/replays and camera changes
-
-# To dos
-
-+ sign up for google jupyter notebook codelabs
-+ set up public database for academics
-+ when downloading copyrighted recordings or process data, reference source and its copyright
-+ save collected data in public database
-
-
 # Research materials and resources
 
 [https://sam.johnson.io/research/lsp.html](https://sam.johnson.io/research/lsp.html)
@@ -122,15 +52,17 @@ The project's aims are to collect track and event data from football footage. Th
 
 [https://notebook.xbdev.net/index.php?page=bodypix&](https://notebook.xbdev.net/index.php?page=bodypix&)
 
+[https://stackoverflow.com/questions/62067694/how-to-generate-skeleton-view-using-human-pose-estimation](question)
 
+[https://www.pyimagesearch.com/2015/01/19/find-distance-camera-objectmarker-using-python-opencv/](find distance from object)
 
+[https://www.researchgate.net/figure/Semantic-segmentation-results-a-Original-image-on-which-to-segment-the-lines-and_fig3_325909052](Semantic segmentation results a Original image on which to segment the lines)
+[https://www.researchgate.net/figure/a-Original-image-from-which-we-extract-the-field-pixels-b-Hue-histogram-of-the_fig1_325909052](Original image from which we extract the field pixels b Hue histogram)
 
+[https://statsbomb.com/2020/04/sb-labs-camera-calibration/](camera calibration)
 
+[https://stackoverflow.com/questions/60352448/homography-from-football-soccer-field-lines](homography from football soccer field lines)
 
+[https://www.researchgate.net/figure/a-Hough-line-detection-on-a-segmented-playing-field-b-Five-regions-of-playing-field_fig2_221264987](Hough line detection on a segmented playing field b Five regions of playing field)
 
-
-
-
-https://stackoverflow.com/questions/62067694/how-to-generate-skeleton-view-using-human-pose-estimation
-
-https://www.pyimagesearch.com/2015/01/19/find-distance-camera-objectmarker-using-python-opencv/
+[https://www.researchgate.net/figure/Court-line-pixel-detection-Note-that-the-white-pixels-of-the-tennis-player-are-not_fig1_221265089](Court line pixel detection Note that the white pixels of the tennis player)
