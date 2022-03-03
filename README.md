@@ -3,80 +3,64 @@
 - create semi-automated video processing analysis (reducing number of operators)
 - processes normal match streams
 - create framework for football data science research (academic or business)
-- free and open source
+- free and open source (will take additional work to avoid non compatible libraries with GPL3)
 
 The project's aims are to collect track and event data from football footage. The ultimate goal is to be able to process any kind of footage but, for now, it will only process broadcast football matches.
 
 
 ## problems solved to achieve objectives
+- general
+    + low quality footage
+    + weather and light visual conditions
 - detect humans
-- detect ball
-
-- detect pitch, by machine learning trained by creating image dataset
-    + machine learning algorithm to
-    + algorithm to determine inner section
-- map players and ball to pitch
-- recognise players
-
-
-+ detect humans
     + filter out referee(s)
     + detect players
     + identify players numbers
     + determine players position
-+ detect ball
+    + playersbcrossing eachother
+- detect ball
     + determine its position
     + track its position
-+ detect pitch
-    + detect its geometry
+    + 3D ball positioning estimation using physics model
+- detect pitch, by machine learning trained by creating image dataset
+    + pitch geometry reconstruction
+    + optical distortion
     + detect corner flags
     + detect goals
-+ collect data
+    + machine learning algorithm to
+    + algorithm to determine inner section
+    + different camera/editing/perspective
+- map players and ball to pitch
+    + predict possible position of off sight players
+    + positioning flipping
+- recognise players
+    + player's numbers extraction
+- action detection
+- collect data
     + collect event data
     + collect tracking data
     + synchronise event and tracking data
-
-
-(
-CHALLENGES!!!!!!!!!!
-
-+ synchronise event and tracking data
-+ geometry reconstruction
-+ optical distortion
-+ player's numbers extraction
-+ predict possible position of off sight players
-+ weather and light visual conditions
-+ different camera/editing/perspective
-+ action detection
-+ positioning flipping
-+ 3D ball positioning estimation using physics model
-+ low quality footage
-+ deal with processing power
-+ synchronise footage and data timestamps
-)
+    + synchronise footage and data timestamps
 
 
 ## methods
 - image processing operations
+    + openCV
 - image recognition
 - object tracking
 - sythetic image dataset
 - image homographical transformation
 - deep/machine learning
-(
 - video/play segmentation
-)
-
-
-+ Image Processing
-+ Object detection (YOLO v4)
-+ Object interaction tracking
-+ Object motion tracking
-+ Multi-algorithm implementation (Detection -> tracking -> identification)
-+ Machine learning (Extrapolation; training against current data)
-+ Human pose estimation
-+ grid positioning
-+ 3D human interaction
+- Image Processing
+- Object detection (YOLO v4)
+- Object interaction tracking
+- Object motion tracking
+- Multi-algorithm implementation (Detection -> tracking -> identification)
+- Machine learning (Extrapolation; training against current data)
+- Human pose estimation
+- grid positioning
+- 3D human interaction
 
 
 ## results
