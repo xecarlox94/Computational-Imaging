@@ -12,6 +12,8 @@ The project's aims are to collect track and event data from football footage. Th
 - general
     + low quality footage
     + weather and light visual conditions
+    + detect refs by colour
+    + detect people outside of the pitch
 - detect humans
     + filter out referee(s)
     + detect players
@@ -22,6 +24,7 @@ The project's aims are to collect track and event data from football footage. Th
     + determine its position
     + track its position
     + 3D ball positioning estimation using physics model
+    + ball tracking is suspended whenever an object obstructs the camera view
 - detect pitch, by machine learning trained by creating image dataset
     + pitch geometry reconstruction
     + optical distortion
@@ -41,6 +44,67 @@ The project's aims are to collect track and event data from football footage. Th
     + collect tracking data
     + synchronise event and tracking data
     + synchronise footage and data timestamps
+
+
+### images
+
+![full text is here!!!!! description](./images/first.png)
+description
+
+![full text is here!!!!! description](./images/Screenshot_2022-03-03_21-32-51.png)
+description
+
+![full text is here!!!!! description](./images/Screenshot_2022-03-03_21-35-39.png)
+description
+
+![full text is here!!!!! description](./images/Screenshot_2022-03-03_21-36-05.png)
+description
+
+![full text is here!!!!! description](./images/Screenshot_2022-03-03_21-36-47.png)
+description
+
+![full text is here!!!!! description](./images/Screenshot_2022-03-03_21-38-04.png)
+description
+
+![full text is here!!!!! description](./images/Screenshot_2022-03-03_21-39-53.png)
+description
+
+![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-05-49.png)
+description
+
+![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-06-03.png)
+description
+
+![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-06-18.png)
+description
+
+![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-06-43.png)
+description
+
+![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-08-00.png)
+description
+
+![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-09-09.png)
+description
+
+![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-09-45.png)
+description
+
+![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-10-58.png)
+description
+
+![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-12-29.png)
+description
+
+![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-13-18.png)
+description
+
+![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-19-11.png)
+description
+
+
+
+
 
 
 ## methods
