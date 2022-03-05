@@ -45,6 +45,15 @@ The project's aims are to collect track and event data from football footage. Th
     + synchronise event and tracking data
     + synchronise footage and data timestamps
 
+### pseudocode
+
+pseudocode for image recognition
+
+development of 3-d modelling
+pseudocode for 3-d modelling data set generation
+machine learning model and algorithm
+geometry reconstruction algorithm
+
 
 ### images
 
@@ -206,6 +215,10 @@ testing with random camera, get accuracy
 
 ## possible extensions and future work
 - create data format (possibly logical ontology to leverage a logical reasoner) to create a richer dataset
-- calculate off-screen player positioning
-- action recognition
 
+- use Google Research Football Environment
+    + predict off-screen player positioning
+    + predict player actions
+- action recognition
+- modularise all modules and algorithms to allow other sports
+- allow python running

@@ -144,7 +144,3 @@ class Square:
                         #ajksdhaskd
 
                 """
-
-
-
-
