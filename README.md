@@ -269,3 +269,4 @@ testing with random camera, get accuracy
 - action recognition
 - modularise all modules and algorithms to allow other sports
 - allow python running
+- add random noise to improve dataset and model
