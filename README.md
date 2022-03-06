@@ -15,11 +15,14 @@ The project's aims are to collect track and event data from football footage. Th
     + weather and light visual conditions
     + detect refs by colour
     + detect people outside of the pitch
+    + process different video/match segments
+    + short video segments interrupt data collection
     + loads of moving parts
 - detect humans
     + filter out referee(s)
     + detect players
     + identify players numbers
+    + detects large human (noise, needs to be removed)
     + determine players position
     + playersbcrossing eachother
 - detect ball
@@ -60,40 +63,55 @@ geometry reconstruction algorithm
 ### images
 
 ![full text is here!!!!! description](./images/first.png)
-description
+players are detected but ball is not (purple means that object recognition just ran)
+multiple players are detected in the same bounding box
+refs are detected as well
+one steward is also detected
+streaming is stopped because ball is not found
 
 ![full text is here!!!!! description](./images/Screenshot_2022-03-03_21-32-51.png)
-description
+players bounding boxes in green means that it is tracking
+manually labelling ball to continue stream
 
 ![full text is here!!!!! description](./images/Screenshot_2022-03-03_21-35-39.png)
-description
+ball tracking  is lost and tracks the numbers on the players back
 
 ![full text is here!!!!! description](./images/Screenshot_2022-03-03_21-36-05.png)
-description
-
-![full text is here!!!!! description](./images/Screenshot_2022-03-03_21-36-47.png)
-description
+player tracking continues
+new players appear on the screen but they are not detected until 30frame period runs object detection again
 
 ![full text is here!!!!! description](./images/Screenshot_2022-03-03_21-38-04.png)
-description
+ball tracking is lost again because of the pitch lines and player boots
+some players previously detected are lost because of the backgroup from ads or pitch (not enough constract)
 
-![full text is here!!!!! description](./images/Screenshot_2022-03-03_21-39-53.png)
-description
+![full text is here!!!!! description](./images/Screenshot_2022-03-03_21-36-47.png)
+ball needs to be labelled again to be tracked again
 
 ![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-05-49.png)
-description
+the object detection is ran
+all the human trackers are removed but the ball tracker
+the ball tracker is not reset if the ball is still being tracked
 
 ![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-06-03.png)
-description
+the players tracker had to be reset again from the <prev img>
+ball tracker continues to run, regardless
 
 ![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-06-18.png)
-description
+the ball tracker is wrong again, by tracking the player's back number
+
+![full text is here!!!!! description](./images/Screenshot_2022-03-03_21-39-53.png)
+this is a video segment imposed by the director
+data cannot be collected
+this is a short moment
 
 ![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-06-43.png)
-description
+ball is tracked from the <prev img> since the label needs to be labelled for the stream to continue
+there is a bug, a human is recognised due to noise
 
 ![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-08-00.png)
-description
+players are detected again
+the bug stil persists
+a fan is recognised in the crowd
 
 ![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-09-09.png)
 description
@@ -114,6 +132,29 @@ description
 description
 
 
+![text description](./images/coordinates.png)
+description
+
+![text description](./images/Screenshot_from_2021-10-22_13-59-52.png)
+description
+
+![text description](./images/Screenshot_2021-12-17_19-08-06.png)
+description
+
+![text description](./images/image.png)
+description
+
+![text description](./images/Screenshot_2022-03-05_12-03-42.png)
+description
+
+![text description](./images/Screenshot_2022-03-05_12-45-59.png)
+description
+
+![text description](./images/Screenshot_2022-03-05_12-47-42.png)
+description
+
+![text description](./images/Screenshot_2022-03-05_12-05-23.png)
+description
 
 
 
