@@ -1,4 +1,5 @@
 import math
+from random import random
 
 
 class Cam:
@@ -21,6 +22,8 @@ class Cam:
     def get_angle(self):
         return self.camera.rotation_euler[2]
 
+    def get_change(self):
+        return self.change * random()
 
     def change_degrees(self, deg_change):
         new_angle = self.camera.rotation_euler[2] + deg_change
@@ -46,10 +49,10 @@ class Cam:
 
 
         if self.direction == True:
-            self.change_degrees(self.change)
+            self.change_degrees(self.get_change())
             #print("going right")
         else:
             #print("going left")
-            self.change_degrees(-self.change)
+            self.change_degrees(-self.get_change())
 
         #print("\n\n")

@@ -270,3 +270,4 @@ testing with random camera, get accuracy
 - modularise all modules and algorithms to allow other sports
 - allow python running
 - add random noise to improve dataset and model
+- add random camera rotation (x, Z) to improve dataset and model
