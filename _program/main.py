@@ -104,15 +104,11 @@ def findObjects(frame):
 
     return objs, ball
 
-window_name = "Image"
-frame_count = -1
-count = 0
 
 objs = []
 
 ball = False
 ball_tracker = cv.legacy.TrackerCSRT_create()
-
 
 def label_ball():
     global ball_tracker
@@ -130,6 +126,17 @@ def label_ball():
 
 
 
+
+
+
+
+
+window_name = "Image"
+frame_count = -1
+count = 0
+
+
+
 def draw_boundingbox(frame, dimensions, colour, title):
     x, y, w, h = dimensions
     cv.rectangle(frame, (x, y), (x+w, y+h), colour, 2)
@@ -141,9 +148,43 @@ wait_key = lambda key: cv.waitKey(25) & 0xFF == ord(key)
 
 
 
+import tensorflow as tf
+import numpy as np
+
+def get_camera_data_prediction(model, image):
+    return list(model.predict(
+        np.array([image])
+    )[0])
+
+
+model = tf.keras.models.load_model('./my_model')
+
+
+get_image_input = lambda frame: cv.resize(
+    cv.cvtColor(
+        frame,
+        cv.COLOR_BGR2GRAY
+    ),
+    (256, 256)
+)
+
+
+
 while cap.isOpened():
 
     ret, frame = cap.read()
+
+    pred = get_camera_data_prediction(
+        model,
+        get_image_input(frame)
+    )
+
+    print(pred)
+
+
+    break
+
+    """
 
     print(frame_count)
 
@@ -217,6 +258,7 @@ while cap.isOpened():
         print("end video stream")
         break
 
+    """
 
 cap.release()
 cv.destroyAllWindows()

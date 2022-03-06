@@ -1,7 +1,3 @@
-
-import random
-import csv
-
 import tensorflow as tf
 import keras
 from tensorflow.keras.models import Sequential
@@ -10,11 +6,11 @@ from tensorflow.keras.layers import Conv2D, MaxPooling2D
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.preprocessing import image
 
+
+import random
+import csv
 import cv2 as cv
-
 import numpy as np
-
-
 
 
 IMG_WIDTH = 256
@@ -31,13 +27,13 @@ get_image = lambda file_name: cv.resize(
 
 
 
-dec_row = lambda enc_row: (
-    get_image("./dataset/" + str(enc_row[:1][0])),
+enc_row = lambda dec_row: (
+    get_image("./dataset/" + str(dec_row[:1][0])),
     np.array(
         list(
             map(
                 lambda r: float(r),
-                enc_row[1:]
+                dec_row[1:]
             )
         )
     )
@@ -50,7 +46,7 @@ def read_csv_data(f_name):
         reader = csv.reader(f)
 
         return list(map(
-                lambda r: dec_row(r),
+                lambda r: enc_row(r),
                 reader
         ))
 
@@ -76,23 +72,21 @@ def get_train_test(rows, split_percentage):
 
     train = rows[split_index:]
 
-    return get_X(train), get_y(train), get_X(test), get_y(test)
+    X_train, y_train, X_test, y_test = get_X(train), get_y(train), get_X(test), get_y(test)
+
+    X_train = np.array(X_train).reshape(-1, IMG_WIDTH, IMG_HEIGHT, 1)
+    y_train = np.array(y_train)
+    X_test = np.array(X_test).reshape(-1, IMG_WIDTH, IMG_HEIGHT, 1)
+    y_test = np.array(y_test)
+
+    return X_train, y_train, X_test, y_test
 
 
 
 rows = read_csv_data("./dataset/data.csv")
 
+
 X_train, y_train, X_test, y_test = get_train_test(rows, 0.2)
-
-X_train = np.array(X_train).reshape(-1, IMG_WIDTH, IMG_HEIGHT, 1)
-y_train = np.array(y_train)
-X_test = np.array(X_test).reshape(-1, IMG_WIDTH, IMG_HEIGHT, 1)
-y_test = np.array(y_test)
-
-print(X_train.shape)
-print(y_train.shape)
-print(X_test.shape)
-print(y_test.shape)
 
 
 
@@ -118,7 +112,7 @@ model = Sequential([
 ])
 
 
-print(model.summary())
+#print(model.summary())
 
 
 model.compile(
@@ -128,5 +122,24 @@ model.compile(
 )
 
 
-model.fit(X_train, y_train, epochs=3)
+model.fit(X_train, y_train, epochs=2)
 
+
+def get_camera_data_prediction(model, image):
+    return list(model.predict(
+        np.array([image])
+    )[0])
+
+
+#get_camera_data_prediction(model, X_test[0])
+
+model_dir = '../_program/my_model'
+model.save(model_dir )
+
+new_model = tf.keras.models.load_model(model_dir)
+
+#new_model.summary()
+
+pred1 = get_camera_data_prediction(new_model, X_test[0])
+
+print(pred1)

@@ -2,6 +2,7 @@ from mathutils import *
 from functools import reduce
 
 
+
 enc_vec2d = lambda v: [v.x, v.y]
 dec_vec2d = lambda l: Vector((l[0], l[1]))
 
@@ -18,7 +19,7 @@ dec_marker = lambda l, length: (
     )
 
 enc_bool = lambda x: 1 if x == True else 0
-dec_bool = lambda x: True if x == 1 else False
+dec_bool = lambda x: False if round(x) == 0 else True
 
 
 
