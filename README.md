@@ -24,6 +24,7 @@ The project's aims are to collect track and event data from football footage. Th
     + identify players numbers
     + detects large human (noise, needs to be removed)
     + determine players position
+    + if camera moves too suddendly, few players will be tracked until next object detection
     + playersbcrossing eachother
 - detect ball
     + determine its position
@@ -63,98 +64,100 @@ geometry reconstruction algorithm
 ### images
 
 ![full text is here!!!!! description](./images/first.png)
-players are detected but ball is not (purple means that object recognition just ran)
-multiple players are detected in the same bounding box
-refs are detected as well
-one steward is also detected
-streaming is stopped because ball is not found
+players are detected but ball is not (purple means that object recognition just ran).
+multiple players are detected in the same bounding box.
+refs are detected as well.
+one steward is also detected.
+streaming is stopped because ball is not found.
 
 ![full text is here!!!!! description](./images/Screenshot_2022-03-03_21-32-51.png)
-players bounding boxes in green means that it is tracking
-manually labelling ball to continue stream
+players bounding boxes in green means that it is tracking.
+manually labelling ball to continue stream.
 
 ![full text is here!!!!! description](./images/Screenshot_2022-03-03_21-35-39.png)
-ball tracking  is lost and tracks the numbers on the players back
+ball tracking  is lost and tracks the numbers on the players back.
 
 ![full text is here!!!!! description](./images/Screenshot_2022-03-03_21-36-05.png)
-player tracking continues
-new players appear on the screen but they are not detected until 30frame period runs object detection again
+player tracking continues.
+new players appear on the screen but they are not detected until 30frame period runs object detection again.
 
 ![full text is here!!!!! description](./images/Screenshot_2022-03-03_21-38-04.png)
-ball tracking is lost again because of the pitch lines and player boots
-some players previously detected are lost because of the backgroup from ads or pitch (not enough constract)
+ball tracking is lost again because of the pitch lines and player boots.
+some players previously detected are lost because of the backgroup from ads or pitch (not enough constract).
 
 ![full text is here!!!!! description](./images/Screenshot_2022-03-03_21-36-47.png)
-ball needs to be labelled again to be tracked again
+ball needs to be labelled again to be tracked again.
 
 ![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-05-49.png)
-the object detection is ran
-all the human trackers are removed but the ball tracker
-the ball tracker is not reset if the ball is still being tracked
+the object detection is ran.
+all the human trackers are removed but the ball tracker.
+the ball tracker is not reset if the ball is still being tracked.
 
 ![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-06-03.png)
-the players tracker had to be reset again from the <prev img>
-ball tracker continues to run, regardless
+the players tracker had to be reset again from the <prev img> because the detected players moved out of the screen in the meantime.
+ball tracker continues to run, regardless.
 
 ![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-06-18.png)
-the ball tracker is wrong again, by tracking the player's back number
+the ball tracker is wrong again, by tracking the player's back number.
 
 ![full text is here!!!!! description](./images/Screenshot_2022-03-03_21-39-53.png)
-this is a video segment imposed by the director
-data cannot be collected
-this is a short moment
+this is a video segment imposed by the director.
+data cannot be collected.
+this is a short moment.
 
 ![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-06-43.png)
-ball is tracked from the <prev img> since the label needs to be labelled for the stream to continue
-there is a bug, a human is recognised due to noise
+ball is tracked from the <prev img> since the label needs to be labelled for the stream to continue (needs to cut the scene).
+there is a bug, a human is recognised due to noise.
 
 ![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-08-00.png)
-players are detected again
-the bug stil persists
-a fan is recognised in the crowd
-
-![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-09-09.png)
-description
+players are detected again.
+the bug stil persists.
+a fan is recognised in the crowd.
+the ball is again not recognised.
 
 ![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-09-45.png)
-description
+most players are visible from this new perspective.
+The ball is not recognised.
 
 ![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-10-58.png)
-description
+most of the players are recognised from this perspective.
+The ball is visible and being tracked.
 
 ![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-12-29.png)
-description
+in this frame few players were recognised because the camera view moved very suddendly (from the previous frame <prev img>) in betwee the object detection cycle.
+The ball tracker was lost and it is tracking the payer's leg instead.
 
 ![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-13-18.png)
-description
-
-![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-19-11.png)
-description
-
+In this frame most players are detected including all players inside the box which is the region of interest when a team is attacking.
+The ball tracker has lost the ball because the camera view is being blocked by the crossing player's leg.
 
 ![text description](./images/coordinates.png)
-description
+created 3d reference system that maps the points recognisable by the camera.
+This will be used for the artificial intelligence model to train the model and to process the video stream to perform the homographic transformation.
 
 ![text description](./images/Screenshot_from_2021-10-22_13-59-52.png)
-description
+The 3d model was developed on blender. It is a green 3d texture (to emulate the grass) with a pitch png transparent graphic to produce the white lines.
 
 ![text description](./images/Screenshot_2021-12-17_19-08-06.png)
-description
+The result is a realistic pitch replica that can be rendered by a blender camera to produce the synthetic dataset
 
 ![text description](./images/image.png)
-description
+this is the rendered image from a blender camera, this image is then the processed to be then used as the input for the artifical intelligence model.
+
 
 ![text description](./images/Screenshot_2022-03-05_12-03-42.png)
-description
+The pitch was then improved by adding 3d markers corresponding to the map reference system.
+These markers can be accessed by the blender cameras to retrieve their position on the camera view and their relative position to the cartesian origin.
 
 ![text description](./images/Screenshot_2022-03-05_12-45-59.png)
-description
+This is the view of the box which shows the position of the markers from a closer view
 
 ![text description](./images/Screenshot_2022-03-05_12-47-42.png)
-description
+This is the view from the goal which is an important object that is important for image recognition. it has the only markers with a positive z-index to emulate the top corners of the goal.
+It also includes the corner flag (on the left) because all pitches have them by regulation.
 
 ![text description](./images/Screenshot_2022-03-05_12-05-23.png)
-description
+The final step is to create 15 cameras which will rotate within a range and will render images for the dataset from these different position to emulate the real camera which will be put in different positions.
 
 
 
@@ -252,7 +255,8 @@ testing with random camera, get accuracy
 - the output will always be an approximation
 - video segment detection (also replays)
 - calculate ball trajectory
-- cannot detect players outside camera frame
+- cannot detect players outside camera frame. could create AI model for calculating probable player in position
+- cannot recognise players on camera frame. could create AI model for calculating their identity based on position/appearence
 - is not real-time, at this moment
 - recognise video segments
 
