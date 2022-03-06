@@ -5,6 +5,7 @@
 - create framework for football data science research (academic or business)
 - free and open source (will take additional work to avoid non compatible libraries with GPL3)
 
+
 The project's aims are to collect track and event data from football footage. The ultimate goal is to be able to process any kind of footage but, for now, it will only process broadcast football matches.
 
 
@@ -14,6 +15,7 @@ The project's aims are to collect track and event data from football footage. Th
     + weather and light visual conditions
     + detect refs by colour
     + detect people outside of the pitch
+    + loads of moving parts
 - detect humans
     + filter out referee(s)
     + detect players
