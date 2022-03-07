@@ -47,7 +47,7 @@ f = open(file_name, "x")
 
 writer = csv.writer(f)
 
-for loop_id in range(1):
+for loop_id in range(1000):
     for cam_id in range(len(cams)):
         img_str = str(cam_id) + "_" + str(loop_id) + ".jpeg"
 
@@ -78,8 +78,8 @@ for loop_id in range(1):
 
         cams[cam_id].change_angle()
 
-        #break
-    #break
+        break
+    break
 
 f.close()
 
