@@ -93,22 +93,22 @@ X_train, y_train, X_test, y_test = get_train_test(rows, 0.1)
 
 # Improve machine learning architecture
 model = Sequential([
-    Conv2D(filters=512, kernel_size=(8, 8), activation="sigmoid", input_shape=(IMG_WIDTH, IMG_HEIGHT, 1)),
-    MaxPooling2D(pool_size=(2, 2)),
+    Conv2D(filters=256, kernel_size=(8, 8), activation="sigmoid", input_shape=(IMG_WIDTH, IMG_HEIGHT, 1)),
+    MaxPooling2D(pool_size=(4, 4)),
     Dropout(0.25),
-    Conv2D(filters=256, kernel_size=(4, 4), activation="sigmoid"),
-    MaxPooling2D(pool_size=(2, 2)),
-    Dropout(0.25),
-    Conv2D(filters=128, kernel_size=(4, 4), activation="sigmoid"),
-    MaxPooling2D(pool_size=(2, 2)),
+    Conv2D(filters=128, kernel_size=(8, 8), activation="sigmoid"),
+    MaxPooling2D(pool_size=(4, 4)),
     Dropout(0.25),
     Conv2D(filters=64, kernel_size=(4, 4), activation="sigmoid"),
+    MaxPooling2D(pool_size=(2, 2)),
+    Dropout(0.25),
+    Conv2D(filters=32, kernel_size=(4, 4), activation="sigmoid"),
     MaxPooling2D(pool_size=(2, 2)),
     Dropout(0.25),
     Flatten(),
     Dense(1024, activation="sigmoid"),
     Dropout(0.5),
-    Dense(1024, activation="sigmoid"),
+    Dense(512, activation="sigmoid"),
     Dropout(0.5),
     Dense(300, activation="sigmoid")
 ])
@@ -117,6 +117,8 @@ model = Sequential([
 print(model.summary())
 
 
+
+"""
 model.compile(
     optimizer='adam',
     loss='poisson',
@@ -146,3 +148,4 @@ new_model = tf.keras.models.load_model(model_dir)
 pred1 = get_camera_data_prediction(new_model, X_test[0])
 
 print(pred1)
+"""
