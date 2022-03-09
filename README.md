@@ -10,6 +10,9 @@ The project's aims are to collect track and event data from football footage. Th
 
 
 ## problems solved to achieve objectives
+- data processing
+    + encode and decode positional data
+    + encode and decode image data
 - general
     + low quality footage
     + weather and light visual conditions

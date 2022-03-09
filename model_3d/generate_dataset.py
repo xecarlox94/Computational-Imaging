@@ -47,10 +47,13 @@ f = open(file_name, "x")
 
 writer = csv.writer(f)
 
-for loop_id in range(1000):
+for loop_id in range(4):
     for cam_id in range(len(cams)):
         img_str = str(cam_id) + "_" + str(loop_id) + ".jpeg"
 
+        # add noise
+
+        # space and spatial multiple image semantic matching
 
         image_utils.render_image(
             scene,
@@ -79,7 +82,7 @@ for loop_id in range(1000):
         cams[cam_id].change_angle()
 
         break
-    break
+    #break
 
 f.close()
 

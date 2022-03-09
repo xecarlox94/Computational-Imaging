@@ -2,12 +2,31 @@ from mathutils import *
 from functools import reduce
 
 
+dec = lambda v: v * 100
+enc = lambda v: v / 100
 
-enc_vec2d = lambda v: [v.x, v.y]
-dec_vec2d = lambda l: Vector((l[0], l[1]))
 
-enc_vec3d = lambda v: [v.x, v.y, v.z]
-dec_vec3d = lambda l: Vector((l[0], l[1], l[2]))
+enc_vec2d = lambda v: [
+    enc(v.x),
+    enc(v.y)
+]
+
+dec_vec2d = lambda l: Vector((
+    dec(l[0]),
+    dec(l[1])
+))
+
+enc_vec3d = lambda v: [
+    enc(v.x),
+    enc(v.y),
+    enc(v.z)
+]
+
+dec_vec3d = lambda l: Vector((
+    dec(l[0]),
+    dec(l[1]),
+    dec(l[2])
+))
 
 enc_vec = lambda v: enc_vec2d(v) if (len(v) == 2) else enc_vec3d(v)
 dec_vec = lambda l, lgth: dec_vec2d(l) if (lgth == 2) else dec_vec3d(l)

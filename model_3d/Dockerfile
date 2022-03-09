@@ -10,5 +10,5 @@ RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install blender python3 python3-pip -y
 
-#RUN /bin/bash ./run.sh
-CMD touch /src/dataset/new_file.txt
+RUN /bin/bash ./run.sh
+#CMD touch /src/dataset/new_file.txt

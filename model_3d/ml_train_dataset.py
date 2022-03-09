@@ -86,10 +86,10 @@ def get_train_test(rows, split_percentage):
 rows = read_csv_data("./dataset/data.csv")
 
 
-X_train, y_train, X_test, y_test = get_train_test(rows, 0.2)
+X_train, y_train, X_test, y_test = get_train_test(rows, 0.3)
 
 
-
+# Improve machine learning architecture
 model = Sequential([
     Conv2D(filters=64, kernel_size=(4, 4), activation="relu", input_shape=(IMG_WIDTH, IMG_HEIGHT, 1)),
     MaxPooling2D(pool_size=(2, 2)),
@@ -122,7 +122,7 @@ model.compile(
 )
 
 
-model.fit(X_train, y_train, epochs=2)
+model.fit(X_train, y_train, epochs=20)
 
 
 def get_camera_data_prediction(model, image):
