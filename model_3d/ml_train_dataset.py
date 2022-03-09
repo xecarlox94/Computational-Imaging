@@ -10,7 +10,9 @@ from tensorflow.keras.preprocessing import image
 import random
 import csv
 import cv2 as cv
+
 import numpy as np
+#import pandas as pd
 
 
 IMG_WIDTH = 256
@@ -86,12 +88,12 @@ def get_train_test(rows, split_percentage):
 rows = read_csv_data("./dataset/data.csv")
 
 
-X_train, y_train, X_test, y_test = get_train_test(rows, 0.3)
+X_train, y_train, X_test, y_test = get_train_test(rows, 0.1)
 
 
 # Improve machine learning architecture
 model = Sequential([
-    Conv2D(filters=64, kernel_size=(4, 4), activation="relu", input_shape=(IMG_WIDTH, IMG_HEIGHT, 1)),
+    Conv2D(filters=64, kernel_size=(4, 4), activation="sigmoid", input_shape=(IMG_WIDTH, IMG_HEIGHT, 1)),
     MaxPooling2D(pool_size=(2, 2)),
     Dropout(0.25),
     Conv2D(filters=32, kernel_size=(4, 4), activation='relu'),
@@ -122,7 +124,8 @@ model.compile(
 )
 
 
-model.fit(X_train, y_train, epochs=20)
+model.fit(X_train, y_train, epochs=10, validation_data=(X_test, y_test,))
+
 
 
 def get_camera_data_prediction(model, image):
