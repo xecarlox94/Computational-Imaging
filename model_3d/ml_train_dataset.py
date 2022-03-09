@@ -118,7 +118,6 @@ print(model.summary())
 
 
 
-"""
 model.compile(
     optimizer='adam',
     loss='poisson',
@@ -126,7 +125,7 @@ model.compile(
 )
 
 
-model.fit(X_train, y_train, epochs=10, validation_data=(X_test, y_test,))
+model.fit(X_train, y_train, epochs=1, validation_data=(X_test, y_test,))
 
 
 
@@ -148,4 +147,3 @@ new_model = tf.keras.models.load_model(model_dir)
 pred1 = get_camera_data_prediction(new_model, X_test[0])
 
 print(pred1)
-"""
