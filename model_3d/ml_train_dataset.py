@@ -93,28 +93,28 @@ X_train, y_train, X_test, y_test = get_train_test(rows, 0.1)
 
 # Improve machine learning architecture
 model = Sequential([
-    Conv2D(filters=64, kernel_size=(4, 4), activation="sigmoid", input_shape=(IMG_WIDTH, IMG_HEIGHT, 1)),
+    Conv2D(filters=512, kernel_size=(8, 8), activation="sigmoid", input_shape=(IMG_WIDTH, IMG_HEIGHT, 1)),
     MaxPooling2D(pool_size=(2, 2)),
     Dropout(0.25),
-    Conv2D(filters=32, kernel_size=(4, 4), activation='relu'),
+    Conv2D(filters=256, kernel_size=(4, 4), activation="sigmoid"),
     MaxPooling2D(pool_size=(2, 2)),
     Dropout(0.25),
-    Conv2D(filters=64, kernel_size=(4, 4), activation="relu"),
+    Conv2D(filters=128, kernel_size=(4, 4), activation="sigmoid"),
     MaxPooling2D(pool_size=(2, 2)),
     Dropout(0.25),
-    Conv2D(filters=64, kernel_size=(4, 4), activation='relu'),
+    Conv2D(filters=64, kernel_size=(4, 4), activation="sigmoid"),
     MaxPooling2D(pool_size=(2, 2)),
     Dropout(0.25),
     Flatten(),
-    Dense(128, activation='relu'),
+    Dense(1024, activation="sigmoid"),
     Dropout(0.5),
-    Dense(128, activation='relu'),
+    Dense(1024, activation="sigmoid"),
     Dropout(0.5),
-    Dense(300, activation='sigmoid')
+    Dense(300, activation="sigmoid")
 ])
 
 
-#print(model.summary())
+print(model.summary())
 
 
 model.compile(

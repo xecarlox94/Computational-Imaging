@@ -3,7 +3,7 @@
 - create semi-automated video processing analysis (reducing number of operators)
 - processes normal match streams
 - create framework for football data science research (academic or business)
-- free and open source (will take additional work to avoid non compatible libraries with GPL3)
+- free and open source (will take additional work to avoid non compatible libraries with GPL3) (took a lot of time but had to use AI libraries that force me to use LesserGPL3 license instead)
 
 
 The project's aims are to collect track and event data from football footage. The ultimate goal is to be able to process any kind of footage but, for now, it will only process broadcast football matches.
