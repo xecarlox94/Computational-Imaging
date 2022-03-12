@@ -42,7 +42,7 @@ def get_camera_data(o, scn):
 
     origin = matrix.to_translation()
 
-    get_view_vector = lambda v: Vector((v.x, v.y, v.z))
+    get_view_vector = lambda v: Vector((v.x, v.y))
 
     intersects = list(
         map(
@@ -64,66 +64,39 @@ def get_camera_data(o, scn):
         x = round(vec.x)
         y = round(vec.y)
 
-        return Vector((x, y, 0.0))
+        return Vector((x, y))
+
 
 
     corner_frames = list(map(lambda v: get_camera_view(scn, o, v), frames))
 
+
     corner_vectors = list(zip(corner_frames, intersects))
 
-    #cameraSquare = Square(corner_vectors)
 
-    pitch_markers = list(
-        map(
-            lambda x: [x, [], False],
-            range(1, 39 + 1)
-        )
-    )
-
-
-
-    get_marker = lambda c, o: (o.name, (c, get_view_vector(o.location)))
-
-
-
-    markers = []
-
-    coll = bpy.data.collections.get("Markers")
-    for obj in coll.all_objects:
-
-        i = int(obj.name)
+    pitch_markers = list(map(
+        lambda m_obj: (
+            int(m_obj.name),
+            get_view_vector(
+                world_to_camera_view(
+                    scn,
+                    o,
+                    m_obj.location
+                )
+            )
+        ),
+        bpy.data.collections.get("Markers").all_objects
+    ))
 
 
-        vec = obj.location
-
-
-        # Change to accomodate goal's corners (keep Z-index in it)
-        # goal's top corners [5, 7, 34, 36] height is 2.4
-        camview_vec = get_view_vector(world_to_camera_view(scn, o, vec))
-
-
-
-        marker = get_marker(camview_vec, obj)
-        markers.append(marker)
-
-
-        vec_x = camview_vec[0]
-        vec_y = camview_vec[1]
-        # Get pitch points, within frame
-        isInsideScreen = (vec_x >= 0 and vec_x <= 1) and (vec_y >= 0 and vec_y <= 1)
-
-
-
-        pitch_markers[i-1][0] = int(marker[0])
-        pitch_markers[i-1][1] = marker[1]
-        pitch_markers[i-1][2] = isInsideScreen
-
-
+    # Change to accomodate goal's corners (keep Z-index in it)
+    # goal's top corners [5, 7, 34, 36] height is 2.4
     pitch_markers.sort(key=(lambda x: x[0]))
+
 
     pitch_markers = list(
             map(
-                lambda x: (x[1], x[2]),
+                lambda x: x[1],
                 pitch_markers
             )
     )
@@ -181,7 +154,7 @@ def get_write_points(scn):
                 get_camera_data(o, scn)
         )
 
-        decoded_data = decode_camera_data(enc_data)
+        #decoded_data = decode_camera_data(enc_data)
 
         break
 
