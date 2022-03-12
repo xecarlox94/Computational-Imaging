@@ -55,11 +55,13 @@ for loop_id in range(100):
 
         # space and spatial multiple image semantic matching
 
+        """
         image_utils.render_image(
             scene,
             cams[cam_id].camera,
             img_str
         )
+        """
 
 
 
@@ -70,20 +72,24 @@ for loop_id in range(100):
                 )
         )
 
+        print(enc_data)
 
+
+        """
         writer.writerow(
             enc_row(
                 img_str,
                 enc_data
             )
         )
+        """
 
 
         cams[cam_id].change_angle()
 
 
-        #break
-    #break
+        break
+    break
 
 f.close()
 
