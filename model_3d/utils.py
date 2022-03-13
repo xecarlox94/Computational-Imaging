@@ -31,33 +31,6 @@ dec_vec3d = lambda l: Vector((
 enc_vec = lambda v: enc_vec2d(v) if (len(v) == 2) else enc_vec3d(v)
 dec_vec = lambda l, lgth: dec_vec2d(l) if (lgth == 2) else dec_vec3d(l)
 
-enc_marker = lambda m: enc_vec(m[0]) + enc_vec(m[1])
-dec_marker = lambda l, length: (
-        dec_vec(l[:length], length),
-        dec_vec(l[length:], length)
-    )
-
-enc_bool = lambda x: 1 if x == True else 0
-dec_bool = lambda x: False if round(x) == 0 else True
-
-
-
-enc_point = lambda enc_marker, dec_is_in: enc_marker + [enc_bool(dec_is_in)]
-
-dec_point = lambda lst, dec_mrk: (dec_mrk, dec_bool(lst[len(lst) - 1]))
-
-
-enc_3dpoint = lambda t: enc_point(
-                enc_marker(t[0]),
-                t[1]
-            )
-
-dec_3dpoint = lambda data, vec_len: dec_point(
-                data,
-                dec_marker(data[:len(data) - 1], vec_len)
-            )
-
-
 
 enc_list = lambda enc_fun, dec_list: reduce(
                 lambda x, y: x + enc_fun(y),
@@ -82,34 +55,16 @@ def dec_list(data_list, decode_fun, unit_length):
     ) + [decoded]
 
 
-def decode_3dpoint_list(lst):
-    return dec_list(
-        lst,
-        (lambda x: dec_3dpoint(x, 3)),
-        7
-    )
-
-
-def encode_3dpoint_list(lst):
+def encode_vector_list(lst):
     return enc_list(
-        (lambda t: enc_point(
-            enc_marker(t[0]),
-            t[1]
-        )),
+        enc_vec,
         lst
     )
 
 
-def encode_marker_list(lst):
-    return enc_list(
-        enc_marker,
-        lst
-    )
-
-
-def decode_marker_list(lst):
+def decode_vector_list(lst):
     return dec_list(
         lst,
-        (lambda x: dec_marker(x, 3)),
-        6
+        (lambda x: dec_vec(x, 2)),
+        2
     )

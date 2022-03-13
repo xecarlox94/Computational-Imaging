@@ -105,7 +105,7 @@ model = Sequential([
     Dropout(0.5),
     Dense(512, activation="sigmoid"),
     Dropout(0.5),
-    Dense(300, activation="sigmoid")
+    Dense(89, activation="sigmoid")
 ])
 
 

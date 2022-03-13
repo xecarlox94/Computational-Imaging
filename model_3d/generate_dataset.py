@@ -55,13 +55,11 @@ for loop_id in range(100):
 
         # space and spatial multiple image semantic matching
 
-        """
         image_utils.render_image(
             scene,
             cams[cam_id].camera,
             img_str
         )
-        """
 
 
 
@@ -72,17 +70,13 @@ for loop_id in range(100):
                 )
         )
 
-        print(enc_data)
 
-
-        """
         writer.writerow(
             enc_row(
                 img_str,
                 enc_data
             )
         )
-        """
 
 
         cams[cam_id].change_angle()
@@ -103,16 +97,6 @@ def read_csv_data(f_name):
 
 read_csv_data(file_name)
 
-
-"""
-    for encdata in lines:
-        print("\n\n\n\ncamera and image data")
-        i_str, enc_camdata = dec_row(encdata)
-        print(i_str)
-        print(enc_camdata)
-        print("\n\n\n\ndecoded camera data")
-        print(image_utils.decode_camera_data(enc_camdata))
-"""
 
 
 for i in range(len(all_cams)):

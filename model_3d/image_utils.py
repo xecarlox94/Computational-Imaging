@@ -44,7 +44,8 @@ def get_camera_data(o, scn):
 
     get_view_vector = lambda v: Vector((v.x, v.y))
 
-    intersects = list(
+
+    corner_vectors  = list(
         map(
             lambda f: get_view_vector(
                 intersect_line_plane(
@@ -58,23 +59,7 @@ def get_camera_data(o, scn):
         )
     )
 
-    def get_camera_view(scn, o, vec):
-        vec = world_to_camera_view(scn, o, vec)
-
-        x = round(vec.x)
-        y = round(vec.y)
-
-        return Vector((x, y))
-
-
-
-    corner_frames = list(map(lambda v: get_camera_view(scn, o, v), frames))
-
-
-    corner_vectors = list(zip(corner_frames, intersects))
-
-
-    pitch_markers = list(map(
+    pitch_vectors = list(map(
         lambda m_obj: (
             int(m_obj.name),
             get_view_vector(
@@ -91,32 +76,31 @@ def get_camera_data(o, scn):
 
     # Change to accomodate goal's corners (keep Z-index in it)
     # goal's top corners [5, 7, 34, 36] height is 2.4
-    pitch_markers.sort(key=(lambda x: x[0]))
+    pitch_vectors.sort(key=(lambda x: x[0]))
 
 
-    pitch_markers = list(
+    pitch_vectors = list(
             map(
                 lambda x: x[1],
-                pitch_markers
+                pitch_vectors
             )
     )
 
-
-    return origin, corner_vectors, pitch_markers
+    return origin, corner_vectors, pitch_vectors
 
 
 
 def encode_camera_data(camera_data_tuple):
-    origin, pitch_corners, pitch_markers = camera_data_tuple
+    origin, corner_vectors, pitch_vectors = camera_data_tuple
     enc_origin = utils.enc_vec(origin)
-    enc_corner_markers = utils.encode_marker_list(pitch_corners)
-    enc_pitch_markers = utils.encode_3dpoint_list(pitch_markers)
+    enc_corner_vectors = utils.encode_vector_list(corner_vectors)
+    enc_pitch_vectors = utils.encode_vector_list(pitch_vectors)
 
 
     return (
             enc_origin +
-            enc_corner_markers +
-            enc_pitch_markers
+            enc_corner_vectors +
+            enc_pitch_vectors
     )
 
 
@@ -126,35 +110,21 @@ def decode_camera_data(enc_data):
     origin_decoded = utils.dec_vec(origin_enc_data, 3)
     enc_data = enc_data[3:]
 
-    corner_markers_data = enc_data[: (6 * 4) ]
-    corner_markers_decoded = utils.decode_marker_list(
-            corner_markers_data
+
+    len_corner_vectors = (2 * 4)
+
+    corner_vectors_data = enc_data[: len_corner_vectors ]
+    corner_vectors_decoded = utils.decode_vector_list(
+            corner_vectors_data
     )
 
-    pitch_markers_data = enc_data[ (6 * 4) :]
-    pitch_markers_decoded = utils.decode_3dpoint_list(
-            pitch_markers_data
+    pitch_vectors_data = enc_data[ len_corner_vectors :]
+    pitch_vectors_decoded = utils.decode_vector_list(
+            pitch_vectors_data
     )
 
     return (
         origin_decoded,
-        corner_markers_decoded,
-        pitch_markers_decoded
+        corner_vectors_decoded,
+        pitch_vectors_decoded
     )
-
-
-
-def get_write_points(scn):
-
-    coll = bpy.data.collections.get("Cameras")
-
-    for o in coll.all_objects:
-
-        enc_data = encode_camera_data(
-                get_camera_data(o, scn)
-        )
-
-        #decoded_data = decode_camera_data(enc_data)
-
-        break
-
