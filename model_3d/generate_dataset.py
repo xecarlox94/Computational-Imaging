@@ -51,9 +51,7 @@ for loop_id in range(100):
     for cam_id in range(len(cams)):
         img_str = str(cam_id) + "_" + str(loop_id) + ".jpeg"
 
-        # add noise
 
-        # space and spatial multiple image semantic matching
 
         image_utils.render_image(
             scene,
@@ -62,12 +60,11 @@ for loop_id in range(100):
         )
 
 
-
         enc_data = image_utils.encode_camera_data(
-                image_utils.get_camera_data(
-                    cams[cam_id].camera,
-                    scene
-                )
+            image_utils.get_camera_data(
+                cams[cam_id].camera,
+                scene
+            )
         )
 
 
@@ -82,7 +79,7 @@ for loop_id in range(100):
         cams[cam_id].change_angle()
 
 
-        break
+        #break
     break
 
 f.close()

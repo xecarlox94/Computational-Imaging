@@ -1,3 +1,4 @@
+
 from mathutils import *
 from functools import reduce
 
@@ -62,9 +63,10 @@ def encode_vector_list(lst):
     )
 
 
-def decode_vector_list(lst):
+def decode_vector_list(lst, length):
     return dec_list(
         lst,
-        (lambda x: dec_vec(x, 2)),
-        2
+        (lambda x: dec_vec(x, length)),
+        length
     )
+

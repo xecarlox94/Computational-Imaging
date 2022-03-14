@@ -289,6 +289,8 @@ testing with random camera, get accuracy
     - synchronise footage and data timestamps
 
 
+        -----> space and spatial multiple image semantic matching
+
 
 ## extra
 + when downloading copyrighted recordings or process data, reference source and its copyright

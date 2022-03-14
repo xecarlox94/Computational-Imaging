@@ -38,26 +38,26 @@ def get_camera_data(o, scn):
     camera = o.data
     matrix = o.matrix_world.normalized()
 
-    frames = [matrix @ v for v in camera.view_frame(scene=scn)]
+    frames_vectors = [matrix @ v for v in camera.view_frame(scene=scn)]
 
     origin = matrix.to_translation()
 
     get_view_vector = lambda v: Vector((v.x, v.y))
 
 
-    corner_vectors  = list(
-        map(
-            lambda f: get_view_vector(
-                intersect_line_plane(
-                    origin,
-                    f,
-                    Vector((0, 0, 0)),
-                    Vector((0, 0, 1))
-                )
-            ),
-            frames
-        )
-    )
+    corners_vectors  = list(map(
+        lambda f: get_view_vector(
+            intersect_line_plane(
+                origin,
+                f,
+                Vector((0, 0, 0)),
+                Vector((0, 0, 1))
+            )
+        ),
+        frames_vectors
+    ))
+
+
 
     pitch_vectors = list(map(
         lambda m_obj: (
@@ -79,27 +79,33 @@ def get_camera_data(o, scn):
     pitch_vectors.sort(key=(lambda x: x[0]))
 
 
-    pitch_vectors = list(
-            map(
-                lambda x: x[1],
-                pitch_vectors
-            )
+    pitch_vectors = list(map(
+        lambda x: x[1],
+        pitch_vectors
+    ))
+
+    return (
+        origin,
+        frames_vectors,
+        corners_vectors,
+        pitch_vectors
     )
 
-    return origin, corner_vectors, pitch_vectors
 
 
 
 def encode_camera_data(camera_data_tuple):
-    origin, corner_vectors, pitch_vectors = camera_data_tuple
+    origin, frames_vectors, corners_vectors, pitch_vectors = camera_data_tuple
     enc_origin = utils.enc_vec(origin)
-    enc_corner_vectors = utils.encode_vector_list(corner_vectors)
+    enc_frames_vectors = utils.encode_vector_list(frames_vectors)
+    enc_corners_vectors = utils.encode_vector_list(corners_vectors)
     enc_pitch_vectors = utils.encode_vector_list(pitch_vectors)
 
 
     return (
             enc_origin +
-            enc_corner_vectors +
+            enc_frames_vectors +
+            enc_corners_vectors +
             enc_pitch_vectors
     )
 
@@ -108,23 +114,34 @@ def decode_camera_data(enc_data):
     origin_enc_data = enc_data[:3]
 
     origin_decoded = utils.dec_vec(origin_enc_data, 3)
-    enc_data = enc_data[3:]
+    enc_data = enc_data[3: ]
 
+    len_corners_vectors = (3 * 4)
+    frames_vectors_data = enc_data[: len_corners_vectors]
+    frames_vectors_decoded = utils.decode_vector_list(
+            frames_vectors_data,
+            3
+    )
+    enc_data = enc_data[len_corners_vectors :]
 
-    len_corner_vectors = (2 * 4)
+    len_corners_vectors = (2 * 4)
 
-    corner_vectors_data = enc_data[: len_corner_vectors ]
-    corner_vectors_decoded = utils.decode_vector_list(
-            corner_vectors_data
+    corners_vectors_data = enc_data[: len_corners_vectors]
+    corners_vectors_decoded = utils.decode_vector_list(
+            corners_vectors_data,
+            2
     )
 
-    pitch_vectors_data = enc_data[ len_corner_vectors :]
+    pitch_vectors_data = enc_data[ len_corners_vectors :]
     pitch_vectors_decoded = utils.decode_vector_list(
-            pitch_vectors_data
+            pitch_vectors_data,
+            2
     )
 
     return (
         origin_decoded,
-        corner_vectors_decoded,
+        frames_vectors_decoded,
+        corners_vectors_decoded,
         pitch_vectors_decoded
     )
+

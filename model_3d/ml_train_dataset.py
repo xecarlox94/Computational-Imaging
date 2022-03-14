@@ -105,7 +105,7 @@ model = Sequential([
     Dropout(0.5),
     Dense(512, activation="sigmoid"),
     Dropout(0.5),
-    Dense(89, activation="sigmoid")
+    Dense(101, activation="sigmoid")
 ])
 
 
@@ -126,7 +126,7 @@ rows = read_csv_data("./dataset/data.csv")
 X_train, y_train, X_test, y_test = get_train_test(rows, 0.1)
 
 
-model.fit(X_train, y_train, epochs=100, validation_data=(X_test, y_test,))
+model.fit(X_train, y_train, epochs=1, validation_data=(X_test, y_test,))
 
 
 
