@@ -2,34 +2,23 @@
 
 
 pitch recognition
-    - create algorithm to discover corners
-    - homography
+    - apply machine learning model to image
+    - homography transformation (get inner section)
+    - add image filter to training and program
+    - map detected objects to pitch and write to file
+    - add vertical movement to blender cameras
 
-
-players recognition
-    - identify shirt numbers
-    - recognise players
-
-
-improve ball tracking
-    - train machine learning model
-
+testing
+    - test randomly positioned camera to blender
+    - measure accuracity
 
 manual play segmentation
     - opencv controls
 
+improve ball tracking
+    - improve image processing (filter noise, increase ball perception)
 
-off-screen players prediction
-    - train machine learning model
-
-
-actions recognition
-    - train machine learning model
-
-
-set-pieces recognition
-
-
-## extra
-+ when downloading copyrighted recordings or process data, reference source and its copyright
-+ set up public dataset for public use by academics
+data collection
+    - detects large human (noise, needs to be removed)
+    - color based detection
+    - number detection

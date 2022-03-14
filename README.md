@@ -1,9 +1,14 @@
+
 # Introduction
 ## summarising objectives
+- very ambitious
+- create solid foundation
+- long future project
+- long goal of modularising this football framework into a collective sports library composed of smaller reusable/generic units because collective sports have different dynamics
 - create semi-automated video processing analysis (reducing number of operators)
 - processes normal match streams
 - create framework for football data science research (academic or business)
-- free and open source (will take additional work to avoid non compatible libraries with GPL3) (took a lot of time but had to use AI libraries that force me to use LesserGPL3 license instead)
+- free and open source (will take additional work to avoid non compatible libraries with GPL3, it iwll have loads of moving parts) (took a lot of time but had to use AI libraries that force me to use LesserGPL3 license instead)
 
 
 The project's aims are to collect track and event data from football footage. The ultimate goal is to be able to process any kind of footage but, for now, it will only process broadcast football matches.
@@ -13,58 +18,66 @@ The project's aims are to collect track and event data from football footage. Th
 - data processing
     + encode and decode positional data
     + encode and decode image data
-- general
-    + low quality footage
-    + weather and light visual conditions
-    + detect refs by colour
-    + detect people outside of the pitch
-    + process different video/match segments
-    + short video segments interrupt data collection
-    + loads of moving parts
+- 3d modelling
+    + creating realistic 3d environments with main features
+    + create reference map
+    + automate cameras
+    + geometric calculations to get outputs
+- machine learning modeling
+    + create convolution network
 - detect humans
-    + filter out referee(s)
     + detect players
-    + identify players numbers
-    + detects large human (noise, needs to be removed)
-    + determine players position
-    + if camera moves too suddendly, few players will be tracked until next object detection
-    + playersbcrossing eachother
+    + track players
+    - recognise players
+        - identify players numbers
+        - identify players visual characteristics
+    - filter out referee(s)
+    - detects large human (noise, needs to be removed)
+    - determine players position
+    - if camera moves too suddendly, few players will be tracked until next object detection
 - detect ball
-    + determine its position
-    + track its position
-    + 3D ball positioning estimation using physics model
-    + ball tracking is suspended whenever an object obstructs the camera view
-- detect pitch, by machine learning trained by creating image dataset
-    + pitch geometry reconstruction
-    + optical distortion
-    + detect corner flags
-    + detect goals
-    + machine learning algorithm to
-    + algorithm to determine inner section
-    + different camera/editing/perspective
-- map players and ball to pitch
-    + predict possible position of off sight players
-    + positioning flipping
-- recognise players
-    + player's numbers extraction
-- action detection
-- collect data
-    + collect event data
-    + collect tracking data
-    + synchronise event and tracking data
-    + synchronise footage and data timestamps
+    + detect ball
+    + track ball
+
+
+- pitch geometry reconstruction
+    - optical distortion
+    - algorithm to determine inner section
+    - image homographical transformation
+    - grid positioning
+    - map players and ball to pitch
+- video processing
+    - video/play segmentation
+
+- general
+    - low quality footage
+    - weather and light visual conditions
+    - detect refs by colour
+    - ignoring people outside of the pitch
+    - short video (replay/sudden angles) segments interrupt data collection
+
+
+
+
+## methods
+- image processing operations (openCV)
+- sythetic image dataset (Blender)
+- deep/machine learning (tensorflow)
+- Object detection (YOLO v4)
+- Object tracking (OpenCV tracking)
 
 ### pseudocode
-
-pseudocode for image recognition
-
-development of 3-d modelling
-pseudocode for 3-d modelling data set generation
-machine learning model and algorithm
-geometry reconstruction algorithm
+#### pseudocode for image recognition
+#### development of 3-d modelling
+#### pseudocode for 3-d modelling data set generation
+#### machine learning model and algorithm
+#### geometry reconstruction algorithm
 
 
-### images
+
+## results
+
+(sshot> image recognition, ball and humans)
 
 ![full text is here!!!!! description](./images/first.png)
 players are detected but ball is not (purple means that object recognition just ran).
@@ -134,6 +147,10 @@ The ball tracker was lost and it is tracking the payer's leg instead.
 In this frame most players are detected including all players inside the box which is the region of interest when a team is attacking.
 The ball tracker has lost the ball because the camera view is being blocked by the crossing player's leg.
 
+
+(sshot> pitch 3d modelling and camera automation)
+
+
 ![text description](./images/coordinates.png)
 created 3d reference system that maps the points recognisable by the camera.
 This will be used for the artificial intelligence model to train the model and to process the video stream to perform the homographic transformation.
@@ -164,48 +181,21 @@ The final step is to create 15 cameras which will rotate within a range and will
 
 
 
-
-## methods
-- image processing operations
-    + openCV
-- image recognition
-- object tracking
-- sythetic image dataset
-- image homographical transformation
-- deep/machine learning
-- video/play segmentation
-- Image Processing
-- Object detection (YOLO v4)
-- Object interaction tracking
-- Object motion tracking
-- Multi-algorithm implementation (Detection -> tracking -> identification)
-- Machine learning (Extrapolation; training against current data)
-- Human pose estimation
-- grid positioning
-- 3D human interaction
-
-
-## results
-
-(sshot> image recognition, ball and humans)
-
-
-(sshot> pitch 3d modelling)
-
-
-(sshot> camera automation, in dataset)
-
-
 ## achievements and limits
 ### achievements
 
+creating video collection algorithm for sports
+
+creating complete 3d model data
+
+
 ### limits
-spatio-temporal data stream correction
 human detection may contain more than 1 human
     consistent ball detection
 
 
 - Human agent must verify and validate data collection
+- Human agent must manully segment video streams
 - Human agent must input match meta data
 - Human agent must supervise/calibrate video processing
 - Tracking broadcast is affected by zoom/replays and camera changes
@@ -225,13 +215,13 @@ human detection may contain more than 1 human
 # Work carried out
 
 - video processing
-    + machine learning humans and ball recognition
-    + object traking
+    - machine learning humans and ball recognition
+    - object traking
 - 3d modelling and dataset generation
-    + pitch construction in blender
-    + camera positioning
-    + data generation scripting
-    + homographical transformation
+    - pitch construction in blender
+    - camera positioning
+    - data generation scripting
+    - homographical transformation
 
 
 
@@ -254,23 +244,53 @@ testing with random camera, get accuracy
 
 
 ## the main limitations of work
+- the output will always be an approximation (real world)
 - detect ball consistently
-- the output will always be an approximation
-- video segment detection (also replays)
 - calculate ball trajectory
+- ball tracking is suspended whenever an object obstructs the camera view
+- players crossing eachother
 - cannot detect players outside camera frame. could create AI model for calculating probable player in position
 - cannot recognise players on camera frame. could create AI model for calculating their identity based on position/appearence
 - is not real-time, at this moment
-- recognise video segments
 
 ## possible extensions and future work
-- create data format (possibly logical ontology to leverage a logical reasoner) to create a richer dataset
 
 - use Google Research Football Environment
-    + predict off-screen player positioning
-    + predict player actions
-- action recognition
+    - predict off-screen player positioning
+    - actions recognition
+
+
 - modularise all modules and algorithms to allow other sports
-- allow python running
-- add random noise to improve dataset and model
-- add random camera rotation (x, Z) to improve dataset and model
+
+- dataset generation
+    - add random noise to improve dataset and model
+
+
+- video segment detection (also replays)
+    - recognise video segments
+    - set-pieces recognition
+    - clustering/unsopervised problem!!!!!
+
+
+- methods will not apply
+    - spatio temporal data stream correction
+    - Human pose estimation
+    - 3D human interaction
+    - Machine learning (Extrapolation; training against current data)
+    - spatio-temporal training (pitch detection, player position detection, actions ....)
+    - Object interaction tracking
+    - Multi-algorithm implementation (Detection -> tracking -> identification)
+
+- data collection
+    - create data format (possibly logical ontology to leverage a logical reasoner) to create a richer dataset
+    - collect event data
+    - collect tracking data
+    - synchronise event and tracking data
+    - synchronise footage and data timestamps
+
+
+
+## extra
++ when downloading copyrighted recordings or process data, reference source and its copyright
++ set up public dataset for public use by academics
+
