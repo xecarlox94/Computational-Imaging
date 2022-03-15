@@ -52,34 +52,40 @@ for loop_id in range(100):
         img_str = str(cam_id) + "_" + str(loop_id) + ".jpeg"
 
 
-
+        """
         image_utils.render_image(
             scene,
             cams[cam_id].camera,
             img_str
         )
+        """
 
 
-        enc_data = image_utils.encode_camera_data(
+        enc_data = utils.encode_camera_data(
             image_utils.get_camera_data(
                 cams[cam_id].camera,
                 scene
             )
         )
 
+        print(enc_data)
 
+        print(utils.decode_camera_data(enc_data))
+
+        """
         writer.writerow(
             enc_row(
                 img_str,
                 enc_data
             )
         )
+        """
 
 
         cams[cam_id].change_angle()
 
 
-        #break
+        break
     break
 
 f.close()

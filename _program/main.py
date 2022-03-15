@@ -127,10 +127,6 @@ def label_ball():
 
 
 
-
-
-
-
 window_name = "Image"
 frame_count = -1
 count = 0
@@ -148,8 +144,19 @@ wait_key = lambda key: cv.waitKey(25) & 0xFF == ord(key)
 
 
 
+
+
+
+
+
+
+
+
+
+
 import tensorflow as tf
 import numpy as np
+
 
 def get_camera_data_prediction(model, image):
     return list(model.predict(
@@ -169,6 +176,20 @@ get_image_input = lambda frame: cv.resize(
 )
 
 
+#from model_3d.generate_dataset import *
+from model_3d import utils
+
+
+
+
+
+
+
+
+
+
+
+
 
 while cap.isOpened():
 
@@ -180,6 +201,23 @@ while cap.isOpened():
     )
 
     print(pred)
+
+    print(utils.decode_camera_data(pred))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     break

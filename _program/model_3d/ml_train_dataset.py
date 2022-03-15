@@ -97,9 +97,9 @@ model = Sequential([
     Conv2D(filters=64, kernel_size=(4, 4), activation="sigmoid"),
     MaxPooling2D(pool_size=(2, 2)),
     Dropout(0.25),
-    Conv2D(filters=32, kernel_size=(4, 4), activation="sigmoid"),
-    MaxPooling2D(pool_size=(2, 2)),
-    Dropout(0.25),
+    #Conv2D(filters=32, kernel_size=(4, 4), activation="sigmoid"),
+    #MaxPooling2D(pool_size=(2, 2)),
+    #Dropout(0.25),
     Flatten(),
     Dense(1024, activation="sigmoid"),
     Dropout(0.5),
@@ -138,7 +138,7 @@ def get_camera_data_prediction(model, image):
 
 #get_camera_data_prediction(model, X_test[0])
 
-model_dir = '../_program/my_model'
+model_dir = '../my_model'
 model.save(model_dir)
 
 new_model = tf.keras.models.load_model(model_dir)
