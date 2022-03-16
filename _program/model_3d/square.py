@@ -1,32 +1,4 @@
 
-
-# to get points/markers for square algorithm
-# Have to MODIFY!!!!
-def get_pitch_corners(markers):
-    pitch_corners = dict()
-
-    for marker in markers:
-        ix = int(marker[0])
-        if ix in [1, 10, 30, 39]:
-            pitch_corners[str(ix)] = marker[1]
-
-    return [
-        pitch_corners["39"],
-        pitch_corners["30"],
-        pitch_corners["1"],
-        pitch_corners["10"]
-    ]
-
-    # code to integrate in the square class
-    p_corners = get_pitch_corners(markers)
-
-
-    print("\n\npitch corners")
-    print(p_corners)
-
-
-
-
 class Square:
 
     def __init__(self, points):

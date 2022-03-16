@@ -68,9 +68,7 @@ for loop_id in range(100):
             )
         )
 
-        print(enc_data)
 
-        print(utils.decode_camera_data(enc_data))
 
         """
         writer.writerow(

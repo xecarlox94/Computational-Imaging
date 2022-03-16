@@ -73,7 +73,11 @@ def decode_vector_list(lst, length):
 
 
 def encode_camera_data(camera_data_tuple):
-    origin, frames_vectors, corners_vectors, pitch_vectors = camera_data_tuple
+    origin, camera_vectors, pitch_vectors = camera_data_tuple
+
+    frames_vectors = list(zip(lambda x: x[0], camera_vectors))
+    corners_vectors = list(zip(lambda x: x[1], camera_vectors))
+
     enc_origin = enc_vec(origin)
     enc_frames_vectors = encode_vector_list(frames_vectors)
     enc_corners_vectors = encode_vector_list(corners_vectors)
@@ -116,15 +120,14 @@ def decode_camera_data(enc_data):
             2
     )
 
-    print(origin_decoded)
-    print(frames_vectors_decoded)
-    print(corners_vectors_decoded)
-    print(pitch_vectors_decoded)
+    camera_vectors = list(zip(
+        frames_vectors_decoded,
+        corners_vectors_decoded
+    ))
 
     return (
         origin_decoded,
-        frames_vectors_decoded,
-        corners_vectors_decoded,
+        camera_vectors,
         pitch_vectors_decoded
     )
 

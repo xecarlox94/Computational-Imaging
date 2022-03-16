@@ -84,10 +84,14 @@ def get_camera_data(o, scn):
         pitch_vectors
     ))
 
+    camera_vectors = list(zip(
+        frames_vectors,
+        corners_vectors
+    ))
+
     return (
         origin,
-        frames_vectors,
-        corners_vectors,
+        camera_vectors,
         pitch_vectors
     )
 

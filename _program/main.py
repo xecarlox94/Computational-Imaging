@@ -182,9 +182,47 @@ from model_3d import utils
 
 
 
+def get_pitch_corners(pitch_vectors):
+    pitch_corners = dict()
+
+    for i in range(len(pitch_vectors)):
+        ix = i + 1
+
+        if ix in [1, 10, 30, 39]:
+            pitch_corners[str(ix)] = pitch_vectors[i]
+
+    return [
+        pitch_corners["39"],
+        pitch_corners["30"],
+        pitch_corners["1"],
+        pitch_corners["10"]
+    ]
 
 
 
+
+from shapely.geometry import Polygon, mapping
+
+def get_inner_pitch_segment(camera_corners, pitch_corners):
+    camera_corners = Polygon(camera_corners)
+    pitch_corners = Polygon(pitch_corners)
+
+    print(pitch_corners)
+    print(camera_corners)
+
+    """
+    coordinates = list(
+        mapping(
+            camera_corners.intersection(
+                pitch_corners
+            )
+        )['coordinates'][0]
+    )
+    """
+
+    #print(coordinates )
+
+    return 0
 
 
 
@@ -200,20 +238,21 @@ while cap.isOpened():
         get_image_input(frame)
     )
 
-    print(pred)
 
-    print(utils.decode_camera_data(pred))
+    camera_data = utils.decode_camera_data(pred)
 
-
-
-
+    frames_vectors = list(map(lambda x: x[0], camera_data[1]))
+    corners_vectors = list(map(lambda x: x[1], camera_data[1]))
 
 
 
+    corners_vectors
+    pitch_vectors = get_pitch_corners(camera_data[2])
 
 
+    inner_section_vectors = get_inner_pitch_segment(corners_vectors, pitch_vectors)
 
-
+    print(inner_section_vectors)
 
 
 
