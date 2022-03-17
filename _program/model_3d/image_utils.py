@@ -38,9 +38,12 @@ def get_camera_data(o, scn):
     camera = o.data
     matrix = o.matrix_world.normalized()
 
+
     frames_vectors = [matrix @ v for v in camera.view_frame(scene=scn)]
 
+
     origin = matrix.to_translation()
+
 
     get_view_vector = lambda v: Vector((v.x, v.y))
 
@@ -56,6 +59,62 @@ def get_camera_data(o, scn):
         ),
         frames_vectors
     ))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    print(frames_vectors)
+    print(corners_vectors)
+
+
+    def get_camera_view(scn, o, vec):
+        return world_to_camera_view(scn, o, vec)
+
+
+    get_corner_screen = lambda v: Vector((
+        round(v.x), round(v.y), round(v.z)
+    ))
+
+
+    print(list(map(
+        lambda v: get_corner_screen(get_camera_view(scn, o, v)),
+        frames_vectors
+    )))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -164,7 +164,7 @@ def get_camera_data_prediction(model, image):
     )[0])
 
 
-model = tf.keras.models.load_model('./my_model')
+#model = tf.keras.models.load_model('./my_model')
 
 
 get_image_input = lambda frame: cv.resize(
@@ -201,37 +201,74 @@ def get_pitch_corners(pitch_vectors):
 
 
 
+
+
+
+
+
+def read_csv_data(f_name):
+    with open(f_name) as f:
+        reader = csv.reader(f)
+
+        return list(map(
+                lambda dec_row: list(map(
+                    lambda r: float(r),
+                    dec_row[1:]
+                )),
+                reader
+        ))
+
+
+
+
+
+
+
 from shapely.geometry import Polygon, mapping
+import csv
 
-def get_inner_pitch_segment(camera_corners, pitch_corners):
-    camera_corners = Polygon(camera_corners)
-    pitch_corners = Polygon(pitch_corners)
 
-    print(pitch_corners)
-    print(camera_corners)
-
-    """
-    coordinates = list(
-        mapping(
-            camera_corners.intersection(
-                pitch_corners
-            )
-        )['coordinates'][0]
-    )
-    """
-
-    #print(coordinates )
-
-    return 0
+def get_intersection(x, y):
+    x = Polygon(x)
+    y = Polygon(y)
+    print(x)
+    print(y)
+    intersection = x.intersection(y)
+    if intersection.is_empty:
+        return []
+    else:
+        return list(mapping(
+            intersection
+        )['coordinates'][0])
 
 
 
+camera_data = read_csv_data('./model_3d/dataset/data.csv')[0]
+
+
+camera_data = utils.decode_camera_data(camera_data)
+
+
+frames_vectors, corner_vectors = utils.unzip_camera_vectors(camera_data[1])
+
+
+pitch_vectors = get_pitch_corners(camera_data[2])
+
+print(pitch_vectors)
+print(corner_vectors)
+
+#intersection = get_intersection(corners_vectors, pitch_vectors)
 
 
 
+
+
+
+"""
 while cap.isOpened():
 
     ret, frame = cap.read()
+
 
     pred = get_camera_data_prediction(
         model,
@@ -240,28 +277,6 @@ while cap.isOpened():
 
 
     camera_data = utils.decode_camera_data(pred)
-
-    frames_vectors = list(map(lambda x: x[0], camera_data[1]))
-    corners_vectors = list(map(lambda x: x[1], camera_data[1]))
-
-
-
-    corners_vectors
-    pitch_vectors = get_pitch_corners(camera_data[2])
-
-
-    inner_section_vectors = get_inner_pitch_segment(corners_vectors, pitch_vectors)
-
-    print(inner_section_vectors)
-
-
-
-
-
-
-    break
-
-    """
 
     print(frame_count)
 
