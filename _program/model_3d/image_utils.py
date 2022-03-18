@@ -48,93 +48,15 @@ def get_camera_data(o, scn):
     get_view_vector = lambda v: Vector((v.x, v.y))
 
 
-    corners_vectors  = list(map(
-        lambda f: get_view_vector(
-            intersect_line_plane(
-                origin,
-                f,
-                Vector((0, 0, 0)),
-                Vector((0, 0, 1))
-            )
-        ),
-        frames_vectors
-    ))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    print(frames_vectors)
-    print(corners_vectors)
-
-
-    def get_camera_view(scn, o, vec):
-        return world_to_camera_view(scn, o, vec)
-
-
-    get_corner_screen = lambda v: Vector((
-        round(v.x), round(v.y), round(v.z)
-    ))
-
-
-    print(list(map(
-        lambda v: get_corner_screen(get_camera_view(scn, o, v)),
-        frames_vectors
-    )))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     pitch_vectors = list(map(
         lambda m_obj: (
             int(m_obj.name),
-            get_view_vector(
-                world_to_camera_view(
-                    scn,
-                    o,
-                    m_obj.location
-                )
-            )
+            get_view_vector(m_obj.location)
         ),
         bpy.data.collections.get("Markers").all_objects
     ))
 
 
-    # Change to accomodate goal's corners (keep Z-index in it)
-    # goal's top corners [5, 7, 34, 36] height is 2.4
     pitch_vectors.sort(key=(lambda x: x[0]))
 
 
@@ -143,16 +65,10 @@ def get_camera_data(o, scn):
         pitch_vectors
     ))
 
-    camera_vectors = list(zip(
-        frames_vectors,
-        corners_vectors
-    ))
-
     return (
         origin,
-        camera_vectors,
+        frames_vectors,
         pitch_vectors
     )
-
 
 

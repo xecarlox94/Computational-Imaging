@@ -182,23 +182,6 @@ from model_3d import utils
 
 
 
-def get_pitch_corners(pitch_vectors):
-    pitch_corners = dict()
-
-    for i in range(len(pitch_vectors)):
-        ix = i + 1
-
-        if ix in [1, 10, 30, 39]:
-            pitch_corners[str(ix)] = pitch_vectors[i]
-
-    return [
-        pitch_corners["39"],
-        pitch_corners["30"],
-        pitch_corners["1"],
-        pitch_corners["10"]
-    ]
-
-
 
 
 
@@ -210,14 +193,13 @@ def read_csv_data(f_name):
     with open(f_name) as f:
         reader = csv.reader(f)
 
-        return list(map(
+        return utils.decode_camera_data(list(map(
                 lambda dec_row: list(map(
                     lambda r: float(r),
                     dec_row[1:]
                 )),
                 reader
-        ))
-
+        ))[0])
 
 
 
@@ -228,11 +210,19 @@ from shapely.geometry import Polygon, mapping
 import csv
 
 
+get_vector2d_list = lambda lst: list(map(
+    lambda v: (v[0], v[1]),
+    lst
+))
+
+
 def get_intersection(x, y):
-    x = Polygon(x)
-    y = Polygon(y)
+    x = Polygon(get_vector2d_list(x))
+    y = Polygon(get_vector2d_list(y))
+
     print(x)
     print(y)
+
     intersection = x.intersection(y)
     if intersection.is_empty:
         return []
@@ -243,21 +233,66 @@ def get_intersection(x, y):
 
 
 
-camera_data = read_csv_data('./model_3d/dataset/data.csv')[0]
+camera_data = read_csv_data('./model_3d/dataset/data.csv')
 
 
-camera_data = utils.decode_camera_data(camera_data)
+pitch_vectors = camera_data[2]
+
+pitch_vectors = utils.get_pitch_corners(pitch_vectors)
+
+frames_vectors = camera_data[1]
+origin = camera_data[0]
+
+intersection = get_intersection(frames_vectors, pitch_vectors)
+
+print(intersection)
 
 
-frames_vectors, corner_vectors = utils.unzip_camera_vectors(camera_data[1])
+
+#from sympy import Plane, Line3D
+import sympy
+
+get_array = lambda v: [v[0], v[1], v[2]]
+
+#plane Points
+a0 = get_array(frames_vectors[0])
+a1 = get_array(frames_vectors[1])
+a2 = get_array(frames_vectors[2])
+#line Points
+p = get_array(frames_vectors[0])
+v = get_array(origin)
+
+#create plane and line
+plane = sympy.Plane(a0,a1,a2)
+line = sympy.Line3D(p,direction_ratio=v)
+
+#print(frames_vectors)
+
+#print(f"plane equation: {plane.equation()}")
+#print(f"line equation: {line.equation()}")
 
 
-pitch_vectors = get_pitch_corners(camera_data[2])
+intr = plane.intersection(line)
+intr = tuple(intr[0])
+intr = (
+    float(intr[0]),
+    float(intr[1]),
+    float(intr[2])
+)
 
-print(pitch_vectors)
-print(corner_vectors)
+#print(f"intersection: {intr}")
 
-#intersection = get_intersection(corners_vectors, pitch_vectors)
+#print(intr)
+
+
+
+
+
+
+
+
+
+
 
 
 
