@@ -1,7 +1,7 @@
 import cv2 as cv
 
 
-
+"""
 cap = cv.VideoCapture('football.mp4')
 
 
@@ -142,17 +142,9 @@ def draw_boundingbox(frame, dimensions, colour, title):
 
 wait_key = lambda key: cv.waitKey(25) & 0xFF == ord(key)
 
+"""
 
-
-
-
-
-
-
-
-
-
-
+"""
 
 import tensorflow as tf
 import numpy as np
@@ -174,19 +166,12 @@ get_image_input = lambda frame: cv.resize(
     ),
     (256, 256)
 )
+"""
+
 
 
 #from model_3d.generate_dataset import *
 from model_3d import utils
-
-
-
-
-
-
-
-
-
 
 
 def read_csv_data(f_name):
@@ -203,9 +188,6 @@ def read_csv_data(f_name):
 
 
 
-
-
-
 from shapely.geometry import Polygon, mapping
 import csv
 
@@ -216,7 +198,7 @@ get_vector2d_list = lambda lst: list(map(
 ))
 
 
-def get_intersection(x, y):
+def get_intersection(y, x):
     x = Polygon(get_vector2d_list(x))
     y = Polygon(get_vector2d_list(y))
 
@@ -233,15 +215,19 @@ def get_intersection(x, y):
 
 
 
+#1.3888863480637117
+
 camera_data = read_csv_data('./model_3d/dataset/data.csv')
 
+print(camera_data)
 
-pitch_vectors = camera_data[2]
+pitch_vectors = camera_data[3]
 
 pitch_vectors = utils.get_pitch_corners(pitch_vectors)
 
-frames_vectors = camera_data[1]
+frames_vectors = camera_data[2]
 origin = camera_data[0]
+
 
 intersection = get_intersection(frames_vectors, pitch_vectors)
 
@@ -249,6 +235,8 @@ print(intersection)
 
 
 
+
+"""
 #from sympy import Plane, Line3D
 import sympy
 
@@ -284,18 +272,7 @@ intr = (
 
 #print(intr)
 
-
-
-
-
-
-
-
-
-
-
-
-
+"""
 
 
 
@@ -385,7 +362,7 @@ while cap.isOpened():
         print("end video stream")
         break
 
-    """
-
 cap.release()
 cv.destroyAllWindows()
+
+"""

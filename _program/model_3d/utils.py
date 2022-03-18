@@ -72,14 +72,16 @@ def decode_vector_list(lst, length):
 
 
 def encode_camera_data(camera_data_tuple):
-    origin, frames_vectors, pitch_vectors = camera_data_tuple
+    origin, center_screen, frames_vectors, pitch_vectors = camera_data_tuple
 
     enc_origin = enc_vec(origin)
+    enc_center_screen = enc_vec(center_screen)
     enc_frames_vectors = encode_vector_list(frames_vectors)
     enc_pitch_vectors = encode_vector_list(pitch_vectors)
 
     return (
             enc_origin +
+            enc_center_screen +
             enc_frames_vectors +
             enc_pitch_vectors
     )
@@ -91,11 +93,16 @@ def decode_camera_data(enc_data):
     origin_decoded = dec_vec(origin_enc_data, 3)
     enc_data = enc_data[3: ]
 
-    len_corners_vectors = (3 * 4)
+    center_screen_enc_data = enc_data[:3]
+
+    center_screen_decoded = dec_vec(center_screen_enc_data, 3)
+    enc_data = enc_data[3: ]
+
+    len_corners_vectors = (2 * 4)
     frames_vectors_data = enc_data[: len_corners_vectors]
     frames_vectors_decoded = decode_vector_list(
             frames_vectors_data,
-            3
+            2
     )
 
     enc_data = enc_data[len_corners_vectors :]
@@ -113,6 +120,7 @@ def decode_camera_data(enc_data):
 
         return (v[0], v[1], z)
 
+
     pitch_vectors_decoded = [
         get_pitch_vec(
             pitch_vectors_decoded[i],
@@ -124,6 +132,7 @@ def decode_camera_data(enc_data):
 
     return (
         origin_decoded,
+        center_screen_decoded,
         frames_vectors_decoded,
         pitch_vectors_decoded
     )

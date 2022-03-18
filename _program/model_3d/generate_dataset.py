@@ -51,6 +51,7 @@ for loop_id in range(100):
     for cam_id in range(len(cams)):
         img_str = str(cam_id) + "_" + str(loop_id) + ".jpeg"
 
+
         image_utils.render_image(
             scene,
             cams[cam_id].camera,
@@ -83,6 +84,7 @@ for loop_id in range(100):
 f.close()
 
 
+
 def read_csv_data(f_name):
     with open(f_name) as f:
         reader = csv.reader(f)
@@ -90,7 +92,8 @@ def read_csv_data(f_name):
         for row in reader:
             print(dec_row(row))
 
-read_csv_data(file_name)
+#read_csv_data(file_name)
+
 
 
 
