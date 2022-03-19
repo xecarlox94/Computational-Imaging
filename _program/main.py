@@ -142,9 +142,7 @@ def draw_boundingbox(frame, dimensions, colour, title):
 
 wait_key = lambda key: cv.waitKey(25) & 0xFF == ord(key)
 
-"""
 
-"""
 
 import tensorflow as tf
 import numpy as np
@@ -169,6 +167,7 @@ get_image_input = lambda frame: cv.resize(
 """
 
 
+import csv
 
 #from model_3d.generate_dataset import *
 from model_3d import utils
@@ -188,22 +187,94 @@ def read_csv_data(f_name):
 
 
 
-from shapely.geometry import Polygon, mapping
-import csv
 
 
-get_vector2d_list = lambda lst: list(map(
-    lambda v: (v[0], v[1]),
-    lst
+
+cam_origin, frames_vectors, pitch_vectors = read_csv_data('./model_3d/dataset/data.csv')
+pitch_corners = utils.get_pitch_corners(pitch_vectors)
+
+
+
+#print(cam_origin)
+#print(frames_vectors)
+#print(pitch_vectors)
+#print(pitch_corners)
+
+
+screen_centroid = utils.get_3d_centroid(frames_vectors)
+
+
+
+
+
+
+from Geometry3D import *
+
+get_point = lambda v: Point(v[0], v[1], v[2])
+
+
+def get_screen_intersection(point):
+    return get_intersection(
+        Plane(
+            get_point(frames_vectors[0]),
+            get_point(frames_vectors[1]),
+            get_point(frames_vectors[2]),
+        ),
+        point
+    )
+
+def get_pitch_intersection(point):
+    return get_intersection(
+        Plane(origin(),Vector(0,0,1)),
+        point
+    )
+
+
+def get_intersection(plane, point):
+    return tuple(intersection(
+        Line(
+            get_point(cam_origin),
+            get_point(point)
+        ),
+        plane
+    ))
+
+print(get_screen_intersection(
+    pitch_vectors[19]
+))
+
+"""
+print(get_pitch_intersection(
+    frames_vectors[3]
+))
+"""
+
+
+
+frames_pitch_vectors = list(map(
+    get_pitch_intersection,
+    frames_vectors
 ))
 
 
-def get_intersection(y, x):
+#print(frames_pitch_vectors)
+
+
+
+
+
+
+
+from shapely.geometry import Polygon, mapping
+
+def get_inner_section(y, x):
+    get_vector2d_list = lambda lst: list(map(
+        lambda v: (v[0], v[1]),
+        lst
+    ))
+
     x = Polygon(get_vector2d_list(x))
     y = Polygon(get_vector2d_list(y))
-
-    print(x)
-    print(y)
 
     intersection = x.intersection(y)
     if intersection.is_empty:
@@ -214,65 +285,14 @@ def get_intersection(y, x):
         )['coordinates'][0])
 
 
+inner_section = get_inner_section(pitch_corners, frames_pitch_vectors)
 
-#1.3888863480637117
-
-camera_data = read_csv_data('./model_3d/dataset/data.csv')
-
-print(camera_data)
-
-pitch_vectors = camera_data[3]
-
-pitch_vectors = utils.get_pitch_corners(pitch_vectors)
-
-frames_vectors = camera_data[2]
-origin = camera_data[0]
-
-
-intersection = get_intersection(frames_vectors, pitch_vectors)
-
-print(intersection)
+#print(inner_section)
 
 
 
 
-"""
-#from sympy import Plane, Line3D
-import sympy
 
-get_array = lambda v: [v[0], v[1], v[2]]
-
-#plane Points
-a0 = get_array(frames_vectors[0])
-a1 = get_array(frames_vectors[1])
-a2 = get_array(frames_vectors[2])
-#line Points
-p = get_array(frames_vectors[0])
-v = get_array(origin)
-
-#create plane and line
-plane = sympy.Plane(a0,a1,a2)
-line = sympy.Line3D(p,direction_ratio=v)
-
-#print(frames_vectors)
-
-#print(f"plane equation: {plane.equation()}")
-#print(f"line equation: {line.equation()}")
-
-
-intr = plane.intersection(line)
-intr = tuple(intr[0])
-intr = (
-    float(intr[0]),
-    float(intr[1]),
-    float(intr[2])
-)
-
-#print(f"intersection: {intr}")
-
-#print(intr)
-
-"""
 
 
 
