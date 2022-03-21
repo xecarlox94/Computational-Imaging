@@ -1,7 +1,6 @@
 import cv2 as cv
 
 
-"""
 cap = cv.VideoCapture('football.mp4')
 
 
@@ -144,6 +143,9 @@ wait_key = lambda key: cv.waitKey(25) & 0xFF == ord(key)
 
 
 
+
+
+
 import tensorflow as tf
 import numpy as np
 
@@ -164,130 +166,6 @@ get_image_input = lambda frame: cv.resize(
     ),
     (256, 256)
 )
-"""
-
-
-import csv
-
-#from model_3d.generate_dataset import *
-from model_3d import utils
-
-
-def read_csv_data(f_name):
-    with open(f_name) as f:
-        reader = csv.reader(f)
-
-        return utils.decode_camera_data(list(map(
-                lambda dec_row: list(map(
-                    lambda r: float(r),
-                    dec_row[1:]
-                )),
-                reader
-        ))[0])
-
-
-
-
-
-
-cam_origin, frames_vectors, pitch_vectors = read_csv_data('./model_3d/dataset/data.csv')
-pitch_corners = utils.get_pitch_corners(pitch_vectors)
-
-
-
-#print(cam_origin)
-#print(frames_vectors)
-#print(pitch_vectors)
-#print(pitch_corners)
-
-
-screen_centroid = utils.get_3d_centroid(frames_vectors)
-
-
-
-
-
-
-from Geometry3D import *
-
-get_point = lambda v: Point(v[0], v[1], v[2])
-
-
-def get_screen_intersection(point):
-    return get_intersection(
-        Plane(
-            get_point(frames_vectors[0]),
-            get_point(frames_vectors[1]),
-            get_point(frames_vectors[2]),
-        ),
-        point
-    )
-
-def get_pitch_intersection(point):
-    return get_intersection(
-        Plane(origin(),Vector(0,0,1)),
-        point
-    )
-
-
-def get_intersection(plane, point):
-    return tuple(intersection(
-        Line(
-            get_point(cam_origin),
-            get_point(point)
-        ),
-        plane
-    ))
-
-print(get_screen_intersection(
-    pitch_vectors[19]
-))
-
-"""
-print(get_pitch_intersection(
-    frames_vectors[3]
-))
-"""
-
-
-
-frames_pitch_vectors = list(map(
-    get_pitch_intersection,
-    frames_vectors
-))
-
-
-#print(frames_pitch_vectors)
-
-
-
-
-
-
-
-from shapely.geometry import Polygon, mapping
-
-def get_inner_section(y, x):
-    get_vector2d_list = lambda lst: list(map(
-        lambda v: (v[0], v[1]),
-        lst
-    ))
-
-    x = Polygon(get_vector2d_list(x))
-    y = Polygon(get_vector2d_list(y))
-
-    intersection = x.intersection(y)
-    if intersection.is_empty:
-        return []
-    else:
-        return list(mapping(
-            intersection
-        )['coordinates'][0])
-
-
-inner_section = get_inner_section(pitch_corners, frames_pitch_vectors)
-
-#print(inner_section)
 
 
 
@@ -296,7 +174,6 @@ inner_section = get_inner_section(pitch_corners, frames_pitch_vectors)
 
 
 
-"""
 while cap.isOpened():
 
     ret, frame = cap.read()
@@ -385,4 +262,3 @@ while cap.isOpened():
 cap.release()
 cv.destroyAllWindows()
 
-"""
