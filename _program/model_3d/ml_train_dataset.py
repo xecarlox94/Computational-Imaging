@@ -109,7 +109,7 @@ model = Sequential([
 ])
 
 
-print(model.summary())
+#print(model.summary())
 
 
 
@@ -123,28 +123,33 @@ model.compile(
 
 rows = read_csv_data("./dataset/data.csv")
 
+
 X_train, y_train, X_test, y_test = get_train_test(rows, 0.1)
 
 
-model.fit(X_train, y_train, epochs=1, validation_data=(X_test, y_test,))
 
 
+#model.fit(X_train, y_train, epochs=1, validation_data=(X_test, y_test,))
+#model_dir = '../my_model'
+#model.save(model_dir)
+
+
+
+
+
+
+
+
+"""
 
 def get_camera_data_prediction(model, image):
     return list(model.predict(
         np.array([image])
     )[0])
 
-
-#get_camera_data_prediction(model, X_test[0])
-
-model_dir = '../my_model'
-model.save(model_dir)
-
 new_model = tf.keras.models.load_model(model_dir)
-
 #new_model.summary()
-
 pred1 = get_camera_data_prediction(new_model, X_test[0])
-
 print(pred1)
+
+"""
