@@ -12,7 +12,6 @@ import csv
 import cv2 as cv
 
 import numpy as np
-#import pandas as pd
 
 
 IMG_WIDTH = 256
@@ -65,7 +64,8 @@ get_y = lambda row: get_column(row, 1)
 
 
 
-def get_train_test(rows, split_percentage):
+
+def shuffle_split(rows, split_percentage):
     random.shuffle(rows)
 
     split_index = int(len(rows) * split_percentage)
@@ -74,15 +74,39 @@ def get_train_test(rows, split_percentage):
 
     train = rows[split_index:]
 
+    return train, test
+
+
+
+def get_train_test(rows, split_percentage):
+    train, test = shuffle_split(rows, split_percentage)
+
     X_train, y_train, X_test, y_test = get_X(train), get_y(train), get_X(test), get_y(test)
 
-    X_train = np.array(X_train).reshape(-1, IMG_WIDTH, IMG_HEIGHT, 1)
     y_train = np.array(y_train)
-    X_test = np.array(X_test).reshape(-1, IMG_WIDTH, IMG_HEIGHT, 1)
     y_test = np.array(y_test)
+
+
+    X_train = np.array(X_train).reshape(-1, IMG_WIDTH, IMG_HEIGHT, 1)
+    X_test = np.array(X_test).reshape(-1, IMG_WIDTH, IMG_HEIGHT, 1)
 
     return X_train, y_train, X_test, y_test
 
+
+
+
+
+rows = read_csv_data("./dataset/data.csv")
+
+X_train, y_train, X_test, y_test = get_train_test(rows, 0.1)
+
+
+get_c = lambda col: np.array(list(map(
+    lambda y: y[:3],
+    col
+)))
+y_train = get_c(y_train)
+y_test = get_c(y_test)
 
 
 
@@ -97,43 +121,30 @@ model = Sequential([
     Conv2D(filters=64, kernel_size=(4, 4), activation="sigmoid"),
     MaxPooling2D(pool_size=(2, 2)),
     Dropout(0.25),
-    #Conv2D(filters=32, kernel_size=(4, 4), activation="sigmoid"),
-    #MaxPooling2D(pool_size=(2, 2)),
-    #Dropout(0.25),
+    Conv2D(filters=32, kernel_size=(4, 4), activation="sigmoid"),
+    MaxPooling2D(pool_size=(2, 2)),
+    Dropout(0.25),
     Flatten(),
     Dense(1024, activation="sigmoid"),
     Dropout(0.5),
-    Dense(512, activation="sigmoid"),
+    Dense(128, activation="sigmoid"),
     Dropout(0.5),
-    Dense(101, activation="sigmoid")
+    Dense(3, activation="sigmoid")
 ])
-
-
 #print(model.summary())
-
-
 
 model.compile(
     optimizer='adam',
-    loss='poisson',
-    metrics=['accuracy']
+    loss=tf.keras.losses.MeanSquaredLogarithmicError(reduction="auto"),
+    metrics=[
+        tf.keras.metrics.MeanSquaredError()
+    ]
 )
 
 
-
-rows = read_csv_data("./dataset/data.csv")
-
-
-X_train, y_train, X_test, y_test = get_train_test(rows, 0.1)
-
-
-
-
-#model.fit(X_train, y_train, epochs=1, validation_data=(X_test, y_test,))
-#model_dir = '../my_model'
-#model.save(model_dir)
-
-
+model.fit(x=X_train, y=y_train, epochs=500, validation_data=(X_test, y_test,))
+model_dir = '../my_model'
+model.save(model_dir)
 
 
 
@@ -141,7 +152,6 @@ X_train, y_train, X_test, y_test = get_train_test(rows, 0.1)
 
 
 """
-
 def get_camera_data_prediction(model, image):
     return list(model.predict(
         np.array([image])
@@ -151,5 +161,5 @@ new_model = tf.keras.models.load_model(model_dir)
 #new_model.summary()
 pred1 = get_camera_data_prediction(new_model, X_test[0])
 print(pred1)
-
 """
+
