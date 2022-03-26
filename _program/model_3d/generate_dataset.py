@@ -47,7 +47,7 @@ f = open(file_name, "x")
 
 writer = csv.writer(f)
 
-for loop_id in range(5):
+for loop_id in range(250):
     for cam_id in range(len(cams)):
         img_str = str(cam_id) + "_" + str(loop_id) + ".jpeg"
 

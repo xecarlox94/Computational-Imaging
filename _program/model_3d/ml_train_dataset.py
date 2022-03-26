@@ -7,6 +7,7 @@ from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.preprocessing import image
 
 
+import datetime
 import random
 import csv
 import cv2 as cv
@@ -102,7 +103,7 @@ X_train, y_train, X_test, y_test = get_train_test(rows, 0.1)
 
 
 get_c = lambda col: np.array(list(map(
-    lambda y: y[:3],
+    lambda y: y[3:],
     col
 )))
 y_train = get_c(y_train)
@@ -112,37 +113,48 @@ y_test = get_c(y_test)
 
 # Improve machine learning architecture
 model = Sequential([
-    Conv2D(filters=256, kernel_size=(8, 8), activation="sigmoid", input_shape=(IMG_WIDTH, IMG_HEIGHT, 1)),
-    MaxPooling2D(pool_size=(4, 4)),
-    Dropout(0.25),
-    Conv2D(filters=128, kernel_size=(8, 8), activation="sigmoid"),
-    MaxPooling2D(pool_size=(4, 4)),
-    Dropout(0.25),
-    Conv2D(filters=64, kernel_size=(4, 4), activation="sigmoid"),
+    Conv2D(filters=20, kernel_size=(2, 2), activation="relu", input_shape=(IMG_WIDTH, IMG_HEIGHT, 1)),
     MaxPooling2D(pool_size=(2, 2)),
-    Dropout(0.25),
-    Conv2D(filters=32, kernel_size=(4, 4), activation="sigmoid"),
-    MaxPooling2D(pool_size=(2, 2)),
-    Dropout(0.25),
+    Dropout(0.1),
+    Conv2D(filters=20, kernel_size=(2, 2), activation="relu"),
+    MaxPooling2D(pool_size=(4, 4)),
+    Dropout(0.5),
+    #Conv2D(filters=10, kernel_size=(8, 8), activation="relu"),
+    #MaxPooling2D(pool_size=(8, 8)),
+    #Dropout(0.1),
+    #Conv2D(filters=32, kernel_size=(4, 4), activation="relu"),
+    #MaxPooling2D(pool_size=(2, 2)),
+    #Dropout(0.1),
     Flatten(),
     Dense(1024, activation="sigmoid"),
     Dropout(0.5),
-    Dense(128, activation="sigmoid"),
-    Dropout(0.5),
-    Dense(3, activation="sigmoid")
+    #Dense(512, activation="sigmoid"),
+    #Dropout(0.5),
+    Dense(90, activation="sigmoid")
 ])
-#print(model.summary())
+print(model.summary())
 
 model.compile(
     optimizer='adam',
     loss=tf.keras.losses.MeanSquaredLogarithmicError(reduction="auto"),
     metrics=[
-        tf.keras.metrics.MeanSquaredError()
+        tf.keras.metrics.MeanSquaredError(),
+        #tf.keras.metrics.MeanAbsoluteError()
     ]
 )
 
 
-model.fit(x=X_train, y=y_train, epochs=500, validation_data=(X_test, y_test,))
+log_dir = "./logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+
+model.fit(
+    x=X_train,
+    y=y_train,
+    epochs=10,
+    validation_data=(X_test, y_test,),
+    callbacks=[
+        #tensorboard_callback
+    ])
 model_dir = '../my_model'
 model.save(model_dir)
 
