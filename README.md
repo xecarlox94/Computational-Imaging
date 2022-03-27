@@ -8,7 +8,7 @@
 - create semi-automated video processing analysis (reducing number of operators)
 - processes normal match streams
 - create framework for football data science research (academic or business)
-- free and open source (will take additional work to avoid non compatible libraries with GPL3, it iwll have loads of moving parts) (took a lot of time but had to use AI libraries that force me to use LesserGPL3 license instead)
+- free and open source (will take additional work to avoid non compatible libraries with GPL3, it iwll have loads of moving parts) (took a lot of time but had to use AI libraries that force me to use Lesser GPL3 license instead)
 
 
 The project's aims are to collect track and event data from football footage. The ultimate goal is to be able to process any kind of footage but, for now, it will only process broadcast football matches.
@@ -18,6 +18,7 @@ The project's aims are to collect track and event data from football footage. Th
 - data processing
     + encode and decode positional data
     + encode and decode image data
+    + various changes
 - 3d modelling
     + creating realistic 3d environments with main features
     + create reference map
@@ -60,11 +61,38 @@ The project's aims are to collect track and event data from football footage. Th
 
 
 ## methods
-- image processing operations (openCV)
+- image/video processing operations (openCV)
+    + video stream processing
+    + manual labelling of image
+    + image processing (colour conversion)
+    + image masking to what is green
+    + image cannying
+    + manual segmentation of video
+    + correction of ball labelling
 - sythetic image dataset (Blender)
+    + create 2d pitch png image
+    + create pitch texture
+    + create goals objects
+    + create cameras and automate them
+    + create script to render images and automate camera movement
+    + create script to extract data from 3d world
+    + encode data onto file
+    + create decoding data
 - deep/machine learning (tensorflow)
+    + creating recursively conditional machine learning model
 - Object detection (YOLO v4)
+    + uses a preconfigured convolution network, already tested (version 4)
+    + uses a pretrained model
+    + detects many types of objects (in coco.names)
+    + algorithm filters all objects detected but human and balls
+    + humans are detected above a certain threshold
+    + if successful, the ball is returned by taking the detection with the highest confidence
+    + Non-maximum suppression is used, based on the human detection threshold and the Non-maximum suppression threshold, to remove the overly redundant overlapping detections
 - Object tracking (OpenCV tracking)
+    + takes detection bounding boxes and creates trackers
+    + using CSRT tracker to follow humans and ball
+    + tracker updates every frame
+    + restarts tracking when yolo detection runs again
 
 ### pseudocode
 #### pseudocode for image recognition
@@ -186,12 +214,18 @@ The final step is to create 15 cameras which will rotate within a range and will
 
 creating video collection algorithm for sports
 
-creating complete 3d model data
+creating realistic 3d pitch model
+
+creating complete 3d model data generation framework
+
+creating recursively conditional machine learning model
+
+creating geometric framework to map objects from screen on pitch, and vice versa
 
 
 ### limits
 human detection may contain more than 1 human
-    consistent ball detection
+    non-consistent ball detection
 
 
 - Human agent must verify and validate data collection
@@ -253,9 +287,12 @@ testing with random camera, get accuracy
 - cannot recognise players on camera frame. could create AI model for calculating their identity based on position/appearence
 - is not real-time, at this moment
 
+- green masking may not work for non-green pitches and green kits
+
 ## possible extensions and future work
 
 - use Google Research Football Environment
+    - train models and track their movements and actions
     - predict off-screen player positioning
     - actions recognition
 

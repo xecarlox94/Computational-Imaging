@@ -172,6 +172,27 @@ get_image_input = lambda frame: cv.resize(
 
 
 
+"""
+
+# to add to opencv program and to blender rendering obj
+
+def process_image(i_name):
+    img_org = cv.imread(i_name, cv.IMREAD_COLOR)
+
+    # https://stackoverflow.com/questions/60352448/homography-from-football-soccer-field-lines
+    hsv = cv.cvtColor(img_org, cv.COLOR_RGB2HSV)
+    mask_green = cv.inRange(hsv, (36, 25, 25), (86, 255, 255))
+    img_masked = cv.bitwise_and(img_org, img_org, mask=mask_green)
+
+    img_gray = cv.cvtColor(img_masked, cv.COLOR_BGR2GRAY)
+    canny = cv.Canny(img_gray, 50, 200, apertureSize=3)
+"""
+
+
+
+
+
+
 
 
 while cap.isOpened():
