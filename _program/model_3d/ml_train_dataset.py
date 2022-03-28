@@ -1,8 +1,8 @@
 import tensorflow as tf
 import keras
+from tensorflow.keras import Model
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Dropout, Flatten
-from tensorflow.keras.layers import Conv2D, MaxPooling2D
+from tensorflow.keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPooling2D, Input, concatenate
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.preprocessing import image
 
@@ -48,10 +48,9 @@ def read_csv_data(f_name):
         reader = csv.reader(f)
 
         return list(map(
-                lambda r: enc_row(r),
-                reader
+            lambda r: enc_row(r),
+            reader
         ))
-
 
 
 
@@ -59,10 +58,6 @@ get_column = lambda rows, column: list(map(
     lambda r: r[column],
     rows
 ))
-
-get_X = lambda row: get_column(row, 0)
-get_y = lambda row: get_column(row, 1)
-
 
 
 
@@ -79,6 +74,13 @@ def shuffle_split(rows, split_percentage):
 
 
 
+get_X = lambda row: get_column(row, 0)
+get_y = lambda row: get_column(row, 1)
+
+get_image_arr = lambda lst: np.array(lst).reshape(-1, IMG_WIDTH, IMG_HEIGHT, 1)
+
+
+
 def get_train_test(rows, split_percentage):
     train, test = shuffle_split(rows, split_percentage)
 
@@ -87,52 +89,89 @@ def get_train_test(rows, split_percentage):
     y_train = np.array(y_train)
     y_test = np.array(y_test)
 
-
-    X_train = np.array(X_train).reshape(-1, IMG_WIDTH, IMG_HEIGHT, 1)
-    X_test = np.array(X_test).reshape(-1, IMG_WIDTH, IMG_HEIGHT, 1)
+    X_train = get_image_arr(X_train)
+    X_test = get_image_arr(X_test)
 
     return X_train, y_train, X_test, y_test
 
 
 
 
-
 rows = read_csv_data("./dataset/data.csv")
+
+
 
 X_train, y_train, X_test, y_test = get_train_test(rows, 0.1)
 
 
-get_c = lambda col: np.array(list(map(
-    lambda y: y[3:],
-    col
+
+gx = lambda r: r[3:]
+gy = lambda r: r[3:]
+
+
+get_Xx = lambda y_array: np.array(list(map(
+    gx,
+    y_array
 )))
-y_train = get_c(y_train)
-y_test = get_c(y_test)
+
+get_yy = lambda y_array: np.array(list(map(
+    gy,
+    y_array
+)))
+
+
+Xx_test = get_Xx(y_test)
+
+Xx_train = get_Xx(y_train)
+
+y_train = get_yy(y_train)
+
+y_test = get_yy(y_test)
 
 
 
-# Improve machine learning architecture
-model = Sequential([
-    Conv2D(filters=20, kernel_size=(2, 2), activation="relu", input_shape=(IMG_WIDTH, IMG_HEIGHT, 1)),
+layers = [
+    Input(shape=(IMG_WIDTH, IMG_HEIGHT, 1)),
+    Conv2D(filters=20, kernel_size=(2, 2), activation="relu"),
     MaxPooling2D(pool_size=(2, 2)),
     Dropout(0.1),
     Conv2D(filters=20, kernel_size=(2, 2), activation="relu"),
     MaxPooling2D(pool_size=(4, 4)),
     Dropout(0.5),
-    #Conv2D(filters=10, kernel_size=(8, 8), activation="relu"),
-    #MaxPooling2D(pool_size=(8, 8)),
-    #Dropout(0.1),
-    #Conv2D(filters=32, kernel_size=(4, 4), activation="relu"),
-    #MaxPooling2D(pool_size=(2, 2)),
-    #Dropout(0.1),
     Flatten(),
     Dense(1024, activation="sigmoid"),
     Dropout(0.5),
-    #Dense(512, activation="sigmoid"),
-    #Dropout(0.5),
-    Dense(90, activation="sigmoid")
-])
-print(model.summary())
+]
+
+out = Dense(90, activation="sigmoid")
+
+
+more = True
+more = False
+
+if more == True:
+    model_sec = Sequential([
+        Input(shape=(3,)),
+        Dense(3, activation="sigmoid"),
+    ])
+
+    model = Sequential(layers)
+
+    concat = concatenate([model.output, model_sec.output])
+
+    m = out(concat)
+
+    model = Model(inputs=[model.input, model_sec.input], outputs=m)
+
+
+else:
+    model = Sequential(
+        layers + [out]
+    )
+
+
+#print(model.summary())
+
 
 model.compile(
     optimizer='adam',
@@ -147,18 +186,29 @@ model.compile(
 log_dir = "./logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
 tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
 
+
 model.fit(
-    x=X_train,
+    x=[
+        X_train,
+        #Xx_train
+    ],
     y=y_train,
-    epochs=10,
-    validation_data=(X_test, y_test,),
+    epochs=100,
+    validation_data=(
+        [
+            X_test,
+            #Xx_test
+        ],
+        y_test
+    ),
     callbacks=[
         #tensorboard_callback
-    ])
+    ]
+)
+
+
 model_dir = '../my_model'
 model.save(model_dir)
-
-
 
 
 
@@ -168,7 +218,6 @@ def get_camera_data_prediction(model, image):
     return list(model.predict(
         np.array([image])
     )[0])
-
 new_model = tf.keras.models.load_model(model_dir)
 #new_model.summary()
 pred1 = get_camera_data_prediction(new_model, X_test[0])

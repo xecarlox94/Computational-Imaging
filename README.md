@@ -25,7 +25,8 @@ The project's aims are to collect track and event data from football footage. Th
     + automate cameras
     + geometric calculations to get outputs
 - machine learning modeling
-    + create convolution network
+    + test and measure different architectures
+    + preprocess images
 - detect humans
     + detect players
     + track players
@@ -75,11 +76,18 @@ The project's aims are to collect track and event data from football footage. Th
     + create goals objects
     + create cameras and automate them
     + create script to render images and automate camera movement
+    + pitch construction in blender
+    + camera positioning
+    + data generation scripting
+    + homographical transformation
     + create script to extract data from 3d world
     + encode data onto file
     + create decoding data
 - deep/machine learning (tensorflow)
+    + create convolution network
+    + create multiple machine learning pipelines
     + creating recursively conditional machine learning model
+    + first detect camera location, then frame positions, then corner positions, and finally rest of point on the screen
 - Object detection (YOLO v4)
     + uses a preconfigured convolution network, already tested (version 4)
     + uses a pretrained model
@@ -94,12 +102,13 @@ The project's aims are to collect track and event data from football footage. Th
     + tracker updates every frame
     + restarts tracking when yolo detection runs again
 
-### pseudocode
-#### pseudocode for image recognition
-#### development of 3-d modelling
-#### pseudocode for 3-d modelling data set generation
-#### machine learning model and algorithm
-#### geometry reconstruction algorithm
+
+To add to methods section
++ pseudocode for image recognition
++ development of 3-d modelling
++ pseudocode for 3-d modelling data set generation
++ machine learning model and algorithm
++ geometry reconstruction algorithm
 
 
 
@@ -174,39 +183,7 @@ The ball tracker was lost and it is tracking the payer's leg instead.
 ![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-13-18.png)
 In this frame most players are detected including all players inside the box which is the region of interest when a team is attacking.
 The ball tracker has lost the ball because the camera view is being blocked by the crossing player's leg.
-
-
 (sshot> pitch 3d modelling and camera automation)
-
-
-![text description](./images/coordinates.png)
-created 3d reference system that maps the points recognisable by the camera.
-This will be used for the artificial intelligence model to train the model and to process the video stream to perform the homographic transformation.
-
-![text description](./images/Screenshot_from_2021-10-22_13-59-52.png)
-The 3d model was developed on blender. It is a green 3d texture (to emulate the grass) with a pitch png transparent graphic to produce the white lines.
-
-![text description](./images/Screenshot_2021-12-17_19-08-06.png)
-The result is a realistic pitch replica that can be rendered by a blender camera to produce the synthetic dataset
-
-![text description](./images/image.png)
-this is the rendered image from a blender camera, this image is then the processed to be then used as the input for the artifical intelligence model.
-
-
-![text description](./images/Screenshot_2022-03-05_12-03-42.png)
-The pitch was then improved by adding 3d markers corresponding to the map reference system.
-These markers can be accessed by the blender cameras to retrieve their position on the camera view and their relative position to the cartesian origin.
-
-![text description](./images/Screenshot_2022-03-05_12-45-59.png)
-This is the view of the box which shows the position of the markers from a closer view
-
-![text description](./images/Screenshot_2022-03-05_12-47-42.png)
-This is the view from the goal which is an important object that is important for image recognition. it has the only markers with a positive z-index to emulate the top corners of the goal.
-It also includes the corner flag (on the left) because all pitches have them by regulation.
-
-![text description](./images/Screenshot_2022-03-05_12-05-23.png)
-The final step is to create 15 cameras which will rotate within a range and will render images for the dataset from these different position to emulate the real camera which will be put in different positions.
-
 
 
 ## achievements and limits
@@ -235,6 +212,7 @@ human detection may contain more than 1 human
 - Tracking broadcast is affected by zoom/replays and camera changes
 
 
+
 ## dissertation organisation sketch
 
 
@@ -248,14 +226,39 @@ human detection may contain more than 1 human
 
 # Work carried out
 
-- video processing
+## video processing
     - machine learning humans and ball recognition
     - object traking
-- 3d modelling and dataset generation
-    - pitch construction in blender
-    - camera positioning
-    - data generation scripting
-    - homographical transformation
+
+
+## 3d modelling and dataset generation
+
+s[text description](./images/coordinates.png)
+created 3d reference system that maps the points recognisable by the camera.
+This will be used for the artificial intelligence model to train the model and to process the video stream to perform the homographic transformation.
+
+![text description](./images/Screenshot_from_2021-10-22_13-59-52.png)
+The 3d model was developed on blender. It is a green 3d texture (to emulate the grass) with a pitch png transparent graphic to produce the white lines.
+
+![text description](./images/Screenshot_2021-12-17_19-08-06.png)
+The result is a realistic pitch replica that can be rendered by a blender camera to produce the synthetic dataset
+
+![text description](./images/image.png)
+this is the rendered image from a blender camera, this image is then the processed to be then used as the input for the artifical intelligence model.
+
+![text description](./images/Screenshot_2022-03-05_12-03-42.png)
+The pitch was then improved by adding 3d markers corresponding to the map reference system.
+These markers can be accessed by the blender cameras to retrieve their position on the camera view and their relative position to the cartesian origin.
+
+![text description](./images/Screenshot_2022-03-05_12-45-59.png)
+This is the view of the box which shows the position of the markers from a closer view
+
+![text description](./images/Screenshot_2022-03-05_12-47-42.png)
+This is the view from the goal which is an important object that is important for image recognition. it has the only markers with a positive z-index to emulate the top corners of the goal.
+It also includes the corner flag (on the left) because all pitches have them by regulation.
+
+![text description](./images/Screenshot_2022-03-05_12-05-23.png)
+The final step is to create 15 cameras which will rotate within a range and will render images for the dataset from these different position to emulate the real camera which will be put in different positions.
 
 
 
@@ -287,6 +290,7 @@ testing with random camera, get accuracy
 - cannot recognise players on camera frame. could create AI model for calculating their identity based on position/appearence
 - is not real-time, at this moment
 
+- Currently not able to track 3d trajectory of objects
 - green masking may not work for non-green pitches and green kits
 
 ## possible extensions and future work
