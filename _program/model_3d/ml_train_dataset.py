@@ -1,3 +1,4 @@
+
 import tensorflow as tf
 import keras
 from tensorflow.keras import Model
@@ -105,8 +106,31 @@ X_train, y_train, X_test, y_test = get_train_test(rows, 0.1)
 
 
 
-gx = lambda r: r[3:]
+
+tensor_board = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+model_name = 'model'
+epochs=10
+gx = lambda r: r[:3]
 gy = lambda r: r[3:]
+Xx_input_len = 3
+output_size=90
+
+num_filters_1=20
+kernel_size_1=2
+poolsize_1=2
+dropout_1=0.1
+
+num_filters_2=20
+kernel_size_2=2
+poolsize_2=4
+dropout_2=0.1
+
+num_dense_3=1024
+dropout_3=0.5
+
+more = True
+#more = False
+
 
 
 get_Xx = lambda y_array: np.array(list(map(
@@ -120,54 +144,57 @@ get_yy = lambda y_array: np.array(list(map(
 )))
 
 
+
 Xx_test = get_Xx(y_test)
-
 Xx_train = get_Xx(y_train)
-
 y_train = get_yy(y_train)
-
 y_test = get_yy(y_test)
 
 
-
-layers = [
+convolution_layers = [
     Input(shape=(IMG_WIDTH, IMG_HEIGHT, 1)),
-    Conv2D(filters=20, kernel_size=(2, 2), activation="relu"),
-    MaxPooling2D(pool_size=(2, 2)),
-    Dropout(0.1),
-    Conv2D(filters=20, kernel_size=(2, 2), activation="relu"),
-    MaxPooling2D(pool_size=(4, 4)),
-    Dropout(0.5),
+    Conv2D(filters=num_filters_1, kernel_size=(kernel_size_1, kernel_size_1), activation="relu"),
+    MaxPooling2D(pool_size=(poolsize_1, poolsize_1)),
+    Dropout(dropout_1),
+    Conv2D(filters=num_filters_2, kernel_size=(kernel_size_2, kernel_size_2), activation="relu"),
+    MaxPooling2D(pool_size=(poolsize_2, poolsize_2)),
+    Dropout(dropout_2),
     Flatten(),
-    Dense(1024, activation="sigmoid"),
-    Dropout(0.5),
+    Dense(num_dense_3, activation="sigmoid"),
+    Dropout(dropout_3),
 ]
 
-out = Dense(90, activation="sigmoid")
+out = Dense(output_size, activation="sigmoid")
 
-
-more = True
-more = False
 
 if more == True:
     model_sec = Sequential([
-        Input(shape=(3,)),
-        Dense(3, activation="sigmoid"),
+        Input(shape=(Xx_input_len,)),
+        Dense(Xx_input_len, activation="sigmoid"),
+        Dropout(0.1),
     ])
 
-    model = Sequential(layers)
+    model = Sequential(convolution_layers)
 
     concat = concatenate([model.output, model_sec.output])
 
-    m = out(concat)
+    model = Model(inputs=[
+            model.input,
+            model_sec.input
+        ],
+        outputs=out(concat)
+    )
 
-    model = Model(inputs=[model.input, model_sec.input], outputs=m)
-
+    mode_fit_x = Xx_train
+    mode_fit_y = Xx_test
 
 else:
     model = Sequential(
-        layers + [out]
+        convolution_layers + [out]
     )
+
+    mode_fit_x = []
+    mode_fit_y = []
 
 
 #print(model.summary())
@@ -183,32 +210,25 @@ model.compile(
 )
 
 
-log_dir = "./logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+log_dir = "./logs/fit/" + tensor_board
 tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
 
 
 model.fit(
-    x=[
-        X_train,
-        #Xx_train
-    ],
+    x=[X_train] + [mode_fit_x],
     y=y_train,
-    epochs=100,
+    epochs=epochs,
     validation_data=(
-        [
-            X_test,
-            #Xx_test
-        ],
+        [X_test] + [mode_fit_y],
         y_test
     ),
     callbacks=[
-        #tensorboard_callback
+        tensorboard_callback
     ]
 )
 
 
-model_dir = '../my_model'
-model.save(model_dir)
+model.save('../' + model_name)
 
 
 
