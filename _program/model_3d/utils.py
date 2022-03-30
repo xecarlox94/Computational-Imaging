@@ -70,17 +70,128 @@ def decode_vector_list(lst, length):
     )
 
 
+"""
+def corner_vecs_pitch_vecs(pitch_vectors):
+    corner_vectors = []
+    p_corners = []
+
+    for i in range(len(pitch_vectors)):
+        if i in [0, 9, 29, 38]:
+            corner_vectors.append(pitch_vectors[i])
+        else:
+            p_corners.append(pitch_vectors[i])
+
+    return (
+        corner_vectors,
+        p_corners
+    )
+
+
+def get_pitch_vectors(corner_vectors, pitch_vectors):
+    i = 0
+    for k in [0, 9, 29, 38]:
+        pitch_vectors.insert(k, corner_vectors[i])
+        i = i + 0
+    return pitch_vectors
+
+
 def encode_camera_data(camera_data_tuple):
     origin, frames_vectors, pitch_vectors = camera_data_tuple
 
     enc_origin = enc_vec(origin)
     enc_frames_vectors = encode_vector_list(frames_vectors)
+
+
+    corner_vectors, pitch_vectors = corner_vecs_pitch_vecs(pitch_vectors)
+
+
+    enc_corner_vectors = encode_vector_list(corner_vectors)
     enc_pitch_vectors = encode_vector_list(pitch_vectors)
 
     return (
-            enc_origin +
-            enc_frames_vectors +
-            enc_pitch_vectors
+        enc_origin +
+        enc_frames_vectors +
+        enc_corner_vectors +
+        enc_pitch_vectors
+    )
+
+
+def decode_camera_data(enc_data):
+    origin_enc_data = enc_data[:3]
+
+    origin_decoded = dec_vec(origin_enc_data, 3)
+    enc_data = enc_data[3: ]
+
+    len_vectors_section = (3 * 4)
+    frames_vectors_data = enc_data[ :len_vectors_section]
+    frames_vectors_decoded = decode_vector_list(
+            frames_vectors_data,
+            3
+    )
+    enc_data = enc_data[len_vectors_section: ]
+
+    len_vectors_section = (2 * 4)
+    corner_vectors_data = enc_data[ :len_vectors_section]
+    corner_vectors_decoded = decode_vector_list(
+            corner_vectors_data,
+            2
+    )
+    enc_data = enc_data[len_vectors_section: ]
+
+    pitch_vectors_decoded = decode_vector_list(
+            enc_data,
+            2
+    )
+
+
+    pitch_vectors_decoded = get_pitch_vectors(
+        corner_vectors_decoded,
+        pitch_vectors_decoded
+    )
+
+
+    def get_pitch_vec(v, i):
+        index = i + 1
+        z = 0
+
+        if index in [5, 7, 34, 36]: z = 2.4
+
+        return (v[0], v[1], z)
+
+
+    pitch_vectors_decoded = [
+        get_pitch_vec(
+            pitch_vectors_decoded[i],
+            i
+        ) for i in range(len(
+            pitch_vectors_decoded
+        ))
+    ]
+
+    return (
+        origin_decoded,
+        frames_vectors_decoded,
+        pitch_vectors_decoded
+    )
+"""
+
+
+# to remove: temporarily
+def encode_camera_data(camera_data_tuple):
+    origin, frames_vectors, pitch_vectors = camera_data_tuple
+
+    enc_origin = enc_vec(origin)
+    enc_frames_vectors = encode_vector_list(frames_vectors)
+
+
+    enc_pitch_vectors = encode_vector_list(pitch_vectors)
+
+    #pitch_corner
+
+    return (
+        enc_origin +
+        enc_frames_vectors +
+        enc_pitch_vectors
     )
 
 
@@ -126,26 +237,7 @@ def decode_camera_data(enc_data):
         frames_vectors_decoded,
         pitch_vectors_decoded
     )
-
-
-
-
-def get_pitch_corners(pitch_vectors):
-    pitch_corners = dict()
-
-    for i in range(len(pitch_vectors)):
-        ix = i + 1
-
-        if ix in [1, 10, 30, 39]:
-            pitch_corners[str(ix)] = pitch_vectors[i]
-
-    return [
-        pitch_corners["39"],
-        pitch_corners["30"],
-        pitch_corners["1"],
-        pitch_corners["10"]
-    ]
-
+# to remove: temporarily
 
 
 get_axis = lambda points, axis: [p[axis] for p in points]

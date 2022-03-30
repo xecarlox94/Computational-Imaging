@@ -156,7 +156,7 @@ def get_camera_data_prediction(model, image):
     )[0])
 
 
-#model = tf.keras.models.load_model('./my_model')
+#model = tf.keras.models.load_model('./models/__model_name__')
 
 
 get_image_input = lambda frame: cv.resize(
@@ -211,8 +211,7 @@ while cap.isOpened():
     print(frame_count)
 
     frame_count = frame_count + 1
-    if frame_count < 0:
-        continue
+    if frame_count < 0: continue
 
 
     perform_detection = count % 30 == 0

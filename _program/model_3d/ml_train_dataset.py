@@ -102,134 +102,6 @@ rows = read_csv_data("./dataset/data.csv")
 
 
 
-X_train, y_train, X_test, y_test = get_train_test(rows, 0.1)
-
-
-
-
-tensor_board = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-model_name = 'model'
-epochs=10
-gx = lambda r: r[:3]
-gy = lambda r: r[3:]
-Xx_input_len = 3
-output_size=90
-
-num_filters_1=20
-kernel_size_1=2
-poolsize_1=2
-dropout_1=0.1
-
-num_filters_2=20
-kernel_size_2=2
-poolsize_2=4
-dropout_2=0.1
-
-num_dense_3=1024
-dropout_3=0.5
-
-more = True
-#more = False
-
-
-
-get_Xx = lambda y_array: np.array(list(map(
-    gx,
-    y_array
-)))
-
-get_yy = lambda y_array: np.array(list(map(
-    gy,
-    y_array
-)))
-
-
-
-Xx_test = get_Xx(y_test)
-Xx_train = get_Xx(y_train)
-y_train = get_yy(y_train)
-y_test = get_yy(y_test)
-
-
-convolution_layers = [
-    Input(shape=(IMG_WIDTH, IMG_HEIGHT, 1)),
-    Conv2D(filters=num_filters_1, kernel_size=(kernel_size_1, kernel_size_1), activation="relu"),
-    MaxPooling2D(pool_size=(poolsize_1, poolsize_1)),
-    Dropout(dropout_1),
-    Conv2D(filters=num_filters_2, kernel_size=(kernel_size_2, kernel_size_2), activation="relu"),
-    MaxPooling2D(pool_size=(poolsize_2, poolsize_2)),
-    Dropout(dropout_2),
-    Flatten(),
-    Dense(num_dense_3, activation="sigmoid"),
-    Dropout(dropout_3),
-]
-
-out = Dense(output_size, activation="sigmoid")
-
-
-if more == True:
-    model_sec = Sequential([
-        Input(shape=(Xx_input_len,)),
-        Dense(Xx_input_len, activation="sigmoid"),
-        Dropout(0.1),
-    ])
-
-    model = Sequential(convolution_layers)
-
-    concat = concatenate([model.output, model_sec.output])
-
-    model = Model(inputs=[
-            model.input,
-            model_sec.input
-        ],
-        outputs=out(concat)
-    )
-
-    mode_fit_x = Xx_train
-    mode_fit_y = Xx_test
-
-else:
-    model = Sequential(
-        convolution_layers + [out]
-    )
-
-    mode_fit_x = []
-    mode_fit_y = []
-
-
-#print(model.summary())
-
-
-model.compile(
-    optimizer='adam',
-    loss=tf.keras.losses.MeanSquaredLogarithmicError(reduction="auto"),
-    metrics=[
-        tf.keras.metrics.MeanSquaredError(),
-        #tf.keras.metrics.MeanAbsoluteError()
-    ]
-)
-
-
-log_dir = "./logs/fit/" + tensor_board
-tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
-
-
-model.fit(
-    x=[X_train] + [mode_fit_x],
-    y=y_train,
-    epochs=epochs,
-    validation_data=(
-        [X_test] + [mode_fit_y],
-        y_test
-    ),
-    callbacks=[
-        tensorboard_callback
-    ]
-)
-
-
-model.save('../' + model_name)
-
 
 
 
@@ -243,4 +115,180 @@ new_model = tf.keras.models.load_model(model_dir)
 pred1 = get_camera_data_prediction(new_model, X_test[0])
 print(pred1)
 """
+
+
+
+
+
+def train_model():
+
+
+    X_train, y_train, X_test, y_test = get_train_test(rows, 0.1)
+
+
+
+
+    # model params: 2 input
+    Xx_input_len = 3
+
+    # model params: Input 1
+    num_filters_1=20
+    kernel_size_1=2
+    poolsize_1=2
+    dropout_1=0.1
+
+    num_filters_2=20
+    kernel_size_2=2
+    poolsize_2=4
+    dropout_2=0.1
+
+    num_dense_3=1024
+    dropout_3=0.5
+
+    # model params: Input 2
+    num_dense_4=512
+    dropout_4=0.5
+
+
+
+    epochs=10
+    output_size = 3
+
+
+    model_name = 'my_model'
+
+    time_str = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    tensor_board_name = time_str
+
+
+
+
+    convolution_layers = [
+        Input(shape=(IMG_WIDTH, IMG_HEIGHT, 1)),
+        Conv2D(filters=num_filters_1, kernel_size=(kernel_size_1, kernel_size_1), activation="relu"),
+        MaxPooling2D(pool_size=(poolsize_1, poolsize_1)),
+        Dropout(dropout_1),
+        Conv2D(filters=num_filters_2, kernel_size=(kernel_size_2, kernel_size_2), activation="relu"),
+        MaxPooling2D(pool_size=(poolsize_2, poolsize_2)),
+        Dropout(dropout_2),
+        Flatten(),
+        Dense(num_dense_3, activation="sigmoid"),
+        Dropout(dropout_3),
+    ]
+
+    out = Dense(output_size, activation="sigmoid")
+
+
+    if Xx_input_len > 0:
+
+        model_sec = Sequential([
+            Input(shape=(Xx_input_len,)),
+            Dense(Xx_input_len, activation="sigmoid"),
+        ])
+
+        m = Sequential(convolution_layers + [
+                Dense(num_dense_4, activation="sigmoid"),
+                Dropout(dropout_4),
+            ]
+        )
+
+        model = Model(
+            inputs=[
+                m.input,
+                model_sec.input
+            ],
+            outputs=out(
+                concatenate([
+                    m.output,
+                    model_sec.output
+                ])
+            )
+        )
+
+        get_Xx = lambda y_array: np.array(list(map(
+            lambda r: r[: Xx_input_len],
+            y_array
+        )))
+
+        get_yy = lambda y_array: np.array(list(map(
+            lambda r: r[Xx_input_len : output_size + Xx_input_len ],
+            y_array
+        )))
+
+        model_fit_x = [
+            get_Xx(y_train)
+        ]
+
+        model_fit_y = [
+            get_Xx(y_test)
+        ]
+
+        y_train = get_yy(y_train)
+        y_test = get_yy(y_test)
+
+
+    else:
+
+        model = Sequential(
+            convolution_layers + [out]
+        )
+
+        model_fit_x = []
+        model_fit_y = []
+
+
+
+    compile_fit_save_model(
+        model,
+        (
+            X_train, y_train, X_test, y_test, model_fit_x, model_fit_y
+        ),
+        epochs,
+        model_name,
+        tensor_board_name
+    )
+
+
+
+
+
+
+def compile_fit_save_model(
+        model,
+        data,
+        epochs,
+        model_name,
+        tensor_board_name
+    ):
+
+    X_train, y_train, X_test, y_test, model_fit_x, model_fit_y = data
+
+    #print(model.summary())
+
+    model.compile(
+        optimizer='adam',
+        loss=tf.keras.losses.MeanSquaredLogarithmicError(reduction="auto"),
+        metrics=[
+            tf.keras.metrics.MeanSquaredError(),
+            #tf.keras.metrics.MeanAbsoluteError()
+        ]
+    )
+
+    log_dir = "./logs/fit/" + tensor_board_name
+    tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+
+    model.fit(
+        x=[X_train] + model_fit_x,
+        y=y_train,
+        epochs=epochs,
+        validation_data=(
+            [X_test] + model_fit_y,
+            y_test
+        ),
+        callbacks=[
+            tensorboard_callback
+        ]
+    )
+
+    model.save('../models/' + model_name)
 

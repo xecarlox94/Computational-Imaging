@@ -4,7 +4,7 @@ from bpy_extras.object_utils import world_to_camera_view
 
 from mathutils.geometry import intersect_line_plane
 
-from mathutils import *
+from mathutils import Vector
 
 
 import sys
@@ -38,10 +38,11 @@ def get_camera_data(o, scn):
     camera = o.data
     matrix = o.matrix_world.normalized()
 
-    get_view_vector = lambda v: Vector((v.x, v.y))
-
     origin = matrix.to_translation()
 
+    frames_vectors = [matrix @ v for v in camera.view_frame(scene=scn)]
+
+    get_view_vector = lambda v: Vector((v.x, v.y))
     pitch_vectors = list(map(
         lambda m_obj: (
             int(m_obj.name),
@@ -56,11 +57,6 @@ def get_camera_data(o, scn):
         lambda x: x[1],
         pitch_vectors
     ))
-
-    frames_vectors = [matrix @ v for v in camera.view_frame(scene=scn)]
-
-    pitch_corners = utils.get_pitch_corners(pitch_vectors)
-
 
     return (
         origin,
