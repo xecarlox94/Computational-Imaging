@@ -98,69 +98,30 @@ def get_train_test(rows, split_percentage):
 
 
 
-rows = read_csv_data("./dataset/data.csv")
 
 
+def train_model(data, params):
 
+    X_train, y_train, X_test, y_test = data
 
-
-
-"""
-def get_camera_data_prediction(model, image):
-    return list(model.predict(
-        np.array([image])
-    )[0])
-new_model = tf.keras.models.load_model(model_dir)
-#new_model.summary()
-pred1 = get_camera_data_prediction(new_model, X_test[0])
-print(pred1)
-"""
-
-
-
-
-
-def train_model():
-
-
-    X_train, y_train, X_test, y_test = get_train_test(rows, 0.1)
-
-
-
-
-    # model params: 2 input
-    Xx_input_len = 3
-
-    # model params: Input 1
-    num_filters_1=20
-    kernel_size_1=2
-    poolsize_1=2
-    dropout_1=0.1
-
-    num_filters_2=20
-    kernel_size_2=2
-    poolsize_2=4
-    dropout_2=0.1
-
-    num_dense_3=1024
-    dropout_3=0.5
-
-    # model params: Input 2
-    num_dense_4=512
-    dropout_4=0.5
-
-
-
-    epochs=10
-    output_size = 3
-
-
-    model_name = 'my_model'
-
-    time_str = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-    tensor_board_name = time_str
-
-
+    (
+        model_name,
+        epochs,
+        output_size,
+        Xx_input_len,
+        num_filters_1,
+        kernel_size_1,
+        poolsize_1,
+        dropout_1,
+        num_filters_2,
+        kernel_size_2,
+        poolsize_2,
+        dropout_2,
+        num_dense_3,
+        dropout_3,
+        num_dense_4,
+        dropout_4,
+    ) = params
 
 
     convolution_layers = [
@@ -245,10 +206,90 @@ def train_model():
         ),
         epochs,
         model_name,
-        tensor_board_name
+        (
+            model_name + get_ml_arch(
+                Xx_input_len,
+                num_filters_1,
+                kernel_size_1,
+                poolsize_1,
+                dropout_1,
+                num_filters_2,
+                kernel_size_2,
+                poolsize_2,
+                dropout_2,
+                num_dense_3,
+                dropout_3,
+                num_dense_4,
+                dropout_4,
+            ) + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+        )
     )
 
 
+
+
+def get_params(
+        model_name,
+        epochs,
+        output_size,
+        Xx_input_len,
+        # model params: Input 1
+        num_filters_1=20,
+        kernel_size_1=2,
+        poolsize_1=2,
+        dropout_1=0.1,
+        num_filters_2=20,
+        kernel_size_2=2,
+        poolsize_2=4,
+        dropout_2=0.1,
+        num_dense_3=1024,
+        dropout_3=0.5,
+        # model params: 2 input
+        num_dense_4=512,
+        dropout_4=0.5
+    ):
+    return (
+        model_name,
+        epochs,
+        output_size,
+        Xx_input_len,
+        num_filters_1,
+        kernel_size_1,
+        poolsize_1,
+        dropout_1,
+        num_filters_2,
+        kernel_size_2,
+        poolsize_2,
+        dropout_2,
+        num_dense_3,
+        dropout_3,
+        num_dense_4,
+        dropout_4,
+    )
+
+
+
+
+
+def get_ml_arch(
+        Xx_input_len,
+        num_filters_1,
+        kernel_size_1,
+        poolsize_1,
+        dropout_1,
+        num_filters_2,
+        kernel_size_2,
+        poolsize_2,
+        dropout_2,
+        num_dense_3,
+        dropout_3,
+        num_dense_4=0,
+        dropout_4=0,
+    ):
+    arch='__num_filters_1:_' + str(num_filters_1) + ',_kernel_size_1:_' + str(kernel_size_1) + ',_poolsize_1:_' + str(poolsize_1) + ',_dropout_1:_' + str(dropout_1) + ',_num_filters_2:_' + str(num_filters_2) + ',_kernel_size_2:_' + str(kernel_size_2) + ',_poolsize_2:_' + str(poolsize_2) + ',_dropout_2:_' + str(dropout_2) + ',_num_dense_3:_' + str(num_dense_3) + ',_dropout_3:_' + str(dropout_3)
+    if Xx_input_len > 0:
+        arch = arch + ',_Xx_input_len:_' + str(Xx_input_len) + ',_num_dense_4:_' + str(num_dense_4) + ',_dropout_4:_' + str(dropout_4)
+    return arch + '__'
 
 
 
@@ -292,3 +333,57 @@ def compile_fit_save_model(
 
     model.save('../models/' + model_name)
 
+
+
+
+
+"""
+def get_camera_data_prediction(model, image):
+    return list(model.predict(
+        np.array([image])
+    )[0])
+new_model = tf.keras.models.load_model(model_dir)
+#new_model.summary()
+pred1 = get_camera_data_prediction(new_model, X_test[0])
+print(pred1)
+"""
+
+
+
+
+rows = read_csv_data("./dataset/data.csv")
+
+
+
+
+
+
+train_model(
+    get_train_test(rows, 0.1),
+    get_params(
+
+        #model_name,
+        "my_model",
+        #epochs,
+        10,
+        #output_size,
+        12,
+        #Xx_input_len,
+        3,
+
+        # model params: Input 1
+        num_filters_1=20,
+        kernel_size_1=2,
+        poolsize_1=2,
+        dropout_1=0.1,
+        num_filters_2=20,
+        kernel_size_2=2,
+        poolsize_2=4,
+        dropout_2=0.1,
+        num_dense_3=1024,
+        dropout_3=0.5,
+        # model params: 2 input
+        num_dense_4=512,
+        dropout_4=0.5
+    )
+)
