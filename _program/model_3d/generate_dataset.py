@@ -47,17 +47,16 @@ f = open(file_name, "x")
 
 writer = csv.writer(f)
 
-for loop_id in range(250):
+for loop_id in range(1):
     for cam_id in range(len(cams)):
-        img_str = str(cam_id) + "_" + str(loop_id) + ".jpeg"
 
+        img_str = str(cam_id) + "_" + str(loop_id) + ".jpeg"
 
         image_utils.render_image(
             scene,
             cams[cam_id].camera,
             img_str
         )
-
 
         enc_data = utils.encode_camera_data(
             image_utils.get_camera_data(
@@ -66,17 +65,19 @@ for loop_id in range(250):
             )
         )
 
+        writer.writerow(enc_row(
+            img_str,
+            enc_data
+        ))
 
-        writer.writerow(
-            enc_row(
-                img_str,
-                enc_data
-            )
-        )
+        dec_data = utils.decode_camera_data(enc_data)
 
+        print(dec_data[2])
 
         cams[cam_id].change_angle()
 
+        #break
+    break
 
 f.close()
 

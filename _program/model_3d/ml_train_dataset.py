@@ -171,11 +171,6 @@ def train_model(data, params):
             y_array
         )))
 
-        get_yy = lambda y_array: np.array(list(map(
-            lambda r: r[Xx_input_len : output_size + Xx_input_len ],
-            y_array
-        )))
-
         model_fit_x = [
             get_Xx(y_train)
         ]
@@ -183,9 +178,6 @@ def train_model(data, params):
         model_fit_y = [
             get_Xx(y_test)
         ]
-
-        y_train = get_yy(y_train)
-        y_test = get_yy(y_test)
 
 
     else:
@@ -197,6 +189,14 @@ def train_model(data, params):
         model_fit_x = []
         model_fit_y = []
 
+
+    get_yy = lambda y_array: np.array(list(map(
+        lambda r: r[Xx_input_len : output_size + Xx_input_len ],
+        y_array
+    )))
+
+    y_train = get_yy(y_train)
+    y_test = get_yy(y_test)
 
 
     compile_fit_save_model(
@@ -229,10 +229,7 @@ def train_model(data, params):
 
 
 def get_params(
-        model_name,
-        epochs,
-        output_size,
-        Xx_input_len,
+        model_name, epochs, output_size, Xx_input_len,
         # model params: Input 1
         num_filters_1=20,
         kernel_size_1=2,
@@ -248,24 +245,7 @@ def get_params(
         num_dense_4=512,
         dropout_4=0.5
     ):
-    return (
-        model_name,
-        epochs,
-        output_size,
-        Xx_input_len,
-        num_filters_1,
-        kernel_size_1,
-        poolsize_1,
-        dropout_1,
-        num_filters_2,
-        kernel_size_2,
-        poolsize_2,
-        dropout_2,
-        num_dense_3,
-        dropout_3,
-        num_dense_4,
-        dropout_4,
-    )
+    return model_name, epochs, output_size, Xx_input_len, num_filters_1, kernel_size_1, poolsize_1, dropout_1, num_filters_2, kernel_size_2, poolsize_2, dropout_2, num_dense_3, dropout_3, num_dense_4, dropout_4
 
 
 
@@ -361,7 +341,6 @@ rows = read_csv_data("./dataset/data.csv")
 train_model(
     get_train_test(rows, 0.1),
     get_params(
-
         #model_name,
         "my_model",
         #epochs,
@@ -370,7 +349,91 @@ train_model(
         12,
         #Xx_input_len,
         3,
+        # model params: Input 1
+        num_filters_1=20,
+        kernel_size_1=2,
+        poolsize_1=2,
+        dropout_1=0.1,
+        num_filters_2=20,
+        kernel_size_2=2,
+        poolsize_2=4,
+        dropout_2=0.1,
+        num_dense_3=1024,
+        dropout_3=0.5,
+        # model params: 2 input
+        num_dense_4=512,
+        dropout_4=0.5
+    )
+)
 
+train_model(
+    get_train_test(rows, 0.1),
+    get_params(
+        #model_name,
+        "my_model",
+        #epochs,
+        10,
+        #output_size,
+        12,
+        #Xx_input_len,
+        3,
+        # model params: Input 1
+        num_filters_1=20,
+        kernel_size_1=2,
+        poolsize_1=2,
+        dropout_1=0.1,
+        num_filters_2=20,
+        kernel_size_2=2,
+        poolsize_2=4,
+        dropout_2=0.1,
+        num_dense_3=1024,
+        dropout_3=0.5,
+        # model params: 2 input
+        num_dense_4=512,
+        dropout_4=0.5
+    )
+)
+
+train_model(
+    get_train_test(rows, 0.1),
+    get_params(
+        #model_name,
+        "my_model",
+        #epochs,
+        10,
+        #output_size,
+        78,
+        #Xx_input_len,
+        15,
+        # model params: Input 1
+        num_filters_1=20,
+        kernel_size_1=2,
+        poolsize_1=2,
+        dropout_1=0.1,
+        num_filters_2=20,
+        kernel_size_2=2,
+        poolsize_2=4,
+        dropout_2=0.1,
+        num_dense_3=1024,
+        dropout_3=0.5,
+        # model params: 2 input
+        num_dense_4=512,
+        dropout_4=0.5
+    )
+)
+
+
+train_model(
+    get_train_test(rows, 0.1),
+    get_params(
+        #model_name,
+        "my_model",
+        #epochs,
+        10,
+        #output_size,
+        3,
+        #Xx_input_len,
+        0,
         # model params: Input 1
         num_filters_1=20,
         kernel_size_1=2,

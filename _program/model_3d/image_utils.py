@@ -14,9 +14,6 @@ cwd = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(cwd)
 
 
-import utils
-
-
 
 def render_image(scene, cam, file_name):
     bpy.context.scene.camera = cam
@@ -57,6 +54,8 @@ def get_camera_data(o, scn):
         lambda x: x[1],
         pitch_vectors
     ))
+
+    print(pitch_vectors)
 
     return (
         origin,
