@@ -55,8 +55,6 @@ def get_camera_data(o, scn):
         pitch_vectors
     ))
 
-    print(pitch_vectors)
-
     return (
         origin,
         frames_vectors,

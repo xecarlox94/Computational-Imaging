@@ -33,10 +33,10 @@ dec_vec = lambda l, lgth: dec_vec2d(l) if (lgth == 2) else dec_vec3d(l)
 
 
 enc_list = lambda enc_fun, dec_list: reduce(
-                lambda x, y: x + enc_fun(y),
-                dec_list,
-                []
-            )
+    lambda x, y: x + enc_fun(y),
+    dec_list,
+    []
+)
 
 
 def dec_list(data_list, decode_fun, unit_length):
@@ -65,7 +65,7 @@ def encode_vector_list(lst):
 def decode_vector_list(lst, length):
     return dec_list(
         lst,
-        (lambda x: dec_vec(x, length)),
+        lambda x: dec_vec(x, length),
         length
     )
 
@@ -86,11 +86,19 @@ def corner_vecs_pitch_vecs(pitch_vectors):
     )
 
 
+def get_pitch_corner_vecs(decoded_cam_data):
+    pitch_vectors = decoded_cam_data[2]
+    corner_vectors = []
+    for i in [0, 9, 29, 38]:
+        corner_vectors.append(pitch_vectors[i])
+    return corner_vectors
+
+
 def get_pitch_vectors(corner_vectors, pitch_vectors):
     i = 0
     for k in [0, 9, 29, 38]:
         pitch_vectors.insert(k, corner_vectors[i])
-        i = i + 0
+        i = i + 1
     return pitch_vectors
 
 
@@ -101,9 +109,6 @@ def encode_camera_data(camera_data_tuple):
     enc_frames_vectors = encode_vector_list(frames_vectors)
 
     corner_vectors, pitch_vectors = corner_vecs_pitch_vecs(pitch_vectors)
-
-    print(corner_vectors)
-    print(pitch_vectors)
 
     enc_corner_vectors = encode_vector_list(corner_vectors)
     enc_pitch_vectors = encode_vector_list(pitch_vectors)
@@ -143,12 +148,10 @@ def decode_camera_data(enc_data):
             2
     )
 
-
     pitch_vectors_decoded = get_pitch_vectors(
         corner_vectors_decoded,
         pitch_vectors_decoded
     )
-
 
     def get_pitch_vec(v, i):
         index = i + 1
@@ -176,18 +179,24 @@ def decode_camera_data(enc_data):
 
 
 
-get_axis = lambda points, axis: [p[axis] for p in points]
+get_axis = lambda points, axis: [
+    p[axis] for p in points
+]
+
+
 get_center = lambda points, axis: (
     sum(
         get_axis(points, axis)
     ) / len(points)
 )
 
+
 def get_2d_centroid(points):
     return (
         get_center(points, 0),
         get_center(points, 1),
     )
+
 
 def get_3d_centroid(points):
     return (

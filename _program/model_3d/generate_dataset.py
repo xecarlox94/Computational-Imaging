@@ -76,7 +76,7 @@ for loop_id in range(1):
 
         cams[cam_id].change_angle()
 
-        #break
+        break
     break
 
 f.close()

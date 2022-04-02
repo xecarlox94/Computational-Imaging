@@ -1,5 +1,5 @@
 my_model/
-model/
+models/
 coco.names
 *.mp4
 yolov3.cfg

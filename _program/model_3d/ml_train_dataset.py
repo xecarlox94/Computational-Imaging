@@ -269,6 +269,7 @@ def get_ml_arch(
     arch='__num_filters_1:_' + str(num_filters_1) + ',_kernel_size_1:_' + str(kernel_size_1) + ',_poolsize_1:_' + str(poolsize_1) + ',_dropout_1:_' + str(dropout_1) + ',_num_filters_2:_' + str(num_filters_2) + ',_kernel_size_2:_' + str(kernel_size_2) + ',_poolsize_2:_' + str(poolsize_2) + ',_dropout_2:_' + str(dropout_2) + ',_num_dense_3:_' + str(num_dense_3) + ',_dropout_3:_' + str(dropout_3)
     if Xx_input_len > 0:
         arch = arch + ',_Xx_input_len:_' + str(Xx_input_len) + ',_num_dense_4:_' + str(num_dense_4) + ',_dropout_4:_' + str(dropout_4)
+    return ""
     return arch + '__'
 
 
@@ -316,39 +317,21 @@ def compile_fit_save_model(
 
 
 
-
-"""
-def get_camera_data_prediction(model, image):
-    return list(model.predict(
-        np.array([image])
-    )[0])
-new_model = tf.keras.models.load_model(model_dir)
-#new_model.summary()
-pred1 = get_camera_data_prediction(new_model, X_test[0])
-print(pred1)
-"""
-
-
-
-
 rows = read_csv_data("./dataset/data.csv")
 
 
 
-
-
-
 train_model(
     get_train_test(rows, 0.1),
     get_params(
         #model_name,
-        "my_model",
+        "cam_origin_vec",
         #epochs,
-        10,
+        1,
         #output_size,
-        12,
-        #Xx_input_len,
         3,
+        #Xx_input_len,
+        0,
         # model params: Input 1
         num_filters_1=20,
         kernel_size_1=2,
@@ -370,9 +353,9 @@ train_model(
     get_train_test(rows, 0.1),
     get_params(
         #model_name,
-        "my_model",
+        "frame_vectors",
         #epochs,
-        10,
+        1,
         #output_size,
         12,
         #Xx_input_len,
@@ -394,15 +377,16 @@ train_model(
     )
 )
 
+
 train_model(
     get_train_test(rows, 0.1),
     get_params(
         #model_name,
-        "my_model",
+        "pitch_corner_vecs",
         #epochs,
-        10,
+        1,
         #output_size,
-        78,
+        8,
         #Xx_input_len,
         15,
         # model params: Input 1
@@ -427,13 +411,13 @@ train_model(
     get_train_test(rows, 0.1),
     get_params(
         #model_name,
-        "my_model",
+        "pitch_vectors",
         #epochs,
-        10,
+        1,
         #output_size,
-        3,
+        70,
         #Xx_input_len,
-        0,
+        23,
         # model params: Input 1
         num_filters_1=20,
         kernel_size_1=2,
@@ -450,3 +434,19 @@ train_model(
         dropout_4=0.5
     )
 )
+
+
+
+
+
+
+"""
+def get_camera_data_prediction(model, image):
+    return list(model.predict(
+        np.array([image])
+    )[0])
+new_model = tf.keras.models.load_model(model_dir)
+#new_model.summary()
+pred1 = get_camera_data_prediction(new_model, X_test[0])
+print(pred1)
+"""

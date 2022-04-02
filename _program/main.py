@@ -1,10 +1,11 @@
 import cv2 as cv
 
+from model_3d import utils
 
 cap = cv.VideoCapture('football.mp4')
 
 
-
+"""
 argmax = lambda l: max(range(len(l)), key=(lambda i: l[i]))
 
 
@@ -141,8 +142,31 @@ def draw_boundingbox(frame, dimensions, colour, title):
 
 wait_key = lambda key: cv.waitKey(25) & 0xFF == ord(key)
 
+"""
 
 
+
+
+
+
+
+
+
+
+
+
+
+"""
+# to add to opencv program and to blender rendering obj
+def process_image(i_name):
+    img_org = cv.imread(i_name, cv.IMREAD_COLOR)
+    # https://stackoverflow.com/questions/60352448/homography-from-football-soccer-field-lines
+    hsv = cv.cvtColor(img_org, cv.COLOR_RGB2HSV)
+    mask_green = cv.inRange(hsv, (36, 25, 25), (86, 255, 255))
+    img_masked = cv.bitwise_and(img_org, img_org, mask=mask_green)
+    img_gray = cv.cvtColor(img_masked, cv.COLOR_BGR2GRAY)
+    canny = cv.Canny(img_gray, 50, 200, apertureSize=3)
+"""
 
 
 
@@ -152,45 +176,89 @@ import numpy as np
 
 def get_camera_data_prediction(model, image):
     return list(model.predict(
-        np.array([image])
+        image
     )[0])
 
 
-#model = tf.keras.models.load_model('./models/__model_name__')
+get_model = lambda m: tf.keras.models.load_model('./models/' + m)
 
 
-get_image_input = lambda frame: cv.resize(
+get_image_input = lambda frame: np.array([cv.resize(
     cv.cvtColor(
         frame,
         cv.COLOR_BGR2GRAY
     ),
     (256, 256)
-)
-
-
+)])
 
 
 
 
 """
+def get_frame_prediction(frame):
+    def get_model_pred(model_names, X):
+        print(model_names)
+        if model_names == []:
+            return X
 
-# to add to opencv program and to blender rendering obj
+        pred = get_camera_data_prediction(
+            get_model(model_names[0]),
+            [
+                get_image_input(frame),
+                (
+                    [] if X == [] else np.array([X])
+                )
+            ]
+        )
 
-def process_image(i_name):
-    img_org = cv.imread(i_name, cv.IMREAD_COLOR)
+        get_model_pred(
+            model_names[1:],
+            X + pred
+        )
 
-    # https://stackoverflow.com/questions/60352448/homography-from-football-soccer-field-lines
-    hsv = cv.cvtColor(img_org, cv.COLOR_RGB2HSV)
-    mask_green = cv.inRange(hsv, (36, 25, 25), (86, 255, 255))
-    img_masked = cv.bitwise_and(img_org, img_org, mask=mask_green)
-
-    img_gray = cv.cvtColor(img_masked, cv.COLOR_BGR2GRAY)
-    canny = cv.Canny(img_gray, 50, 200, apertureSize=3)
+    return get_model_pred(
+        [
+            "cam_origin_vec",
+            "frame_vectors",
+            "pitch_corner_vecs",
+            "pitch_vectors"
+        ],
+        []
+    )
 """
 
 
+def get_frame_prediction(frame):
 
+    pred = get_camera_data_prediction(
+        get_model("cam_origin_vec"),
+        [get_image_input(frame), []]
+    )
 
+    X = pred + []
+
+    pred = get_camera_data_prediction(
+        get_model("frame_vectors"),
+        [get_image_input(frame), np.array([X])]
+    )
+
+    X = X + pred
+
+    pred = get_camera_data_prediction(
+        get_model("pitch_corner_vecs"),
+        [get_image_input(frame), np.array([X])]
+    )
+
+    X = X + pred
+
+    pred = get_camera_data_prediction(
+        get_model("pitch_vectors"),
+        [get_image_input(frame), np.array([X])]
+    )
+
+    X = X + pred
+
+    return X
 
 
 
@@ -199,16 +267,33 @@ while cap.isOpened():
 
     ret, frame = cap.read()
 
+    pred = get_frame_prediction(frame)
 
-    pred = get_camera_data_prediction(
-        model,
-        get_image_input(frame)
-    )
+    #print(pred)
+    #print(len(list(pred)))
+
+    dec_data = utils.decode_camera_data(pred)
+
+    print(dec_data[2])
+
+    print(utils.get_pitch_corner_vecs(dec_data))
 
 
-    camera_data = utils.decode_camera_data(pred)
 
-    print(frame_count)
+
+
+
+
+
+
+
+
+
+
+    break
+
+
+"""
 
     frame_count = frame_count + 1
     if frame_count < 0: continue
@@ -282,3 +367,4 @@ while cap.isOpened():
 cap.release()
 cv.destroyAllWindows()
 
+"""
