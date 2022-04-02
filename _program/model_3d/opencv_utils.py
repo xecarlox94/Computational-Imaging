@@ -1,6 +1,26 @@
 import cv2 as cv
 
 
+
+def get_pitch_recognition_img(frame):
+    hsv = cv.cvtColor(frame, cv.COLOR_RGB2HSV)
+    return cv.resize(
+        cv.cvtColor(
+            cv.bitwise_and(
+                hsv,
+                frame,
+                mask=cv.inRange(
+                    hsv,
+                    (36, 25, 25),
+                    (86, 255, 255)
+                )
+            ),
+            cv.COLOR_BGR2GRAY
+        ),
+        (256, 256)
+    )
+
+
 def draw_boundingbox(frame, dimensions, colour, title):
     x, y, w, h = dimensions
 
@@ -39,3 +59,5 @@ def label_ball(window_name, frame):
         ball_tracker.init(frame, bbox)
 
     return ball_tracker
+
+

@@ -7,6 +7,7 @@ from tensorflow.keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPooling2
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.preprocessing import image
 
+from opencv_utils import get_pitch_recognition_img
 
 import datetime
 import random
@@ -20,12 +21,10 @@ IMG_WIDTH = 256
 IMG_HEIGHT = 256
 
 
-get_image = lambda file_name: cv.resize(
+get_image = lambda file_name: get_pitch_recognition_img(
     cv.imread(
-        file_name,
-        cv.IMREAD_GRAYSCALE
-    ),
-    (IMG_WIDTH, IMG_HEIGHT)
+        file_name
+    )
 )
 
 

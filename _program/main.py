@@ -18,13 +18,6 @@ get_model = lambda m: tf.keras.models.load_model('./models/' + m)
 
 
 get_image_input = lambda frame: np.array([
-    cv.resize(
-        cv.cvtColor(
-            frame,
-            cv.COLOR_BGR2GRAY
-        ),
-        (256, 256)
-    )
 ])
 
 
@@ -93,7 +86,7 @@ def get_frame_prediction(frame):
     return X
 """
 
-from model_3d.opencv_utils import draw_boundingbox, label_ball
+from model_3d.opencv_utils import draw_boundingbox, label_ball, get_pitch_recognition_img
 
 
 
@@ -124,33 +117,28 @@ count = 0
 
 
 
-# to add to opencv program and to blender rendering obj
-def process_image(img_org):
-    # https://stackoverflow.com/questions/60352448/homography-from-football-soccer-field-lines
-    hsv = cv.cvtColor(img_org, cv.COLOR_RGB2HSV)
-    mask_green = cv.inRange(hsv, (36, 25, 25), (86, 255, 255))
-    img_masked = cv.bitwise_and(img_org, img_org, mask=mask_green)
-    img_gray = cv.cvtColor(img_masked, cv.COLOR_BGR2GRAY)
-    canny = cv.Canny(img_gray, 50, 200, apertureSize=3)
-
-    cv.imshow("canny", canny)
-
-
-
-
-
 while cap.isOpened():
 
 
     ret, frame = cap.read()
 
 
-    process_image(frame)
+
+    cv.imshow("img", get_pitch_recognition_img(frame))
+
+
+
+    cv.imshow("frame", frame)
+
+
+    canny = cv.Canny(frame, 50, 150)
+    cv.imshow("canny", canny)
+
 
 
     """
     frame_count = frame_count + 1
-    if frame_count < 0000: continue
+    if frame_count < 1000: continue
 
 
     window_name = "Image"
