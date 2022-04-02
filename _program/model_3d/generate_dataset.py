@@ -70,10 +70,6 @@ for loop_id in range(1):
             enc_data
         ))
 
-        dec_data = utils.decode_camera_data(enc_data)
-
-        print(dec_data[2])
-
         cams[cam_id].change_angle()
 
         break
