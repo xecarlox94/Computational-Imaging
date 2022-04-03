@@ -1,10 +1,13 @@
 import cv2 as cv
 
+from yolo import findObjects
 
+from model_3d.opencv_utils import draw_boundingbox, label_ball, get_pitch_recognition_img
+from model_3d import utils
 
-"""
 import tensorflow as tf
 import numpy as np
+
 
 
 
@@ -17,27 +20,23 @@ def get_camera_data_prediction(model, image):
 get_model = lambda m: tf.keras.models.load_model('./models/' + m)
 
 
-get_image_input = lambda frame: np.array([
-])
-
 
 def get_frame_prediction(frame):
     def get_model_pred(model_names, X):
-        print(model_names)
         if model_names == []:
             return X
 
         pred = get_camera_data_prediction(
             get_model(model_names[0]),
             [
-                get_image_input(frame),
+                get_pitch_recognition_img(frame),
                 (
                     [] if X == [] else np.array([X])
                 )
             ]
         )
 
-        get_model_pred(
+        return get_model_pred(
             model_names[1:],
             X + pred
         )
@@ -53,69 +52,17 @@ def get_frame_prediction(frame):
     )
 
 
-def get_frame_prediction(frame):
-
-    pred = get_camera_data_prediction(
-        get_model("cam_origin_vec"),
-        [get_image_input(frame), []]
-    )
-
-    X = pred + []
-
-    pred = get_camera_data_prediction(
-        get_model("frame_vectors"),
-        [get_image_input(frame), np.array([X])]
-    )
-
-    X = X + pred
-
-    pred = get_camera_data_prediction(
-        get_model("pitch_corner_vecs"),
-        [get_image_input(frame), np.array([X])]
-    )
-
-    X = X + pred
-
-    pred = get_camera_data_prediction(
-        get_model("pitch_vectors"),
-        [get_image_input(frame), np.array([X])]
-    )
-
-    X = X + pred
-
-    return X
-"""
-
-from model_3d.opencv_utils import draw_boundingbox, label_ball, get_pitch_recognition_img
-
-
-
-
-
-
-
-from yolo import findObjects
-
-from model_3d import utils
-
-
-cap = cv.VideoCapture('football.mp4')
-
-
-
 
 
 objs = []
 ball = False
 ball_tracker = cv.legacy.TrackerCSRT_create()
 
-
 frame_count = -1
 count = 0
 
 
-
-
+cap = cv.VideoCapture('football.mp4')
 
 while cap.isOpened():
 
@@ -123,16 +70,20 @@ while cap.isOpened():
     ret, frame = cap.read()
 
 
+    pred = get_frame_prediction(
+        frame
+    )
 
-    cv.imshow("img", get_pitch_recognition_img(frame))
+    print(pred)
 
 
+    dec_data = utils.decode_camera_data(pred)
 
-    cv.imshow("frame", frame)
+    print(dec_data)
 
+    pitch_corner_vecs = utils.get_pitch_corner_vecs(dec_data)
 
-    canny = cv.Canny(frame, 50, 150)
-    cv.imshow("canny", canny)
+    print(pitch_corner_vecs)
 
 
 
@@ -235,19 +186,7 @@ while cap.isOpened():
         print("end video stream")
         break
 
-
-    pred = get_frame_prediction(frame)
-
-    #print(pred)
-    #print(len(list(pred)))
-
-    dec_data = utils.decode_camera_data(pred)
-
-    print(dec_data[2])
-
-    print(utils.get_pitch_corner_vecs(dec_data))
     """
-
 
 
 

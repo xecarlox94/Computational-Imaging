@@ -21,12 +21,10 @@ IMG_WIDTH = 256
 IMG_HEIGHT = 256
 
 
-get_image = lambda file_name: get_pitch_recognition_img(
-    cv.imread(
-        file_name
+def get_image(file_name):
+    return get_pitch_recognition_img(
+        cv.imread(file_name)
     )
-)
-
 
 
 enc_row = lambda dec_row: (

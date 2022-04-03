@@ -1,10 +1,11 @@
 import cv2 as cv
 
+import numpy as np
 
 
 def get_pitch_recognition_img(frame):
     hsv = cv.cvtColor(frame, cv.COLOR_RGB2HSV)
-    return cv.resize(
+    final_img = cv.resize(
         cv.cvtColor(
             cv.bitwise_and(
                 hsv,
@@ -19,7 +20,12 @@ def get_pitch_recognition_img(frame):
         ),
         (256, 256)
     )
-
+    return np.array(final_img).reshape(
+        1,
+        final_img.shape[0],
+        final_img.shape[1],
+        1
+    )
 
 def draw_boundingbox(frame, dimensions, colour, title):
     x, y, w, h = dimensions
