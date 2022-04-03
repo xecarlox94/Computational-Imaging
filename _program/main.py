@@ -11,17 +11,17 @@ import numpy as np
 
 
 
-def get_camera_data_prediction(model, image):
-    return list(model.predict(
-        image
-    )[0])
-
-
-get_model = lambda m: tf.keras.models.load_model('./models/' + m)
-
 
 
 def get_frame_prediction(frame):
+
+    def get_camera_data_prediction(model, image):
+        return list(model.predict(
+            image
+        )[0])
+
+    get_model = lambda m: tf.keras.models.load_model('./models/' + m)
+
     def get_model_pred(model_names, X):
         if model_names == []:
             return X
@@ -73,16 +73,12 @@ while cap.isOpened():
     pred = get_frame_prediction(
         frame
     )
-
     print(pred)
 
-
     dec_data = utils.decode_camera_data(pred)
-
     print(dec_data)
 
     pitch_corner_vecs = utils.get_pitch_corner_vecs(dec_data)
-
     print(pitch_corner_vecs)
 
 
