@@ -83,7 +83,6 @@ def findObjects(frame):
                 max_ball_conf = confidence
 
                 ball = tuple(get_dimensions(det, wT, hT))
-                print("sports ball")
 
 
     indices = cv.dnn.NMSBoxes(bbox, confs, confThreshold, nmsThreshold)

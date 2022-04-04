@@ -1,14 +1,14 @@
 import cv2 as cv
-
-from yolo import findObjects
-
-from model_3d.opencv_utils import draw_boundingbox, label_ball, get_pitch_recognition_img
-from model_3d import utils
-
 import tensorflow as tf
 import numpy as np
 
 
+from model_3d.opencv_utils import draw_boundingbox, label_ball, get_pitch_recognition_img
+from model_3d import utils
+
+from yolo import findObjects
+
+import geometry as gmt
 
 
 
@@ -70,20 +70,7 @@ while cap.isOpened():
     ret, frame = cap.read()
 
 
-    pred = get_frame_prediction(
-        frame
-    )
-    print(pred)
 
-    dec_data = utils.decode_camera_data(pred)
-    print(dec_data)
-
-    pitch_corner_vecs = utils.get_pitch_corner_vecs(dec_data)
-    print(pitch_corner_vecs)
-
-
-
-    """
     frame_count = frame_count + 1
     if frame_count < 1000: continue
 
@@ -104,7 +91,10 @@ while cap.isOpened():
 
         if wait_key('f'): # fix ball tracking
             print("KEY f PRESSED!!!!")
-            ball_tracker = label_ball(window_name, frame)
+            ball_tracker = label_ball(
+                window_name,
+                frame
+            )
 
 
         if perform_detection:
@@ -132,7 +122,10 @@ while cap.isOpened():
                 ball_tracker.init(frame, ball)
 
             else:
-                ball_tracker = label_ball(window_name, frame)
+                ball_tracker = label_ball(
+                    window_name,
+                    frame
+                )
 
 
         else:
@@ -173,7 +166,10 @@ while cap.isOpened():
                 )
 
             else:
-                ball_tracker = label_ball(window_name, frame)
+                ball_tracker = label_ball(
+                    window_name,
+                    frame
+                )
 
 
         cv.imshow(window_name, frame)
@@ -182,7 +178,66 @@ while cap.isOpened():
         print("end video stream")
         break
 
-    """
+
+    pred = get_frame_prediction(
+        frame
+    )
+
+    print(pred)
+
+    cam_origin, frames_vectors, pitch_vectors = utils.decode_camera_data(pred)
+    print("\n\n\n\n")
+    #print(cam_origin)
+    #print("\n")
+    #print(frames_vectors)
+    #print("\n")
+    #print(pitch_vectors)
+    #print("\n")
+
+    pitch_corner_vecs = utils.get_pitch_corner_vecs(pitch_vectors)
+    #print(pitch_corner_vecs)
+    #print("\n")
+
+
+    frames_pitch_int_vecs = list(map(
+        lambda v: gmt.get_pitch_intersection(
+            cam_origin,
+            v
+        ),
+        frames_vectors
+    ))
+    #print(frames_pitch_int_vecs)
+
+
+    frames_pitch_int_vecs = [
+        ( -3, -3,  0),
+        ( -3,  2,  0),
+        (  2,  2,  0),
+        (  2, -3,  0),
+    ]
+    pitch_corner_vecs = [
+        ( -2, -2,  0),
+        ( -2,  3,  0),
+        (  3,  3,  0),
+        (  3, -2,  0),
+    ]
+
+    inner_section_vecs = gmt.get_inner_section(
+        frames_pitch_int_vecs,
+        pitch_corner_vecs
+    )
+    print(inner_section_vecs)
+
+
+    frame_intersection_vecs = list(map(
+        lambda v: gmt.get_screen_intersection(
+            cam_origin,
+            frames_vectors,
+            v
+        ),
+        inner_section_vecs
+    ))
+    print(frame_intersection_vecs)
 
 
 

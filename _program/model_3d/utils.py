@@ -86,8 +86,7 @@ def corner_vecs_pitch_vecs(pitch_vectors):
     )
 
 
-def get_pitch_corner_vecs(decoded_cam_data):
-    pitch_vectors = decoded_cam_data[2]
+def get_pitch_corner_vecs(pitch_vectors):
     corner_vectors = []
     for i in [0, 9, 29, 38]:
         corner_vectors.append(pitch_vectors[i])

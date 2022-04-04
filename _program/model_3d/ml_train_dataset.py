@@ -318,6 +318,7 @@ def compile_fit_save_model(
 rows = read_csv_data("./dataset/data.csv")
 
 
+"""
 for num_filters_1 in [20, 50]:
     for kernel_size_1 in [2, 4]:
         for poolsize_1 in [2, 4]:
@@ -352,11 +353,6 @@ for num_filters_1 in [20, 50]:
                                                 dropout_3=dropout_3,
                                             )
                                         )
-
-
-
-
-
 """
 
 
@@ -366,7 +362,7 @@ train_model(
         #model_name,
         "cam_origin_vec",
         #epochs,
-        1,
+        10,
         #output_size,
         3,
         #Xx_input_len,
@@ -382,9 +378,6 @@ train_model(
         dropout_2=0.1,
         num_dense_3=1024,
         dropout_3=0.5,
-        # model params: 2 input
-        num_dense_4=512,
-        dropout_4=0.5
     )
 )
 
@@ -394,7 +387,7 @@ train_model(
         #model_name,
         "frame_vectors",
         #epochs,
-        1,
+        10,
         #output_size,
         12,
         #Xx_input_len,
@@ -423,7 +416,7 @@ train_model(
         #model_name,
         "pitch_corner_vecs",
         #epochs,
-        1,
+        10,
         #output_size,
         8,
         #Xx_input_len,
@@ -452,7 +445,7 @@ train_model(
         #model_name,
         "pitch_vectors",
         #epochs,
-        1,
+        10,
         #output_size,
         70,
         #Xx_input_len,
@@ -473,19 +466,3 @@ train_model(
         dropout_4=0.5
     )
 )
-
-
-
-
-
-
-
-def get_camera_data_prediction(model, image):
-    return list(model.predict(
-        np.array([image])
-    )[0])
-new_model = tf.keras.models.load_model(model_dir)
-#new_model.summary()
-pred1 = get_camera_data_prediction(new_model, X_test[0])
-print(pred1)
-"""

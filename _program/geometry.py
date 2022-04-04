@@ -1,59 +1,11 @@
-import csv
-import numpy as np
-
-#from model_3d.generate_dataset import *
-from model_3d import utils
-
-
-def read_csv_data(f_name):
-    with open(f_name) as f:
-        reader = csv.reader(f)
-
-        return utils.decode_camera_data(list(map(
-                lambda dec_row: list(map(
-                    lambda r: float(r),
-                    dec_row[1:]
-                )),
-                reader
-        ))[0])
-
-
-
-
-
-
-cam_origin, frames_vectors, pitch_vectors = read_csv_data('./model_3d/dataset/data.csv')
-
-pitch_corners = utils.get_pitch_corners(pitch_vectors)
-
-
-
-
-
-
 from Geometry3D import Plane, Point, Line, origin, Vector, intersection, y_unit_vector
+
+
 
 get_point = lambda v: Point(v[0], v[1], v[2])
 
 
-def get_screen_intersection(point):
-    return get_intersection(
-        Plane(
-            get_point(frames_vectors[0]),
-            get_point(frames_vectors[1]),
-            get_point(frames_vectors[2]),
-        ),
-        point
-    )
-
-def get_pitch_intersection(point):
-    return get_intersection(
-        Plane(origin(),Vector(0,0,1)),
-        point
-    )
-
-
-def get_intersection(plane, point):
+def get_intersection(cam_origin, plane, point):
     return tuple(intersection(
         Line(
             get_point(cam_origin),
@@ -62,12 +14,23 @@ def get_intersection(plane, point):
         plane
     ))
 
+def get_screen_intersection(cam_origin, frames_vectors, point):
+    return get_intersection(
+        cam_origin,
+        Plane(
+            get_point(frames_vectors[0]),
+            get_point(frames_vectors[1]),
+            get_point(frames_vectors[2]),
+        ),
+        point
+    )
 
-
-frames_pitch_vectors = list(map(
-    get_pitch_intersection,
-    frames_vectors
-))
+def get_pitch_intersection(cam_origin, point):
+    return get_intersection(
+        cam_origin,
+        Plane(origin(),Vector(0,0,1)),
+        point
+    )
 
 
 
@@ -75,6 +38,8 @@ frames_pitch_vectors = list(map(
 
 
 from shapely.geometry import Polygon, mapping
+
+
 
 def get_inner_section(y, x):
     get_vector2d_list = lambda lst: list(map(
@@ -89,21 +54,23 @@ def get_inner_section(y, x):
     if intersection.is_empty:
         return []
     else:
-        return list(mapping(
-            intersection
-        )['coordinates'][0])
-
-
-inner_section = get_inner_section(pitch_corners, frames_pitch_vectors)
-
-inner_section_screen = list(map(
-    get_screen_intersection,
-    frames_vectors
-))
+        return list(map(
+            lambda v: (v[0], v[1], 0),
+            list(dict.fromkeys(
+                list(mapping(
+                    intersection
+                )['coordinates'][0])
+            ))
+        ))
 
 
 
+
+
+import numpy as np
 from scipy.spatial.transform import Rotation as R
+
+
 
 def get_rotation(v2, v1):
     gv = lambda v: np.reshape(
@@ -133,7 +100,12 @@ def get_frame_vec_rotation(f_centroid_points):
 
 
 
+
+
+
 from math import cos, sin
+
+from model_3d import utils
 
 
 
@@ -145,9 +117,6 @@ def matrix_dot(l):
             l[0],
             matrix_dot(l[1:])
         )
-
-
-
 
 
 def matrix(translation, rotation):
@@ -231,7 +200,7 @@ get_frame_origin_vec = lambda frames_vecs: [
 ]
 
 
-
+"""
 frame_origin_vec = get_frame_origin_vec(frames_vectors)
 
 
@@ -275,3 +244,4 @@ frame_origin_vec = matrix_dot([
     m_inverted
 ])
 
+"""
