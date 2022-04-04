@@ -104,8 +104,110 @@ The project's aims are to collect track and event data from football footage. Th
 
 
 To add to methods section
-+ pseudocode for image recognition
-+ development of 3-d modelling
+
+
++ pseudocode for main code
+
+
+    frame_count := 0
+
+
+    for frame in video:
+
+
+        if key = "q":
+            break
+
+
+        if key = "f":
+            label_ball(frame)
+
+
+        if frame_count % 30 = 0:
+            perform_detection := true
+        else:
+            perform_detection := false
+
+
+        obj_tracker := ObjTracker()
+        ball_tracker := ObjTracker()
+
+
+        if perform_detection:
+            objs, ball := findObjects(frame)
+
+
+            if length(objs) > 0:
+                for o in objs:
+                    obj_tracker.add(o)
+
+                frame_count += 1
+
+            if ball:
+                ball_tracker.init(ball)
+            else:
+                label_ball(frame)
+
+        else:
+
+            is_tracking, boxes := obj_tracker.update(frame)
+
+            if is_tracking:
+                draw(boxes)
+
+                frame_count += 1
+
+            else:
+                frame_count := 0
+
+
+            is_tracking, box := ball_tracker.update(frame)
+
+            if is_tracking:
+                draw(ball)
+
+            else:
+                label_ball(frame)
+
+
+
++ pseudocode for findObjects
+
+fun findObjects(frame):
+
+    model := YoloModel()
+    confidence_threshold := double()
+    ball_conf_threshold := double()
+
+    outputs := model.predict(frame)
+
+    objs := []
+
+    for output in outputs:
+        conf := output.conf
+        name := output.name
+
+        if name = "person" and confidence_threshold < conf:
+            objs.append(output)
+
+        if name = "sports ball" and ball_conf_threshold < conf:
+            ball := output
+
+    return objs, ball
+
+
++ pseudocode for label_ball
+
+fun label_ball(frame):
+    ball_tracker := BallTracker()
+
+    box := OpenCV.selectROI(frame)
+
+    ball_tracker.init(frame, box)
+
+    return ball_tracker
+
++ development of 3-d modelling ?????
 + pseudocode for 3-d modelling data set generation
 + machine learning model and algorithm
 + geometry reconstruction algorithm
@@ -265,9 +367,20 @@ The final step is to create 15 cameras which will rotate within a range and will
 # Testing
 ## Testing assessment
 
-testing with random camera, get accuracy
++ testing with random camera, get accuracy
+
++ testing machine learning model accuracity over many layers
+    - configuration of convolution
+        + their kernels sizes
+        + number of filters
+    - size of pool layers
+    - dropout rate
+    - number of flat dense layer when it has 2 inputs
+
 
 ## Performance assessment
+
+
 
 ## any other experimental work
 
@@ -331,6 +444,13 @@ testing with random camera, get accuracy
 
 
         -----> space and spatial multiple image semantic matching
+
+
+- paralelise and multithread program
+
+
+- move data generation and training to cloud
+
 
 
 ## extra
