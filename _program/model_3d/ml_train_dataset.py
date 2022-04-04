@@ -249,6 +249,7 @@ def get_params(
 
 
 def get_ml_arch(
+        Xx_input_len,
         num_filters_1,
         kernel_size_1,
         poolsize_1,
@@ -311,6 +312,12 @@ def compile_fit_save_model(
     model.save('../models/' + model_name)
 
 
+
+
+
+rows = read_csv_data("./dataset/data.csv")
+
+
 for num_filters_1 in [20, 50]:
     for kernel_size_1 in [2, 4]:
         for poolsize_1 in [2, 4]:
@@ -327,7 +334,7 @@ for num_filters_1 in [20, 50]:
                                                 #model_name,
                                                 "cam_origin_vec",
                                                 #epochs,
-                                                10,
+                                                4,
                                                 #output_size,
                                                 3,
                                                 #Xx_input_len,
@@ -343,9 +350,6 @@ for num_filters_1 in [20, 50]:
                                                 dropout_2=dropout_2,
                                                 num_dense_3=num_dense_3,
                                                 dropout_3=dropout_3,
-                                                # model params: 2 input
-                                                num_dense_4=2,
-                                                dropout_4=0.1,
                                             )
                                         )
 
@@ -354,8 +358,6 @@ for num_filters_1 in [20, 50]:
 
 
 """
-rows = read_csv_data("./dataset/data.csv")
-
 
 
 train_model(
