@@ -109,107 +109,307 @@ To add to methods section
 + pseudocode for main code
 
 
-    frame_count := 0
+    fun findObjects(frame):
 
 
-    for frame in video:
+        model := YoloModel()
+        confidence_threshold := double()
+        ball_conf_threshold := double()
 
 
-        if key = "q":
-            break
+        outputs := model.predict(frame)
 
 
-        if key = "f":
-            label_ball(frame)
+        objs := []
 
 
-        if frame_count % 30 = 0:
-            perform_detection := true
-        else:
-            perform_detection := false
+        for output in outputs:
+            conf := output.conf
+            name := output.name
 
 
-        obj_tracker := ObjTracker()
-        ball_tracker := ObjTracker()
+            if name = "person" and confidence_threshold < conf:
+                objs.append(output)
 
 
-        if perform_detection:
-            objs, ball := findObjects(frame)
+            if name = "sports ball" and ball_conf_threshold < conf:
+                ball := output
 
 
-            if length(objs) > 0:
-                for o in objs:
-                    obj_tracker.add(o)
+        return objs, ball
 
-                frame_count += 1
 
-            if ball:
-                ball_tracker.init(ball)
-            else:
+
+    fun label_ball(frame):
+
+
+        ball_tracker := BallTracker()
+
+
+        box := OpenCV.selectROI(frame)
+
+
+        ball_tracker.init(frame, box)
+
+
+        return ball_tracker
+
+
+    def main():
+
+
+        frame_count := 0
+
+
+        for frame in video:
+
+
+            if key = "q":
+                break
+
+
+            if key = "f":
                 label_ball(frame)
 
-        else:
 
-            is_tracking, boxes := obj_tracker.update(frame)
+            if frame_count % 30 = 0:
+                perform_detection := true
+            else:
+                perform_detection := false
 
-            if is_tracking:
-                draw(boxes)
 
-                frame_count += 1
+            obj_tracker := ObjTracker()
+            ball_tracker := ObjTracker()
+
+
+            if perform_detection:
+                objs, ball := findObjects(frame)
+
+
+                if length(objs) > 0:
+                    for o in objs:
+                        obj_tracker.add(o)
+
+                    frame_count += 1
+
+                if ball:
+                    ball_tracker.init(ball)
+                else:
+                    label_ball(frame)
 
             else:
-                frame_count := 0
+
+                is_tracking, boxes := obj_tracker.update(frame)
+
+                if is_tracking:
+                    draw(boxes)
+
+                    frame_count += 1
+
+                else:
+                    frame_count := 0
 
 
-            is_tracking, box := ball_tracker.update(frame)
+                is_tracking, box := ball_tracker.update(frame)
 
-            if is_tracking:
-                draw(ball)
+                if is_tracking:
+                    draw(ball)
 
-            else:
-                label_ball(frame)
-
-
-
-+ pseudocode for findObjects
-
-fun findObjects(frame):
-
-    model := YoloModel()
-    confidence_threshold := double()
-    ball_conf_threshold := double()
-
-    outputs := model.predict(frame)
-
-    objs := []
-
-    for output in outputs:
-        conf := output.conf
-        name := output.name
-
-        if name = "person" and confidence_threshold < conf:
-            objs.append(output)
-
-        if name = "sports ball" and ball_conf_threshold < conf:
-            ball := output
-
-    return objs, ball
+                else:
+                    label_ball(frame)
 
 
-+ pseudocode for label_ball
-
-fun label_ball(frame):
-    ball_tracker := BallTracker()
-
-    box := OpenCV.selectROI(frame)
-
-    ball_tracker.init(frame, box)
-
-    return ball_tracker
 
 + development of 3-d modelling ?????
 + pseudocode for 3-d modelling data set generation
+
+
+fun encode_data(data):
+
+
+    origin, frames_vectors, pitch_vectors := data
+
+
+    encoded_origin = encode(origin)
+
+
+    encoded_frames_vectors = encode(frames_vectors)
+
+
+    encoded_pitch_vectors = encode(pitch_vectors)
+
+
+    return tuple(
+        encoded_origin +
+        encoded_frames_vectors +
+        encoded_pitch_vectors
+    )
+
+
+fun get_data(camera):
+
+
+    cam_origin_vector := camera.matrix.translation()
+
+
+    frames_vectors := cam_origin.frames()
+
+
+    pitch_vectors := []
+    for marker in blender.collection("pitch markers"):
+        append(marker, pitch_vectors)
+
+
+    return origin, frames_vectors, pitch_vectors
+
+
+
+for camera in cameras:
+    file_name := blender.render_image(camera)
+
+
+    data := get_data(camera)
+
+
+    encoded_data := encode_data(data)
+
+
+    write_to_csv(file_name, encoded_data)
+
+
+    camera.change_angle()
+
+
+
+
 + machine learning model and algorithm
+
+
+fun train_model(data, params):
+
+
+    output_size := params.output_size
+
+
+    secondary_input_len := params.secondary_input_len
+
+
+    convolution_layers := [
+        Input(IMG_WIDTH, IMG_HEIGHT),
+        Convolution2D(),
+        flatten()
+    ]
+
+
+    output := Output(output_size)
+
+
+    if secondary_input_len > 0:
+
+
+        secondary_input := [
+            Input(secondary_input_len)
+        ]
+
+
+        model := Model(
+            input := concatenate(
+                secondary_input,
+                convolution_layers
+            ),
+            outputs := output
+        )
+
+
+    else:
+
+        model := Model(
+            input := convolution_layers,
+            outputs := output
+        )
+
+
+    compile_model(model, data, params)
+
+
+train_model(
+    data,
+    [
+        model := "cam_origin_vec",
+        output_size := 3,
+        secondary_input_len := 0,
+        ...params
+    ]
+)
+
+
+
+train_model(
+    data,
+    [
+        model := "frame_vectors",
+        output_size := 12,
+        secondary_input_len := 3,
+        ...params
+    ]
+)
+
+train_model(
+    data,
+    [
+        model := "pitch_corner_vecs",
+        output_size := 8,
+        secondary_input_len := 15,
+        ...params
+    ]
+)
+
+train_model(
+    data,
+    [
+        model := "pitch_vectors",
+        output_size := 70,
+        secondary_input_len := 23,
+        ...params
+    ]
+)
+
+fun get_frame_prediction(frame):
+
+    def get_model_pred(model_names, X):
+        if model_names = []:
+            return X
+
+
+        model := model_names[0]
+
+
+        pred = model.predict([
+                frame,
+                (
+                    [] if X == [] else np.array([X])
+                )
+            ]
+        )
+
+
+        return get_model_pred(
+            model_names[1:],
+            X + pred
+        )
+
+
+    return get_model_pred(
+        [
+            "cam_origin_vec",
+            "frame_vectors",
+            "pitch_corner_vecs",
+            "pitch_vectors"
+        ],
+        []
+    )
+
+
 + geometry reconstruction algorithm
 
 

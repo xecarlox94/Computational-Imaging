@@ -179,6 +179,8 @@ while cap.isOpened():
         break
 
 
+    # load models at the start, ONCE!!!!!!!!
+
     pred = get_frame_prediction(
         frame
     )

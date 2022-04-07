@@ -130,8 +130,8 @@ def train_model(data, params):
         MaxPooling2D(pool_size=(poolsize_2, poolsize_2)),
         Dropout(dropout_2),
         Flatten(),
-        Dense(num_dense_3, activation="sigmoid"),
-        Dropout(dropout_3),
+        #Dense(num_dense_3, activation="sigmoid"),
+        #Dropout(dropout_3),
     ]
 
     out = Dense(output_size, activation="sigmoid")
@@ -141,13 +141,14 @@ def train_model(data, params):
 
         model_sec = Sequential([
             Input(shape=(Xx_input_len,)),
-            Dense(Xx_input_len, activation="sigmoid"),
+            #Dense(Xx_input_len, activation="sigmoid"),
         ])
 
-        m = Sequential(convolution_layers + [
-                Dense(num_dense_4, activation="sigmoid"),
-                Dropout(dropout_4),
-            ]
+        m = Sequential( convolution_layers
+            #+ [
+                #Dense(num_dense_4, activation="sigmoid"),
+                #Dropout(dropout_4),
+            #]
         )
 
         model = Model(
@@ -218,7 +219,7 @@ def train_model(data, params):
                 dropout_3,
                 num_dense_4,
                 dropout_4,
-            ) + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+            ) + datetime.datetime.now().strftime("%H%M%S")
         )
     )
 
@@ -266,7 +267,6 @@ def get_ml_arch(
     arch='__f_1:_' + str(num_filters_1) + ',_k_1:_' + str(kernel_size_1) + ',_p_1:_' + str(poolsize_1) + ',_dp_1:_' + str(dropout_1) + ',_f_2:_' + str(num_filters_2) + ',_k_2:_' + str(kernel_size_2) + ',_p_2:_' + str(poolsize_2) + ',_dp_2:_' + str(dropout_2) + ',_dn_3:_' + str(num_dense_3) + ',_dp_3:_' + str(dropout_3)
     if Xx_input_len > 0:
         arch = arch + ',_dn_4:_' + str(num_dense_4) + ',_dp_4:_' + str(dropout_4)
-    return ""
     return arch + '__'
 
 
@@ -317,8 +317,12 @@ def compile_fit_save_model(
 
 rows = read_csv_data("./dataset/data.csv")
 
+rows
 
-"""
+random.shuffle(rows)
+rows = rows[ :int(len(rows) * 0.2)]
+
+
 for num_filters_1 in [20, 50]:
     for kernel_size_1 in [2, 4]:
         for poolsize_1 in [2, 4]:
@@ -327,33 +331,40 @@ for num_filters_1 in [20, 50]:
                     for kernel_size_2 in [2, 4]:
                         for poolsize_2 in [2, 4]:
                             for dropout_2 in [0.1, 0.4]:
-                                for num_dense_3 in [512, 1024]:
-                                    for dropout_3 in [0.1, 0.4]:
-                                        train_model(
-                                            get_train_test(rows, 0.1),
-                                            get_params(
-                                                #model_name,
-                                                "cam_origin_vec",
-                                                #epochs,
-                                                4,
-                                                #output_size,
-                                                3,
-                                                #Xx_input_len,
-                                                0,
-                                                # model params: Input 1
-                                                num_filters_1=num_filters_1,
-                                                kernel_size_1=kernel_size_1,
-                                                poolsize_1=poolsize_1,
-                                                dropout_1=dropout_1,
-                                                num_filters_2=num_filters_2,
-                                                kernel_size_2=kernel_size_2,
-                                                poolsize_2=poolsize_2,
-                                                dropout_2=dropout_2,
-                                                num_dense_3=num_dense_3,
-                                                dropout_3=dropout_3,
-                                            )
-                                        )
+                                train_model(
+                                    get_train_test(rows, 0.1),
+                                    get_params(
+                                        #model_name,
+                                        "cam_origin_vec",
+                                        #epochs,
+                                        10,
+                                        #output_size,
+                                        3,
+                                        #Xx_input_len,
+                                        0,
+                                        # model params: Input 1
+                                        num_filters_1=num_filters_1,
+                                        kernel_size_1=kernel_size_1,
+                                        poolsize_1=poolsize_1,
+                                        dropout_1=dropout_1,
+                                        num_filters_2=num_filters_2,
+                                        kernel_size_2=kernel_size_2,
+                                        poolsize_2=poolsize_2,
+                                        dropout_2=dropout_2,
+                                        num_dense_3=0,
+                                        dropout_3=0,
+                                    )
+                                )
+
+                                #for num_dense_3 in [512, 1024]:
+                                    #for dropout_3 in [0.1, 0.4]:
+
+
 """
+
+
+rows = read_csv_data("./dataset/data.csv")
+
 
 
 train_model(
@@ -466,3 +477,4 @@ train_model(
         dropout_4=0.5
     )
 )
+"""
