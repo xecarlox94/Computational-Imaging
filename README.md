@@ -8,6 +8,7 @@
 - create semi-automated video processing analysis (reducing number of operators)
 - processes normal match streams
 - create framework for football data science research (academic or business)
+- microsoft computer vision research
 - free and open source (will take additional work to avoid non compatible libraries with GPL3, it iwll have loads of moving parts) (took a lot of time but had to use AI libraries that force me to use Lesser GPL3 license instead)
 
 
@@ -67,9 +68,6 @@ The project's aims are to collect track and event data from football footage. Th
     + manual labelling of image
     + image processing (colour conversion)
     + image masking to what is green
-    + image cannying
-    + manual segmentation of video
-    + correction of ball labelling
 - sythetic image dataset (Blender)
     + create 2d pitch png image
     + create pitch texture
@@ -77,17 +75,15 @@ The project's aims are to collect track and event data from football footage. Th
     + create cameras and automate them
     + create script to render images and automate camera movement
     + pitch construction in blender
-    + camera positioning
-    + data generation scripting
-    + homographical transformation
-    + create script to extract data from 3d world
     + encode data onto file
     + create decoding data
+    + data generation scripting
+    + create script to extract data from 3d world
+    + scene's camera positioning, direction and rotation (to avoid pointing to horizon)
 - deep/machine learning (tensorflow)
     + create convolution network
     + create multiple machine learning pipelines
-    + creating recursively conditional machine learning model
-    + first detect camera location, then frame positions, then corner positions, and finally rest of point on the screen
+    + creating recursively conditional machine learning model (first detect camera location, then frame positions, then corner positions, and finally rest of point on the screen)
 - Object detection (YOLO v4)
     + uses a preconfigured convolution network, already tested (version 4)
     + uses a pretrained model
@@ -103,10 +99,134 @@ The project's aims are to collect track and event data from football footage. Th
     + restarts tracking when yolo detection runs again
 
 
+
+
+
+
+
+
+
+## results
+
+
+
+## achievements and limits
+### achievements
+
+creating video collection algorithm for sports
+
+creating realistic 3d pitch model
+
+creating complete 3d model data generation framework
+
+creating recursively conditional machine learning model
+
+creating geometric framework to map objects from screen on pitch, and from pitch on to file
+
+
+### limits
+human detection may contain more than 1 human
+    non-consistent ball detection
+
+
+- Human agent must verify and validate data collection
+- Human agent must manully segment video streams
+- Human agent must input match meta data
+- Human agent must supervise/calibrate video processing
+- Tracking broadcast is affected by zoom/replays and camera changes
+
+
+
+## dissertation organisation sketch
+
+
+
+
+# Background
+        SKIP!!!!!!!!!!!!!!!!!!!!!
+
+
+
+
+# Work carried out
+
 To add to methods section
 
 
 + pseudocode for main code
+
+
+(sshot> image recognition, ball and humans)
+
+![full text is here!!!!! description](./images/first.png)
+players are detected but ball is not (purple means that object recognition just ran).
+multiple players are detected in the same bounding box.
+refs are detected as well.
+one steward is also detected.
+streaming is stopped because ball is not found.
+
+![full text is here!!!!! description](./images/Screenshot_2022-03-03_21-32-51.png)
+players bounding boxes in green means that it is tracking.
+manually labelling ball to continue stream.
+
+![full text is here!!!!! description](./images/Screenshot_2022-03-03_21-35-39.png)
+ball tracking  is lost and tracks the numbers on the players back.
+
+![full text is here!!!!! description](./images/Screenshot_2022-03-03_21-36-05.png)
+player tracking continues.
+new players appear on the screen but they are not detected until 30frame period runs object detection again.
+
+![full text is here!!!!! description](./images/Screenshot_2022-03-03_21-38-04.png)
+ball tracking is lost again because of the pitch lines and player boots.
+some players previously detected are lost because of the backgroup from ads or pitch (not enough constract).
+
+![full text is here!!!!! description](./images/Screenshot_2022-03-03_21-36-47.png)
+ball needs to be labelled again to be tracked again.
+
+![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-05-49.png)
+the object detection is ran.
+all the human trackers are removed but the ball tracker.
+the ball tracker is not reset if the ball is still being tracked.
+
+![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-06-03.png)
+the players tracker had to be reset again from the <prev img> because the detected players moved out of the screen in the meantime.
+ball tracker continues to run, regardless.
+
+![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-06-18.png)
+the ball tracker is wrong again, by tracking the player's back number.
+
+![full text is here!!!!! description](./images/Screenshot_2022-03-03_21-39-53.png)
+this is a video segment imposed by the director.
+data cannot be collected.
+this is a short moment.
+
+![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-06-43.png)
+ball is tracked from the <prev img> since the label needs to be labelled for the stream to continue (needs to cut the scene).
+there is a bug, a human is recognised due to noise.
+
+![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-08-00.png)
+players are detected again.
+the bug stil persists.
+a fan is recognised in the crowd.
+the ball is again not recognised.
+
+![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-09-45.png)
+most players are visible from this new perspective.
+The ball is not recognised.
+
+![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-10-58.png)
+most of the players are recognised from this perspective.
+The ball is visible and being tracked.
+
+![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-12-29.png)
+in this frame few players were recognised because the camera view moved very suddendly (from the previous frame <prev img>) in betwee the object detection cycle.
+The ball tracker was lost and it is tracking the payer's leg instead.
+
+![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-13-18.png)
+In this frame most players are detected including all players inside the box which is the region of interest when a team is attacking.
+The ball tracker has lost the ball because the camera view is being blocked by the crossing player's leg.
+(sshot> pitch 3d modelling and camera automation)
+
 
 
     fun findObjects(frame):
@@ -220,7 +340,6 @@ To add to methods section
 
 
 
-+ development of 3-d modelling ?????
 + pseudocode for 3-d modelling data set generation
 
 
@@ -413,121 +532,6 @@ fun get_frame_prediction(frame):
 + geometry reconstruction algorithm
 
 
-
-## results
-
-(sshot> image recognition, ball and humans)
-
-![full text is here!!!!! description](./images/first.png)
-players are detected but ball is not (purple means that object recognition just ran).
-multiple players are detected in the same bounding box.
-refs are detected as well.
-one steward is also detected.
-streaming is stopped because ball is not found.
-
-![full text is here!!!!! description](./images/Screenshot_2022-03-03_21-32-51.png)
-players bounding boxes in green means that it is tracking.
-manually labelling ball to continue stream.
-
-![full text is here!!!!! description](./images/Screenshot_2022-03-03_21-35-39.png)
-ball tracking  is lost and tracks the numbers on the players back.
-
-![full text is here!!!!! description](./images/Screenshot_2022-03-03_21-36-05.png)
-player tracking continues.
-new players appear on the screen but they are not detected until 30frame period runs object detection again.
-
-![full text is here!!!!! description](./images/Screenshot_2022-03-03_21-38-04.png)
-ball tracking is lost again because of the pitch lines and player boots.
-some players previously detected are lost because of the backgroup from ads or pitch (not enough constract).
-
-![full text is here!!!!! description](./images/Screenshot_2022-03-03_21-36-47.png)
-ball needs to be labelled again to be tracked again.
-
-![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-05-49.png)
-the object detection is ran.
-all the human trackers are removed but the ball tracker.
-the ball tracker is not reset if the ball is still being tracked.
-
-![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-06-03.png)
-the players tracker had to be reset again from the <prev img> because the detected players moved out of the screen in the meantime.
-ball tracker continues to run, regardless.
-
-![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-06-18.png)
-the ball tracker is wrong again, by tracking the player's back number.
-
-![full text is here!!!!! description](./images/Screenshot_2022-03-03_21-39-53.png)
-this is a video segment imposed by the director.
-data cannot be collected.
-this is a short moment.
-
-![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-06-43.png)
-ball is tracked from the <prev img> since the label needs to be labelled for the stream to continue (needs to cut the scene).
-there is a bug, a human is recognised due to noise.
-
-![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-08-00.png)
-players are detected again.
-the bug stil persists.
-a fan is recognised in the crowd.
-the ball is again not recognised.
-
-![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-09-45.png)
-most players are visible from this new perspective.
-The ball is not recognised.
-
-![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-10-58.png)
-most of the players are recognised from this perspective.
-The ball is visible and being tracked.
-
-![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-12-29.png)
-in this frame few players were recognised because the camera view moved very suddendly (from the previous frame <prev img>) in betwee the object detection cycle.
-The ball tracker was lost and it is tracking the payer's leg instead.
-
-![full text is here!!!!! description](./images/Screenshot_2022-03-03_23-13-18.png)
-In this frame most players are detected including all players inside the box which is the region of interest when a team is attacking.
-The ball tracker has lost the ball because the camera view is being blocked by the crossing player's leg.
-(sshot> pitch 3d modelling and camera automation)
-
-
-## achievements and limits
-### achievements
-
-creating video collection algorithm for sports
-
-creating realistic 3d pitch model
-
-creating complete 3d model data generation framework
-
-creating recursively conditional machine learning model
-
-creating geometric framework to map objects from screen on pitch, and vice versa
-
-
-### limits
-human detection may contain more than 1 human
-    non-consistent ball detection
-
-
-- Human agent must verify and validate data collection
-- Human agent must manully segment video streams
-- Human agent must input match meta data
-- Human agent must supervise/calibrate video processing
-- Tracking broadcast is affected by zoom/replays and camera changes
-
-
-
-## dissertation organisation sketch
-
-
-
-
-# Background
-        SKIP!!!!!!!!!!!!!!!!!!!!!
-
-
-
-
-# Work carried out
-
 ## video processing
     - machine learning humans and ball recognition
     - object traking
@@ -644,6 +648,28 @@ The final step is to create 15 cameras which will rotate within a range and will
 
 
         -----> space and spatial multiple image semantic matching
+
+
+- image/video processing operations (openCV)
+    + image cannying
+    + manual segmentation of video
+    + correction of ball labelling
+- sythetic image dataset (Blender)
+    + create 2d pitch png image
+    + create pitch texture
+    + create goals objects
+    + create cameras and automate them
+    + create script to render images and automate camera movement
+    + pitch construction in blender
+    + camera positioning
+    + data generation scripting
+    + homographical transformation
+    + create script to extract data from 3d world
+    + encode data onto file
+    + create decoding data
+- deep/machine learning (tensorflow)
+    + homographical transformation
+
 
 
 - paralelise and multithread program
