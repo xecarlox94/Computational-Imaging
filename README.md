@@ -8,7 +8,7 @@
 - create semi-automated video processing analysis (reducing number of operators)
 - processes normal match streams
 - create framework for football data science research (academic or business)
-- microsoft computer vision research
+- microsoft computer vision research, https://microsoft.github.io/FaceSynthetics/
 - free and open source (will take additional work to avoid non compatible libraries with GPL3, it iwll have loads of moving parts) (took a lot of time but had to use AI libraries that force me to use Lesser GPL3 license instead)
 
 
@@ -49,15 +49,6 @@ The project's aims are to collect track and event data from football footage. Th
     - image homographical transformation
     - grid positioning
     - map players and ball to pitch
-- video processing
-    - video/play segmentation
-
-- general
-    - low quality footage
-    - weather and light visual conditions
-    - detect refs by colour
-    - ignoring people outside of the pitch
-    - short video (replay/sudden angles) segments interrupt data collection
 
 
 
@@ -84,6 +75,7 @@ The project's aims are to collect track and event data from football footage. Th
     + create convolution network
     + create multiple machine learning pipelines
     + creating recursively conditional machine learning model (first detect camera location, then frame positions, then corner positions, and finally rest of point on the screen)
+    + homographical transformation ???
 - Object detection (YOLO v4)
     + uses a preconfigured convolution network, already tested (version 4)
     + uses a pretrained model
@@ -107,53 +99,6 @@ The project's aims are to collect track and event data from football footage. Th
 
 
 ## results
-
-
-
-## achievements and limits
-### achievements
-
-creating video collection algorithm for sports
-
-creating realistic 3d pitch model
-
-creating complete 3d model data generation framework
-
-creating recursively conditional machine learning model
-
-creating geometric framework to map objects from screen on pitch, and from pitch on to file
-
-
-### limits
-human detection may contain more than 1 human
-    non-consistent ball detection
-
-
-- Human agent must verify and validate data collection
-- Human agent must manully segment video streams
-- Human agent must input match meta data
-- Human agent must supervise/calibrate video processing
-- Tracking broadcast is affected by zoom/replays and camera changes
-
-
-
-## dissertation organisation sketch
-
-
-
-
-# Background
-        SKIP!!!!!!!!!!!!!!!!!!!!!
-
-
-
-
-# Work carried out
-
-To add to methods section
-
-
-+ pseudocode for main code
 
 
 (sshot> image recognition, ball and humans)
@@ -228,6 +173,53 @@ The ball tracker has lost the ball because the camera view is being blocked by t
 (sshot> pitch 3d modelling and camera automation)
 
 
+
+
+
+## achievements and limits
+### achievements
+
+creating video collection algorithm for sports
+
+creating realistic 3d pitch model
+
+creating complete 3d model data generation framework
+
+creating recursively conditional machine learning model
+
+creating geometric framework to map objects from screen on pitch, and from pitch on to file
+
+
+### limits
+human detection may contain more than 1 human
+    non-consistent ball detection
+
+
+- Human agent must verify and validate data collection
+- Human agent must manully segment video streams
+- Human agent must input match meta data
+- Human agent must supervise/calibrate video processing
+- Tracking broadcast is affected by zoom/replays and camera changes
+
+
+
+## dissertation organisation sketch
+
+
+
+
+# Background
+        SKIP!!!!!!!!!!!!!!!!!!!!!
+
+
+
+
+# Work carried out
+
+To add to methods section
+
+
++ pseudocode for main code
 
     fun findObjects(frame):
 
@@ -654,6 +646,7 @@ The final step is to create 15 cameras which will rotate within a range and will
     + image cannying
     + manual segmentation of video
     + correction of ball labelling
+    + video/play segmentation
 - sythetic image dataset (Blender)
     + create 2d pitch png image
     + create pitch texture
@@ -663,12 +656,18 @@ The final step is to create 15 cameras which will rotate within a range and will
     + pitch construction in blender
     + camera positioning
     + data generation scripting
-    + homographical transformation
     + create script to extract data from 3d world
     + encode data onto file
     + create decoding data
-- deep/machine learning (tensorflow)
-    + homographical transformation
+
+
+
+- general
+    - low quality footage
+    - weather and light visual conditions
+    - detect refs by colour
+    - ignoring people outside of the pitch
+    - short video (replay/sudden angles) segments interrupt data collection
 
 
 

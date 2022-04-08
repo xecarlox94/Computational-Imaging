@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?><project name="Computational Imaging" company="Heriot-Watt University" webLink="http://" view-date="2021-09-01" view-index="0" gantt-divider-location="396" resource-divider-location="300" version="3.1.3102" locale="en_GB">
+    <description/>
+    <view zooming-state="default:8" id="gantt-chart">
+        <field id="tpd3" name="Name" width="205" order="0"/>
+        <field id="tpd4" name="Begin date" width="93" order="1"/>
+        <field id="tpd5" name="End date" width="94" order="2"/>
+        <option id="color.recent">
+            <![CDATA[#00cc33 #ffcc00 #ffff00 #ff00ff #ff3333 #cccc00 #ff00ff #ff0000 #e10000 #000000]]>
+        </option>
+    </view>
+    <view id="resource-table">
+        <field id="0" name="Name" width="210" order="0"/>
+        <field id="1" name="Default role" width="86" order="1"/>
+    </view>
+    <!-- -->
+    <calendars>
+        <day-types>
+            <day-type id="0"/>
+            <day-type id="1"/>
+            <default-week id="1" name="default" sun="1" mon="0" tue="0" wed="0" thu="0" fri="0" sat="1"/>
+            <only-show-weekends value="false"/>
+            <overriden-day-types/>
+            <days/>
+        </day-types>
+        <date year="" month="1" date="1" type="HOLIDAY">
+            <![CDATA[New Year's Day]]>
+        </date>
+        <date year="" month="12" date="25" type="HOLIDAY">
+            <![CDATA[Christmas Day]]>
+        </date>
+        <date year="" month="12" date="26" type="HOLIDAY">
+            <![CDATA[Boxing Day]]>
+        </date>
+        <date year="" month="11" date="30" type="HOLIDAY">
+            <![CDATA[St Andrews Day]]>
+        </date>
+        <date year="2015" month="12" date="28" type="HOLIDAY">
+            <![CDATA[Boxing Day (in lieu)]]>
+        </date>
+        <date year="2015" month="4" date="3" type="HOLIDAY">
+            <![CDATA[Good Friday]]>
+        </date>
+        <date year="2015" month="4" date="6" type="HOLIDAY">
+            <![CDATA[Easter Monday]]>
+        </date>
+        <date year="2015" month="5" date="4" type="HOLIDAY">
+            <![CDATA[Early May Bank Holiday]]>
+        </date>
+        <date year="2015" month="5" date="25" type="HOLIDAY">
+            <![CDATA[Spring Bank Holiday]]>
+        </date>
+        <date year="2016" month="3" date="25" type="HOLIDAY">
+            <![CDATA[Good Friday]]>
+        </date>
+        <date year="2016" month="5" date="2" type="HOLIDAY">
+            <![CDATA[Early May Bank Holiday]]>
+        </date>
+        <date year="2016" month="5" date="30" type="HOLIDAY">
+            <![CDATA[Spring Bank Holiday]]>
+        </date>
+        <date year="2017" month="1" date="2" type="HOLIDAY">
+            <![CDATA[New Year's Day (in lieu)]]>
+        </date>
+        <date year="2017" month="4" date="14" type="HOLIDAY">
+            <![CDATA[Good Friday]]>
+        </date>
+        <date year="2017" month="5" date="1" type="HOLIDAY">
+            <![CDATA[Early May Bank Holiday]]>
+        </date>
+        <date year="2017" month="5" date="29" type="HOLIDAY">
+            <![CDATA[Spring Bank Holiday]]>
+        </date>
+        <date year="2018" month="3" date="30" type="HOLIDAY">
+            <![CDATA[Good Friday]]>
+        </date>
+        <date year="2018" month="5" date="7" type="HOLIDAY">
+            <![CDATA[Early May Bank Holiday]]>
+        </date>
+        <date year="2018" month="5" date="28" type="HOLIDAY">
+            <![CDATA[Spring Bank Holiday]]>
+        </date>
+        <date year="2020" month="4" date="10" type="HOLIDAY">
+            <![CDATA[Good Friday]]>
+        </date>
+        <date year="2020" month="5" date="8" type="HOLIDAY">
+            <![CDATA[Early May Bank Holiday (VE day)]]>
+        </date>
+        <date year="2020" month="5" date="25" type="HOLIDAY">
+            <![CDATA[Spring Bank Holiday]]>
+        </date>
+        <date year="2021" month="4" date="2" type="HOLIDAY">
+            <![CDATA[Good Friday]]>
+        </date>
+        <date year="2021" month="5" date="3" type="HOLIDAY">
+            <![CDATA[Early May Bank Holiday]]>
+        </date>
+        <date year="2021" month="5" date="31" type="HOLIDAY">
+            <![CDATA[Spring Bank Holiday]]>
+        </date>
+        <date year="2015" month="1" date="2" type="HOLIDAY">
+            <![CDATA[Day after New Years Day]]>
+        </date>
+        <date year="2015" month="8" date="3" type="HOLIDAY">
+            <![CDATA[August Bank Holiday]]>
+        </date>
+        <date year="2016" month="1" date="4" type="HOLIDAY">
+            <![CDATA[Day after New Years Day (in lieu)]]>
+        </date>
+        <date year="2016" month="8" date="1" type="HOLIDAY">
+            <![CDATA[August Bank Holiday]]>
+        </date>
+        <date year="2017" month="1" date="3" type="HOLIDAY">
+            <![CDATA[New Year's Day (in lieu)]]>
+        </date>
+        <date year="2017" month="8" date="7" type="HOLIDAY">
+            <![CDATA[August Bank Holiday]]>
+        </date>
+        <date year="2018" month="1" date="2" type="HOLIDAY">
+            <![CDATA[Day after New Year's Day]]>
+        </date>
+        <date year="2018" month="8" date="6" type="HOLIDAY">
+            <![CDATA[August Bank Holiday]]>
+        </date>
+        <date year="2019" month="1" date="2" type="HOLIDAY">
+            <![CDATA[Day after New Year's Day]]>
+        </date>
+        <date year="2019" month="8" date="5" type="HOLIDAY">
+            <![CDATA[August Bank Holiday]]>
+        </date>
+        <date year="2019" month="12" date="2" type="HOLIDAY">
+            <![CDATA[St Andrews Day]]>
+        </date>
+        <date year="2020" month="1" date="2" type="HOLIDAY">
+            <![CDATA[Day after New Year's Day]]>
+        </date>
+        <date year="2020" month="8" date="3" type="HOLIDAY">
+            <![CDATA[Summer Bank Holiday]]>
+        </date>
+        <date year="2020" month="11" date="30" type="HOLIDAY">
+            <![CDATA[St Andrews Day]]>
+        </date>
+        <date year="2020" month="12" date="28" type="HOLIDAY">
+            <![CDATA[Boxing Day (in lieu)]]>
+        </date>
+        <date year="2021" month="1" date="4" type="HOLIDAY">
+            <![CDATA[Day after New Year's Day]]>
+        </date>
+        <date year="2021" month="8" date="2" type="HOLIDAY">
+            <![CDATA[Summer Bank Holiday]]>
+        </date>
+        <date year="2021" month="11" date="30" type="HOLIDAY">
+            <![CDATA[St Andrews Day]]>
+        </date>
+        <date year="2021" month="12" date="27" type="HOLIDAY">
+            <![CDATA[Christmas Day (in lieu)]]>
+        </date>
+        <date year="2021" month="12" date="28" type="HOLIDAY">
+            <![CDATA[Boxing Day (in lieu)]]>
+        </date>
+    </calendars>
+    <tasks empty-milestones="true">
+        <taskproperties>
+            <taskproperty id="tpd0" name="type" type="default" valuetype="icon"/>
+            <taskproperty id="tpd1" name="priority" type="default" valuetype="icon"/>
+            <taskproperty id="tpd2" name="info" type="default" valuetype="icon"/>
+            <taskproperty id="tpd3" name="name" type="default" valuetype="text"/>
+            <taskproperty id="tpd4" name="begindate" type="default" valuetype="date"/>
+            <taskproperty id="tpd5" name="enddate" type="default" valuetype="date"/>
+            <taskproperty id="tpd6" name="duration" type="default" valuetype="int"/>
+            <taskproperty id="tpd7" name="completion" type="default" valuetype="int"/>
+            <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
+            <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
+        </taskproperties>
+        <task id="0" name="Documentation" color="#000000" meeting="false" start="2021-09-14" duration="171" complete="0" thirdDate="2021-11-22" thirdDate-constraint="0" expand="true">
+            <task id="42" name="Deliverable 1" color="#ffcc00" meeting="true" start="2021-11-23" duration="0" complete="0" thirdDate="2021-09-01" thirdDate-constraint="0" expand="true"/>
+            <task id="26" name="Research report" color="#ffff00" meeting="false" start="2021-09-14" duration="51" complete="0" thirdDate="2021-11-22" thirdDate-constraint="0" expand="true"/>
+            <task id="45" name="Dissertation submition" color="#ff3333" meeting="true" start="2022-04-21" duration="0" complete="0" thirdDate="2021-09-01" thirdDate-constraint="0" expand="true"/>
+            <task id="30" name="Dissertation" color="#ff0000" meeting="false" start="2021-11-23" duration="105" complete="0" thirdDate="2021-09-01" thirdDate-constraint="0" expand="true"/>
+            <task id="54" name="Online Session" color="#ff00ff" meeting="true" start="2022-05-13" duration="0" complete="0" thirdDate="2021-09-01" thirdDate-constraint="0" expand="true"/>
+            <task id="35" name="Presentation" color="#ff00ff" meeting="false" start="2022-04-22" duration="16" complete="0" thirdDate="2021-09-01" thirdDate-constraint="0" expand="true"/>
+        </task>
+        <task id="48" name="Project" meeting="false" start="2021-11-23" duration="105" complete="0" expand="true">
+            <task id="70" name="Solution's first version" color="#00cc33" meeting="true" start="2022-04-21" duration="0" complete="0" thirdDate="2021-09-01" thirdDate-constraint="0" expand="true"/>
+            <task id="49" name="Development" color="#00ff00" meeting="false" start="2021-11-23" duration="105" complete="0" thirdDate="2021-09-01" thirdDate-constraint="0" expand="true"/>
+            <task id="50" name="Evaluation" color="#0000ff" meeting="false" start="2022-01-10" duration="74" complete="0" thirdDate="2021-09-01" thirdDate-constraint="0" expand="true"/>
+        </task>
+    </tasks>
+    <resources/>
+    <allocations/>
+    <vacations/>
+    <previous/>
+    <roles roleset-name="Default"/>
+</project>
