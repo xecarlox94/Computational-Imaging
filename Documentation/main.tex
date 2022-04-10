@@ -1,0 +1,1340 @@
+\documentclass[
+11pt,
+twoside
+]{report}
+
+
+\usepackage[
+a4paper,
+vmargin=1in,
+hmargin=1in
+]{geometry}
+
+\usepackage{setspace}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{multirow}
+
+
+\usepackage{graphicx}
+\graphicspath{{resources/images/}}
+
+
+
+\usepackage[ backend=biber ]{biblatex}
+\addbibresource{./resources/references.bib}
+
+
+
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\renewcommand{\algorithmicrequire}{\textbf{Input: }}
+\renewcommand{\algorithmicensure}{\textbf{Output: }}
+\algnewcommand\And{\textbf{ and }}
+\algnewcommand\Or{\textbf{ or }}
+\algnewcommand\Is {\textbf{ is }}
+
+
+
+\usepackage{amssymb}
+
+
+
+\setcounter{biburllcpenalty}{7000}
+\setcounter{biburlucpenalty}{8000}
+
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhead{}
+\fancyhead[C]{\ThesisTitle}
+\fancyfoot{}
+\fancyfoot[C]{\thepage}
+
+
+
+\newcommand{\ThesisTitle}{Computational Imaging}
+\newcommand{\TheAuthor}{Jose Fernandes}
+\title{
+{\ThesisTitle}\\
+\hfill \\
+{\large Heriot-Watt University}\\
+\hfill \\
+{\includegraphics[scale=2.5]{hw.jpg}} \\
+\hfill \\
+}
+\author{\TheAuthor}
+\date{22 November 2021}
+
+
+\doublespacing
+\begin{document}
+
+\maketitle
+
+\chapter*{Declaration}
+
+I, \TheAuthor, confirm that this work submitted for assessment is my own and is expressed in my own words. Any uses made within it of the results of other authors in any form (e.g., ideas, equations, figures, text, tables, programs) are adequately acknowledged at any point of their use. A list of the references employed is included.
+
+\hfill
+
+
+Signed: \TheAuthor
+
+
+Date: 22/11/2021
+
+\chapter*{Abstract}
+
+This Project describes creating a multi-stage algorithm to track and extract features from football matches' 2D video recording. The solution will track and map the players and ball's position relative to the court lines with minimal human assistance or monitoring. This algorithm will require implementing image processing and machine learning tools and techniques to allow visual recognition of intended elements. Although there are significant technical challenges, similar solutions were already attempted, which lay down the groundwork and references for guidance in this Project.
+
+
+This solution aims to be an open platform for computer and sports scientists to collaborate and make invaluable contributions to the advancement of sports data science.
+
+
+
+
+\tableofcontents
+
+
+\chapter{Introduction}
+
+\section{Motivation}
+
+
+In recent years, the importance of data analytics in sports allied with domain expertise has become ever more essential. A recent great example is the revival of one of the best football clubs globally, the Liverpool Football Club (LFC). The LFC was initially criticised for their analytical approach to running the football team, but now it is regarded as one of the most successful and profitable organisations in the sports industry. This organisation adopted innovative management strategies guided by advanced match analytics analysis to measure their performance and calculate the likelihood of their action's success (and profit) \cite{liverpool}.
+
+
+Despite this encouraging story, \cite{liverpool}, and modern technology's availability, the advanced analytics data is only within reach of high-income clubs and organisations due to the costs involved \cite{opta}. The data providers rely primarily on human agents to label and annotate the actions and events in a match which drive the cost up \cite{opta}. These datasets are therefore not freely available for any small organisation, researcher or enthusiast that could contribute, for example, to various areas of Artificial Intelligence (AI), including Game Theory \cite{deepmind}.
+
+
+The proposed solution is an free- and open-source computer vision framework that extracts features from 2D video single-camera broadcasting, using image processing and machine learning tools, to output the position of players and ball sequentially. These principles can be applied to other sports, and the data produced will be vital to the sports data science community because it will encourage innovation in the sports field. This software will adopt an open-source license to encourage redistribution and collaboration between interested individuals and organisations, which will promote free access of football tracking data to anyone interested \cite{osd}.  This report will cover the implementation of this solution.
+
+
+It will cover an extensive explanation of  discussion about similar research material and projects related, comprehensive descriptions about its implementation, testing and respective conclusion.
+
+
+
+\section{summarising objectives}
+
+
+\begin{itemize}
+\item
+  very ambitious
+\item
+  create solid foundation
+\item
+    production of a synthetic dataset framework
+    use of syntethic data
+  microsoft computer vision research,
+  https://microsoft.github.io/FaceSynthetics/
+\item
+  long future project
+\item
+  long goal of modularising this football framework into a collective
+  sports library composed of smaller reusable/generic units because
+  collective sports have different dynamics
+\item
+  create semi-automated video processing analysis (reducing number of
+  operators)
+\item
+  processes normal match streams
+\item
+  create framework for football data science research (academic or
+  business)
+\item
+  free and open source (will take additional work to avoid non
+  compatible libraries with GPL3, it iwll have loads of moving parts)
+  (took a lot of time but had to use AI libraries that force me to use
+  Lesser GPL3 license instead)
+\end{itemize}
+
+The project's aims are to collect track and event data from football
+footage. The ultimate goal is to be able to process any kind of footage
+but, for now, it will only process broadcast football matches.
+
+
+
+\section{problems solved to achieve objectives}
+
+\begin{itemize}
+\item
+  data processing
+
+  \begin{itemize}
+  \item
+    encode and decode positional data
+  \item
+    encode and decode image data
+  \item
+    various changes
+  \end{itemize}
+\item
+  3d modelling
+
+  \begin{itemize}
+  \item
+    creating realistic 3d environments with main features
+  \item
+    create reference map
+  \item
+    automate cameras
+  \item
+    geometric calculations to get outputs
+  \end{itemize}
+\item
+  machine learning modeling
+
+  \begin{itemize}
+  \item
+    test and measure different architectures
+  \item
+    preprocess images
+  \end{itemize}
+\item
+  detect humans
+
+  \begin{itemize}
+  \item
+    detect players
+  \item
+    track players
+  \item
+    recognise players
+
+    \begin{itemize}
+    \item
+      identify players numbers
+    \item
+      identify players visual characteristics
+    \end{itemize}
+  \item
+    filter out referee(s)
+  \item
+    detects large human (noise, needs to be removed)
+  \item
+    determine players position
+  \item
+    if camera moves too suddendly, few players will be tracked until
+    next object detection
+  \end{itemize}
+\item
+  detect ball
+
+  \begin{itemize}
+  \item
+    detect ball
+  \item
+    track ball
+  \end{itemize}
+\item
+  pitch geometry reconstruction
+
+  \begin{itemize}
+  \item
+    optical distortion
+  \item
+    algorithm to determine inner section
+  \item
+    image homographical transformation
+  \item
+    grid positioning
+  \item
+    map players and ball to pitch
+  \end{itemize}
+\end{itemize}
+
+
+
+\section{methods}
+
+\begin{itemize}
+\item
+  image/video processing operations (openCV)
+
+  \begin{itemize}
+  \item
+    video stream processing
+  \item
+    manual labelling of image
+  \item
+    image processing (colour conversion)
+  \item
+    image masking to what is green
+  \end{itemize}
+\item
+  sythetic image dataset (Blender)
+
+  \begin{itemize}
+  \item
+    create 2d pitch png image
+  \item
+    create pitch texture
+  \item
+    create goals objects
+  \item
+    create cameras and automate them
+  \item
+    create script to render images and automate camera movement
+  \item
+    pitch construction in blender
+  \item
+    encode data onto file
+  \item
+    create decoding data
+  \item
+    data generation scripting
+  \item
+    create script to extract data from 3d world
+  \item
+    scene's camera positioning, direction and rotation (to avoid
+    pointing to horizon)
+  \end{itemize}
+\item
+  deep/machine learning (tensorflow)
+
+  \begin{itemize}
+  \item
+    create convolution network
+  \item
+    create multiple machine learning pipelines
+  \item
+    creating recursively conditional machine learning model (first
+    detect camera location, then frame positions, then corner positions,
+    and finally rest of point on the screen)
+  \item
+    homographical transformation ???
+  \end{itemize}
+\item
+  Object detection (YOLO v4)
+
+  \begin{itemize}
+  \item
+    uses a preconfigured convolution network, already tested (version 4)
+  \item
+    uses a pretrained model
+  \item
+    detects many types of objects (in coco.names)
+  \item
+    algorithm filters all objects detected but human and balls
+  \item
+    humans are detected above a certain threshold
+  \item
+    if successful, the ball is returned by taking the detection with the
+    highest confidence
+  \item
+    Non-maximum suppression is used, based on the human detection
+    threshold and the Non-maximum suppression threshold, to remove the
+    overly redundant overlapping detections
+  \end{itemize}
+\item
+  Object tracking (OpenCV tracking)
+
+  \begin{itemize}
+  \item
+    takes detection bounding boxes and creates trackers
+  \item
+    using CSRT tracker to follow humans and ball
+  \item
+    tracker updates every frame
+  \item
+    restarts tracking when yolo detection runs again
+  \end{itemize}
+\end{itemize}
+
+
+
+\section{results}
+
+\listoffigures
+
+(sshot\textgreater{} image recognition, ball and humans)
+
+
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{first.png}
+    \caption{caption}
+    \label{img:1}
+\end{figure}
+\ref{img:1}
+players are detected but ball is not (purple means that object recognition just ran). multiple players are detected in the same bounding box. refs are detected as well. one steward is also detected. streaming is stopped because ball is not found.
+
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_21-32-51.png}
+    \caption{caption}
+    \label{img:2}
+\end{figure}
+\ref{img:2} players bounding boxes in green means that it is tracking. manually labelling ball to continue stream.
+
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_21-35-39.png}
+    \caption{caption}
+    \label{img:3}
+\end{figure}
+\ref{img:3} ball tracking is lost and tracks the numbers on the players back.
+
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_21-36-05.png}
+    \caption{caption}
+    \label{img:4}
+\end{figure}
+\ref{img:4} player tracking continues. new players appear on the screen but they are not
+detected until 30frame period runs object detection again.
+
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_21-38-04.png}
+    \caption{caption}
+    \label{img:5}
+\end{figure}
+\ref{img:5} ball
+tracking is lost again because of the pitch lines and player boots. some
+players previously detected are lost because of the backgroup from ads
+or pitch (not enough constract).
+
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_21-36-47.png}
+    \caption{caption}
+    \label{img:6}
+\end{figure}
+\ref{img:6} ball needs
+to be labelled again to be tracked again.
+
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_23-05-49.png}
+    \caption{caption}
+    \label{img:7}
+\end{figure}
+\ref{img:7} the object
+detection is ran. all the human trackers are removed but the ball
+tracker. the ball tracker is not reset if the ball is still being
+tracked.
+
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_23-06-03.png}
+    \caption{caption}
+    \label{img:8}
+\end{figure}
+\ref{img:8} the
+players tracker had to be reset again from the because the detected
+players moved out of the screen in the meantime. ball tracker continues
+to run, regardless.
+
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_23-06-18.png}
+    \caption{caption}
+    \label{img:9}
+\end{figure}
+\ref{img:9} the ball
+tracker is wrong again, by tracking the player's back number.
+
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_21-39-53.png}
+    \caption{caption}
+    \label{img:10}
+\end{figure}
+\ref{img:10} this is a
+video segment imposed by the director. data cannot be collected. this is
+a short moment.
+
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_23-06-43.png}
+    \caption{caption}
+    \label{img:11}
+\end{figure}
+\ref{img:11} ball is
+tracked from the since the label needs to be labelled for the stream to
+continue (needs to cut the scene). there is a bug, a human is recognised
+due to noise.
+
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_23-08-00.png}
+    \caption{caption}
+    \label{img:12}
+\end{figure}
+\ref{img:12} players
+are detected again. the bug stil persists. a fan is recognised in the
+crowd. the ball is again not recognised.
+
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_23-09-45.png}
+    \caption{caption}
+    \label{img:13}
+\end{figure}
+\ref{img:13} most
+players are visible from this new perspective. The ball is not
+recognised.
+
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_23-10-58.png}
+    \caption{caption}
+    \label{img:14}
+\end{figure}
+\ref{img:14} most of
+the players are recognised from this perspective. The ball is visible
+and being tracked.
+
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_23-12-29.png}
+    \caption{caption}
+    \label{img:15}
+\end{figure}
+\ref{img:15} in this
+frame few players were recognised because the camera view moved very
+suddendly (from the previous frame ) in betwee the object detection
+cycle. The ball tracker was lost and it is tracking the payer's leg
+instead.
+
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_23-13-18.png}
+    \caption{caption}
+    \label{img:16}
+\end{figure}
+\ref{img:16} In this
+frame most players are detected including all players inside the box
+which is the region of interest when a team is attacking. The ball
+tracker has lost the ball because the camera view is being blocked by
+the crossing player's leg. (sshot\textgreater{} pitch 3d modelling and
+camera automation)
+
+
+
+
+
+
+\section{achievements and limits}
+
+\subsection{achievements}
+
+creating video collection algorithm for sports
+
+creating realistic 3d pitch model
+
+creating complete 3d model data generation framework
+
+creating recursively conditional machine learning model
+
+creating geometric framework to map objects from screen on pitch, and
+from pitch on to file
+
+
+
+\subsection{limits}
+
+human detection may contain more than 1 human non-consistent ball
+detection
+
+\begin{itemize}
+\item
+  Human agent must verify and validate data collection
+\item
+  Human agent must manully segment video streams
+\item
+  Human agent must input match meta data
+\item
+  Human agent must supervise/calibrate video processing
+\item
+  Tracking broadcast is affected by zoom/replays and camera changes
+\end{itemize}
+
+
+
+\subsection{dissertation organisation sketch}
+
+
+to fill in
+
+
+\chapter{Background}
+
+
+This chapter will delve into current research, projects and articles related to computer vision for sports' data extraction. The interest in this field is recent. However, there is already a comprehensive set of information sources necessary to evaluate the feasibility of developing a potential solution. Most of these sources lay out the scientific and technical principles applied in developing their successfully tested and solutions being assessed. Therefore, it is vital to have a deeper analysis and reflection on these principles to determine the most appropriate approach for this Project. The review aims to gather the knowledge required to develop and evaluate this Project's solution successfully.
+
+
+\section{Basketball video analysis}
+
+
+The ``Open Source Sports Video Analysis using Machine Learning'' article \cite{stephan} is an excellent article that lays out a real-world application of the theory behind automated sports analytics video extraction. It serves as a complete description of the ``basketballVideoAnalysis'' open-source project \cite{stephan_code} that has the goal of tracking players, objects and actions for allowing the analysis of basketball match recordings. This article is a good starting point for this review because Stephan does a good job explaining complex theories in more straightforward terms and referencing other authoritative resources that must be considered to further expand on if anyone is interested in developing a similar solution. The Project used the ``Player tracking and analysis of basketball plays'' \cite{baskettrack} research as the blueprint for its planning and development. Stephan also suggests that this algorithm can be adapted for other collective sports. The article \cite{stephan} goes on to describe that the ``basketballVideoAnalysis'' project can track the match by executing a machine learning and image processing pipeline. This pipeline consists of basketball court detection, tracking humans inside the court, and mapping their movements to their position relative to the court.
+
+
+Court detection is critical in this system because there is no reference needed to position objects (human bodies and ball) and filter out the noise (all remaining objects outside the court). The surface detection, in this article, is a pure image processing algorithm composed of naive OpenCV \cite{opencv} functionalities such as HSV conversion, Hue range filtering, Bitwise-AND masking, Canny edge detection and Hough Transformation. These functionalities' combination filters the input's noise out and increases the machine learning features' intensity.
+
+
+The following step is to detect the people in the court, which is essential because it extracts the segmented image containing the person's to be used for further measures such as player identification, player tracking, homographic mapping, pose estimation and action recognition. The people detection is undertaken using robust common object detection models and training them against existing image curated datasets, for instance, the COCO image dataset \cite{cocodataset}.
+
+
+The article points out how identifying players can be challenging by quoting an excerpt from ``Learning to Track and Identify Players from Broadcast Sports Videos'' \cite{learn_track_id} that describes the technical and logistical obstacles associated with this task.
+
+
+The last step in Stephan's Project is to map the current camera view to a reference map to accurately determine where objects (including people) are in the field. In this operation, the OpenCV \cite{opencv} ``findHomography'' takes the original image points and the reference map coordinates to transform and map the original image onto the reference map.
+
+
+Despite this article being a helpful starting point for research, it lacks academic research and implementation rigour. This is evident by the absence of any meaningful citation.
+
+
+\section{Player tracking and analysis of basketball plays}
+
+This project \cite{baskettrack} focuses on creating automated player detection and tracking system using the Matlab programming language. The basketball court detection in this Project is accomplished solely by using image processing techniques such as converting the colour format, eroding and dilating the image before applying the canny edge detector, and Hough transform. This process of court detecting appears to be very efficient as it is not a complex algorithm. This is highly effective for basketball, but it might not work as well in a football match. A football pitch is bigger than in basketball, and the camera is zoomed in to focus on a particular pitch zone. This fact, in football, forces a possible solution to find a way of augmenting the possible location the camera is focused on. The same pipeline, created by ``Player tracking and analysis of basketball plays'' research, should be used in our Project, but it needs to be complemented by machine learning and augmentation because basketball recordings have a significantly bigger percentage on the court \cite{baskettrack}.
+
+
+The player detection is applied inside the court detection region by executing the OpenCV's \cite{opencv} HOG detector (histogram of oriented gradients) to create bounding boxes around players. This detector focuses on measuring the gradients' orientation on image's regions to detect patterns that recognise human bodies. This technique needs to be adjusted, during the testing stage, by adjusting the detection threshold adjusted to filter out false positives or just general noise. The approach is generally very effective unless two or more players are crossing in the camera view field. The authors decided to run the OpenCV's BGR detector inside the HOG detector bounding box since teams usually have different colours. This player detection algorithm is simple and accomplishes most of its purposes; however, it does not address players from the same team crossing the camera view. This event is very common in collective sports and should be a high requirement due to its occurrence frequency. An algorithm that uses human pose posture detection or other machine learning algorithms should effectively mitigate this important issue.
+
+
+The team, following the implementation of the player detection algorithm, moved to work on player tracking. After some development, they identified four common tracking scenarios:
+\begin{enumerate}
+\item Player detected in consecutive frames: player was detected by HOG and BGR detectors;
+\item Neighbourhood estimate: player was only detected by the BGR detector in the neighbourhood of the previous HOG detection;
+\item Players added to frame;
+\item Players removed from the frame.
+\end{enumerate}
+The first two scenarios are relatively easy to handle by applying the minimum distance correlator that calculates the most likely last position according to the current position. The last two cases are more complicated than the previous ones, and the Project did not mitigate them. Some of the reasons were the tracking of false positives (players on the bench just next to the court) and the camera jitter, which can affect the court view and the players' position on the camera view itself. The project \cite{baskettrack} was not successful in this step perhaps because it did not try to create an image recognition system that would train to learn the players' visual features (including the shirt number), as well as creating a machine-learning algorithm to augment the possible movement of players off the screen considering the last and first (when it reappears) position/speed.
+
+
+Finally, the tracking data needs to be mapped to a model court by running a homography matrix. This matrix is generated through an affine transformation relative to the camera view towards the basketball court. This process is effective because the court and players' position is already known, and the matrix operation is very efficient in a numerical computing programming language like Matlab.
+
+
+
+\section{Learning to track and identify players from broadcast sports videos}
+
+
+The research analyses how to pre-process video and detect, identify and track players from a camera recording and map them to a referential map. It is a very extensive explanation that introduces video processing and player identification. Despite having many relevant requirements, the researchers decided not to have action recognition \cite{learn_track_id}.
+
+Video pre-processing is composed of two steps: video segmentation and then ``play-by-play'' data processing. This pre-processing combination captures and aggregates relevant data used for data augmentation on the next pipeline layers. The video segmentation takes full recordings (sequence of different camera/video shots such as replays, ads, focus zoom), trains a complex model that uses Hidden Markov Model, Gaussian Mixture Model and the Viterbi algorithm to predict the segments and which type they are based on the colour distribution. The ``play-to-play'' data is a sequential, freely available online stream that tracks the most important match events. This type f data is very important in the player identification and could be very useful for action recognition if it was a requirement \cite{learn_track_id}.
+
+The player tracking detects the players inside the court by running a Deformable Part Model, which can identify most players, but it has mediocre precision since it detects people in the audience and the referees, and it does not detect players obstructed in the camera angle. Before training a Linear Logistic Classifier, the false positives (audience and referee) are removed by applying team colour (since all teammates have the same colour but are different from the opposition or referee). The player tracking follows the bounding boxes' centre points from the player detections and tries to predict the following position based on the Euclidean distances of previous positions by executing a linear-Gaussian transition model. The precision of this tracking technique has a very high precision since it only tracks single points (simple and minimal algorithm) and drops sparse tracking or view borders signals \cite{learn_track_id}.
+The player identification is an exciting and unique challenge set by the researchers. It poses serious questions about how its efficiency due to:
+
+\begin{itemize}
+\item same team players have the same kits;
+\item recording with resolution too low for facial recognition;
+\item some players might have similar body characteristics, hairstyles, or boots;
+\item shirt numbers and names are deformed due to constant posture changes \cite{learn_track_id};
+\end{itemize}
+
+
+The solution for player identification focuses on learning players' visual features/characteristics, dismissing trying to identify players' faces \cite{learn_track_id}. The input to identify these features are:
+
+\begin{itemize}
+\item Maximal extremal regions (MSRE);
+\item Scale-invariant feature transform (SIFT);
+\item RGB colour histograms;
+\end{itemize}
+
+
+These image processing features and the bounding box image segment are the input for a complex algorithm that continuously learns each player's visual characteristics and identifies them \cite{learn_track_id}.
+The homography transformation is calculated by representing the referential basketball court as a set of points. The Canny Edge detector processes the image with a certain threshold to remove noise and drop nonlinear or well-rounded lines until only the court shape is visible. Following this process constructs the homography matrix by incrementally detecting the corresponding points (nearest points) until it converges in at most five iterations, at most \cite{learn_track_id}.
+
+\section{Multi-Person 3D Pose Estimation and Tracking in Sports}
+
+
+
+
+
+
+This Project aims to process multiview recordings, detect and correct players' 2D pose estimations, associate the 2D poses into a 3D pose and track the 3D poses. Pose estimation is very important because it has the potential to allow for action recognition. The researchers consider this Project as the pioneering in full 3D pose estimation tracking for sports. The Project used advanced research from previous work on 3D pose estimation and multiview video recording to develop a very optimised process to capture this kind of data for Football \cite{cvpr_2019}. The algorithm follows these general steps:
+
+\begin{itemize}
+\item 2D pose estimation
+\item 2D pose error correction
+\item 2D pose multiview association to 3D pose
+\item 3D skeleton tracking
+\end{itemize}
+
+The Project uses a CNN-based model to train in the ``Surreal'' synthetic dataset \cite{surreal} and subsequently estimate the 2D pose of players.
+The initial pose estimation is prone to errors due to low-quality image, view cut, and multi-person fusion, so the pose error correction is vital to correct these common errors. The researchers decided on a per-frame pose correction solution rather than a temporal filtering and tracking algorithm because its performance is significantly better \cite{cvpr_2019}.
+The next step is to associate the two 2D pose estimations from a single frame by running a greedy algorithm that measures the pair of corresponding points. Once this correspondence is asserted, then the 3D joint locations can be calculated. Once the 3D joint location is calculated, then it can be constructed and mapped to the 3D court model \cite{cvpr_2019}.
+The final step is to sequentially track the resultant 3D pose models around the pitch what is very impressive because it is a full 3D model of a football match \cite{cvpr_2019}.
+
+
+
+
+
+
+\section{Soccer: Who Has The Ball? Generating Visual Analytics and Player Statistics}
+
+
+This Project is a solution that generates visual analytics and player statistics from football recordings. This is an important paper because it aims to recognise actions using deep neural networks from single frames in football matches. The paper also describes the architecture of the different deep neural networks used for, as mentioned before, for the action recognition but also the player location detection \cite{cvpr_2018}.
+
+
+
+
+The first part of this algorithm is to locate, track the player and detect the team. The location is done by running the YOLO algorithm, which predicts the bounding boxes containing every player on the camera view. These bounding boxes are then tracked during the consecutive by another model also using the YOLO algorithm. This tracking phase is then finished by running a Histogram Matching algorithm inside the bounding box to identify the player's team. The Histogram Matching algorithm was chosen because it is fast at detecting different colours (teams' kits are always different), and the task is relatively simple since the player is inside a small region \cite{cvpr_2018}.
+
+
+
+
+
+
+The last step is to identify if the player is "in control of the ball" or not and then augment data from this information. The researchers created an image dataset with images (segments of images, zoomed into the player) of individual football players and then classified the images with either "player with the ball" or "player without the ball" classes. This part of the algorithm then took the synchronised sequence of images and predicted data to keep track of the player holding the ball. This information is relevant because it is possible to deduce with spatio-temporal precision the possession of the ball by a team since it is the sequence of players "having the ball". The spatio-temporal event between players of the same team "having the ball" is a pass (where the start and end location is also known) otherwise is an opposition "ball recovery". Generating an automatic model of possession is precious because it is the most frequent activity the football teams engages in, and it is the most relevant way football domain experts take into consideration when analysing football \cite{cvpr_2018}.
+
+
+
+
+\section{Conclusion}
+
+
+
+
+This background research was vital to understanding the foundations of the current solutions in the field. Based on the current acquired information, this Project's goal is possibly accomplished by decomposing the problem into a pipeline composed by:
+
+\begin{itemize}
+\item Court detection;
+\item Object detection;
+\item Team identification;
+\item Object tracking;
+\item Player identification;
+\item Homographic mapping of objects.
+\end{itemize}
+
+
+The important idea to remember is that there is already robust technologies and methodologies necessary for this solution. This knowledge gained should provide a solid foundation to develop a proper implementation of a similar solution.
+
+
+
+\chapter{Implementation}
+
+
+
+\listofalgorithms
+
+
+
+
+
+To add to methods section
+
+
+
+pseudocode for main code
+
+
+
+
+
+\begin{algorithm}
+\begin{algorithmic}
+
+\caption{findObjects}\label{alg:findObjects}
+\Require $frame: OpenCVFrame$
+\Require $model: YoloModel$
+\Ensure $objs: ObjectsBoxes$
+\Ensure $ball: BallBox$
+
+\State
+
+\State $c \gets ObjectConfidenceThreshold$
+\State $b \gets BallConfidenceThreshold$
+
+\State $predictions \gets model.predict(frame)$
+\State $objs \gets \emptyset
+
+
+\State
+
+\For {$prediction \in predictions$}
+    \If {$prediction \Is person$ \And $c < conf$}
+        \State $objs.append(prediction)$
+    \EndIf
+    \State
+    \If {$prediction \Is ball$ \And $b < conf$}
+        \State $ball \gets prediction$
+    \EndIf
+    \State
+\EndFor
+\State
+\State \Return $objs, ball$
+
+\end{algorithmic}
+\end{algorithm}
+
+
+
+
+
+\begin{algorithm}
+\begin{algorithmic}
+
+\caption{main}\label{alg:cap}
+
+\Require $frame: OpenCVFrame$
+\Require $ballTracker: Tracker$
+
+\State $$
+
+\State $box$ \gets $OpenCV.selectROI(frame)$
+
+\State $ballTracker.init(frame, box)$
+
+\State $frameCount$ \gets $0$
+
+
+\State \For {frame in video}
+
+    \If { $frameCount$ \mathbin{\%} $30$ = $0$ }
+        \State $performDetection$ \gets $true$
+    \Else
+        \State $performDetection$ \gets $false$
+    \EndIf
+
+    \State $objTracker$ \gets $ObjTracker()$
+    \State $ballTracker$ \gets $ObjTracker()$
+
+    \If { $performDetection$ }
+        \State $objs,$ $ball$ \gets $findObjects(frame)$
+
+        \If {$length(objs)$ > $0$ }
+            \For { $o$ $in$ $objs$ }
+                \State $objTracker.add(o)$
+
+            \State $frameCount$ $+=$ $1$
+        \EnfIf
+
+        \If { $ball$ }
+            \State $ballTracker.init(ball)$
+        \Else
+            \State $labelBall(frame)$
+        \EnfIf
+
+    \Else
+
+        \State $isTracking,$ $boxes$ \gets $objTracker.update(frame)$
+
+        \If { $isTracking$ }
+            \State $draw(boxes)$
+
+            \State $frameCount$ $+=$ $1$
+
+        \Else
+            \State $frameCount$ \gets $0$
+        \EndIf
+
+        \State $isTracking,$ $box$ \gets $ballTracker.update(frame)$
+
+        \If { $isTracking$ }
+            \State $draw(ball)$
+
+        \Else
+            \State labelBall(frame)
+        \EndIf
+
+    \EndIf
+
+\EndFor
+
+
+\end{algorithmic}
+\end{algorithm}
+
+
+\item
+  pseudocode for 3-d modelling data set generation
+\end{itemize}
+
+
+\begin{algorithm}
+\begin{algorithmic}
+
+
+\caption{encodeData}\label{alg:cap}
+
+\Require $n \geq 0$
+\Ensure $y = x^n$
+
+\State $data$
+
+\State $origin,$ $framesVectors,$ $pitchVectors$ \gets $data$
+
+\State $encodedOrigin$ = $encode(origin)$
+
+\State $encodedFramesVectors$ = $encode(framesVectors)$
+
+\State $encodedPitchVectors$ = $encode(pitchVectors)$
+
+\State $return$ $tuple($
+    \State $encodedOrigin$ $+$
+    \State $encodedFramesVectors$ $+$
+    \State $encodedPitchVectors$
+\State $)$
+
+\end{algorithmic}
+\end{algorithm}
+
+
+\begin{algorithm}
+\begin{algorithmic}
+
+
+\caption{An algorithm with caption}\label{alg:cap}
+
+\Require $n \geq 0$
+\Ensure $y = x^n$
+
+\State $fun$ $getData(camera):$
+
+\State $camOriginVector$ \gets $camera.matrix.translation()$
+
+
+\State $framesVectors$ \gets $camOrigin.frames()$
+
+
+\State $pitchVectors$ \gets $[]$
+\State $for$ $marker$ $in$ $blender.collection("pitch$ $markers"):$
+    \State $append(marker,$ $pitchVectors)$
+
+
+\Return $origin,$ $framesVectors,$ $pitchVectors$
+
+    \For {$camera$ $in$ $cameras:$ $fileName$ \gets $blender.renderImage(camera)$ }
+
+\State $data$ \gets $getData(camera)$
+
+
+\State $encodedData$ \gets $encodeData(data)$
+
+
+\State $writeToCsv(fileName,$ $encodedData)$
+
+
+\State $camera.changeAngle()$
+
+\end{algorithmic}
+\end{algorithm}
+
+
+\begin{itemize}
+\item
+  machine learning model and algorithm
+\end{itemize}
+
+
+\begin{algorithm}
+\begin{algorithmic}
+
+
+\caption{An algorithm with caption}\label{alg:cap}
+
+\Require $n \geq 0$
+\Ensure $y = x^n$
+\State $fun$ $trainModel(data,$ $params):$
+
+\State $outputSize$ \gets $params.outputSize$
+
+
+\State $secondaryInputLen$ \gets $params.secondaryInputLen$
+
+
+\State $convolutionLayers$ \gets $[$
+    \State $Input(IMGWIDTH,$ $IMGHEIGHT),$
+    \State $Convolution2D(),$
+    $flatten()$
+\State $]$
+
+
+\State $output$ \gets $Output(outputSize)$
+
+
+\If {$secondaryInputLen$ $>$ $0$ }
+
+    \State $secondaryInput$ \gets $[$
+        \State $Input(secondaryInputLen)$
+    \State $]$
+
+    \State $model$ \gets $Model($
+        \State $input$ \gets $concatenate($
+            \State $secondaryInput,$
+            \State $convolutionLayers$
+        \State $),$
+        \State $outputs$ \gets $output$
+    \State $)$
+
+\Else
+
+    \State $model$ \gets $Model($
+        \State $input$ \gets $convolutionLayers,$
+        \State $outputs$ \gets $output$
+    \State $)$
+
+
+\State $compileModel(model,$ $data,$ $params)$
+
+\State trainModel( data, {[} model \gets ``camOriginVec'', outputSize \gets
+3, secondaryInputLen \gets 0, \ldots params {]} )
+
+\State trainModel( data, {[} model \gets ``frameVectors'', outputSize \gets 12,
+secondaryInputLen \gets 3, \ldots params {]} )
+
+\State trainModel( data, {[} model \gets ``pitchCornerVecs'', outputSize
+\gets 8, secondaryInputLen \gets 15, \ldots params {]} )
+
+\State trainModel( data, {[} model \gets ``pitchVectors'', outputSize \gets 70,
+secondaryInputLen \gets 23, \ldots params {]} )
+
+\end{algorithmic}
+\end{algorithm}
+
+
+\begin{algorithm}
+\begin{algorithmic}
+
+
+\caption{An algorithm with caption}\label{alg:cap}
+
+\Require $n \geq 0$
+\Ensure $y = x^n$
+\State fun getFramePrediction(frame):
+
+\State def getModelPred(modelNames, X):
+    \State if modelNames = []:
+        \State return X
+
+
+    \State model \gets modelNames[0]
+
+
+    pred = model.predict([
+            frame,
+            (
+                [] if X = [] else np.array([X])
+            )
+        ]
+    )
+
+
+    return getModelPred(
+        modelNames[1:],
+        X + pred
+    )
+
+
+return getModelPred(
+    [
+        "camOriginVec",
+        "frameVectors",
+        "pitchCornerVecs",
+        "pitchVectors"
+    ],
+    []
+)
+\end{algorithmic}
+\end{algorithm}
+
+\begin{itemize}
+\item
+  geometry reconstruction algorithm
+\end{itemize}
+
+
+
+\section{video processing}
+
+- machine learning humans and ball recognition
+- object traking
+
+
+\section{3d modelling and dataset generation}
+
+
+text
+
+
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{coordinates.png}{text
+    \caption{caption}
+    \label{img:1}
+\end{figure}
+\ref{img:1} description} created 3d reference system that maps the points recognisable by the camera. This will be used for the artificial intelligence model to train the model and to process the video stream to perform the homographic transformation.
+
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_from_2021-10-22_13-59-52.png}
+    \caption{caption}
+    \label{img:1}
+\end{figure}
+\ref{img:1} The 3d model was developed on blender. It is a green 3d texture (to emulate the grass) with a pitch png transparent graphic to produce the white lines.
+
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2021-12-17_19-08-06.png}
+    \caption{caption}
+    \label{img:1}
+\end{figure}
+\ref{img:1} The result is a realistic pitch replica that can be rendered by a blender camera to produce the synthetic dataset
+
+
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{image.png}
+    \caption{caption}
+    \label{img:1}
+\end{figure}
+\ref{img:1} this is the rendered image from a blender camera, this image is then the processed to be then used as the input for the artifical intelligence model.
+
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-05_12-03-42.png}
+    \caption{caption}
+    \label{img:1}
+\end{figure}
+\ref{img:1} The pitch was then improved by adding 3d markers corresponding to the map reference system. These markers can be accessed by the blender cameras to retrieve their position on the camera view and their relative position to the cartesian origin.
+
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-05_12-45-59.png}
+    \caption{caption}
+    \label{img:1}
+\end{figure}
+\ref{img:1} This is the view of the box which shows the position of the markers from a closer view
+
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-05_12-47-42.png}
+    \caption{caption}
+    \label{img:1}
+\end{figure}
+\ref{img:1} This is the view from the goal which is an important object that is important for image recognition. it has the only markers with a positive z-index to emulate the top corners of the goal. It also includes the corner flag (on the left) because all pitches have them by regulation.
+
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-05_12-05-23.png}
+    \caption{caption}
+    \label{img:1}
+\end{figure}
+\ref{img:1} The final step is to create 15 cameras which will rotate within a range and will render images for the dataset from these different position to emulate the real camera which will be put in different positions.
+
+
+
+\chapter{Testing}
+
+
+
+\section{Testing assessment}
+
+\begin{itemize}
+\item
+  testing with random camera, get accuracy
+\item
+  testing machine learning model accuracity over many layers
+
+  \begin{itemize}
+  \item
+    configuration of convolution
+
+    \begin{itemize}
+    \item
+      their kernels sizes
+    \item
+      number of filters
+    \end{itemize}
+  \item
+    size of pool layers
+  \item
+    dropout rate
+  \item
+    number of flat dense layer when it has 2 inputs
+  \end{itemize}
+\end{itemize}
+
+
+
+\section{Performance assessment}
+
+
+text
+
+\section{any other experimental work}
+
+
+text
+
+\chapter{Conclusions}
+
+
+
+\section{main achievements}
+
+    (relating them to initial objectives)
+    (as well as similar worh from others)
+
+
+
+\section{the main limitations of work}
+
+\begin{itemize}
+\item
+  the output will always be an approximation (real world)
+\item
+  detect ball consistently
+\item
+  calculate ball trajectory
+\item
+  ball tracking is suspended whenever an object obstructs the camera
+  view
+\item
+  players crossing eachother
+\item
+  cannot detect players outside camera frame. could create AI model for
+  calculating probable player in position
+\item
+  cannot recognise players on camera frame. could create AI model for
+  calculating their identity based on position/appearence
+\item
+  is not real-time, at this moment
+\item
+  Currently not able to track 3d trajectory of objects
+\item
+  green masking may not work for non-green pitches and green kits
+\end{itemize}
+
+
+
+\section{possible extensions and future work}
+
+use of cloud computing instead of local machine
+
+\begin{itemize}
+\item
+  use Google Research Football Environment
+
+  \begin{itemize}
+  \item
+    train models and track their movements and actions
+  \item
+    predict off-screen player positioning
+  \item
+    actions recognition
+  \end{itemize}
+\item
+  modularise all modules and algorithms to allow other sports
+\item
+  dataset generation
+
+  \begin{itemize}
+  \item
+    add random noise to improve dataset and model
+  \end{itemize}
+\item
+  video segment detection (also replays)
+
+  \begin{itemize}
+  \item
+    recognise video segments
+  \item
+    set-pieces recognition
+  \item
+    clustering/unsopervised problem!!!!!
+  \end{itemize}
+\item
+  methods will not apply
+
+  \begin{itemize}
+  \item
+    spatio temporal data stream correction
+  \item
+    Human pose estimation
+  \item
+    3D human interaction
+  \item
+    Machine learning (Extrapolation; training against current data)
+  \item
+    spatio-temporal training (pitch detection, player position
+    detection, actions \ldots.)
+  \item
+    Object interaction tracking
+  \item
+    Multi-algorithm implementation (Detection -\textgreater{} tracking
+    -\textgreater{} identification)
+  \end{itemize}
+\item
+  data collection
+
+  \begin{itemize}
+  \item
+    create data format (possibly logical ontology to leverage a logical
+    reasoner) to create a richer dataset
+  \item
+    collect event data
+  \item
+    collect tracking data
+  \item
+    synchronise event and tracking data
+  \item
+    synchronise footage and data timestamps
+
+    -----\textgreater{} space and spatial multiple image semantic
+    matching
+  \end{itemize}
+\item
+  image/video processing operations (openCV)
+
+  \begin{itemize}
+  \item
+    image cannying
+  \item
+    manual segmentation of video
+  \item
+    correction of ball labelling
+  \item
+    video/play segmentation
+  \end{itemize}
+\item
+  sythetic image dataset (Blender)
+
+  \begin{itemize}
+  \item
+    create 2d pitch png image
+  \item
+    create pitch texture
+  \item
+    create goals objects
+  \item
+    create cameras and automate them
+  \item
+    create script to render images and automate camera movement
+  \item
+    pitch construction in blender
+  \item
+    camera positioning
+  \item
+    data generation scripting
+  \item
+    create script to extract data from 3d world
+  \item
+    encode data onto file
+  \item
+    create decoding data
+  \end{itemize}
+\item
+  general
+
+  \begin{itemize}
+  \item
+    low quality footage
+  \item
+    weather and light visual conditions
+  \item
+    detect refs by colour
+  \item
+    ignoring people outside of the pitch
+  \item
+    short video (replay/sudden angles) segments interrupt data
+    collection
+  \end{itemize}
+\item
+  paralelise and multithread program
+\item
+  move data generation and training to cloud
+\end{itemize}
+
+
+\section{not implemented}
+
+- not integrated the geometric reconstruction
+
+
+\section{extra}
+
+\begin{itemize}
+\item
+  when downloading copyrighted recordings or process data, reference
+  source and its copyright
+\item
+  set up public dataset for public use by academics
+\end{itemize}
+
+
+\printbibliography
+
+
+\end{document}
