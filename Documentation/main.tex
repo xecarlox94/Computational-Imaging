@@ -33,6 +33,7 @@ hmargin=1in
 \algnewcommand\And{\textbf{ and }}
 \algnewcommand\Or{\textbf{ or }}
 \algnewcommand\Is {\textbf{ is }}
+\algnewcommand\Not {\textbf{ not }}
 
 
 
@@ -115,118 +116,46 @@ It will cover an extensive explanation of  discussion about similar research mat
 
 
 
-\section{summarising objectives}
+\section{Main objectives}
 
 
-\begin{itemize}
-\item
-  very ambitious
-\item
-  create solid foundation
-\item
-    production of a synthetic dataset framework
-    use of syntethic data
-  microsoft computer vision research,
-  https://microsoft.github.io/FaceSynthetics/
-\item
-  long future project
-\item
-  long goal of modularising this football framework into a collective
-  sports library composed of smaller reusable/generic units because
-  collective sports have different dynamics
-\item
-  create semi-automated video processing analysis (reducing number of
-  operators)
-\item
-  processes normal match streams
-\item
-  create framework for football data science research (academic or
-  business)
-\item
-  free and open source (will take additional work to avoid non
-  compatible libraries with GPL3, it iwll have loads of moving parts)
-  (took a lot of time but had to use AI libraries that force me to use
-  Lesser GPL3 license instead)
-\end{itemize}
+This project is highly ambitious so the ultimate goal is to create a solid foundation to, on the long term, allow other solutions to be built on its top. The solution must be highly modular and effectively aim to act more as a library than a framework, composed of smaller, reusable and generic components. Different collective sports have different dynamics and challenges so giving other sports' developers room to apply their sports flow upon the solution is very important. The advantage behind this is to create an environment where the different smaller modules used can the more robust as the variety of target sports increases. If the objective of having an highly varied set of sports' enthusiasts is met, then the main branch of development can focus on the canonical limitations \ref{_section_limitations_with_description)}. The non-functional requirements of just focusing on a static 2D camera match stream is to avoid adding more complexity to the problem and to not leave some sports out due to singular exceptions regarding the way a particular sport is recorded.
 
-The project's aims are to collect track and event data from football
-footage. The ultimate goal is to be able to process any kind of footage
-but, for now, it will only process broadcast football matches.
+
+Due to the problem high complexity the program must be a semi-automated solution first, at least at this stage. Uncountable issues arise from processing a unpredictable real-world event so it is impossible to write a program that handles all cases. As the program becomes ever more robust, we could let it run independently based on an high rate of confidence on handling most frequent/critical types of event. This may be out of this stage's scope. The strategy must then rely on giving the operator control over important functions and then develop mechanisms that will increment their efficiency over time reducing gradually the activity of an human. The value proposition is ultimately to first reduce the number of operators and then reducing the need for one.
+
+
+Object recognition models are very prevalent in the industry and accessible. However when creating a computing imaging solution for sports it is imperative to create a machine learning model that can essentially map objects from pitch to the referential pitch's map. This may be difficult to do manually since the dataset with labelled pitches are scarce if not unavailable for most sports. It is crucial to develop a strategy that can overcome this scarcity without compromising its generality. The Microsoft's "fake it until you make it" project \ref{_ms_fake} gives an hint how such strategy may resemble. It used a synthetic dataset to overcome a scarcity problem. The objective, in this project, is to create a module that concerns creating a synthetic dataset for each sport.
+
+
+The option for a free- and open-source library is, as mentioned before, a priority. It promotes unrestricted collaboration which is fundamental for this endeavour. Despite this obvious advantage, there are some libraries that have non-compatible licenses, even if open-source. Any library used must be compatible with the chosen license otherwise the same result must be accomplished by implementing the solution from scratch.
 
 
 
 \section{problems solved to achieve objectives}
 
+
+Processing the image is the first step when trying to extract data from the video stream. The OpenCV library \ref{} is very useful for this matter since it has all the utilities necessary to manipulate images and video streams. Many strategies were attempted such as using the library to recognise objects or poses estimation using OpenCV pre-trained models but they were not successful because of the scale the players and ball on the camera screen. Detecting objects is only the first step in extracting data, tracking objects over the screen is critical and it was not easy to implement and integrate into the detection system. The main issue was that tracked players, due to change in the camera angle, would move away from the camera screen which would then disabled their tracker. The algorithm was then modified to perform the detection every 30 seconds or whenever a tracker loses sight of its tracker. In this was we accomplish a reasonable result that will be the foundation for further development and improvement of detection and tracking. Additionally, the library was very effective in reading the video stream to the machine learning algorithms because it had to, for example, remove noise, resize and encode images before piping it to a model input. These operations are very important not only to provide the input (machine learning models have strict interfaces) to the models but also to improve their performance.
+As mentioned before, the OpenCV object detection pre-trained models were not successful in achieving a decent result. The Yolo convolution network model (based on PyTorch) was implemented to detect humans and the ball on the screen. Its setup had some issues mostly because the pre-trained weights and the network configuration is specific to the version 4 which has a different implementation from previous ones. Up to this moment, all libraries used were compatible with the desired General Public License version 3 so some functionalities applied with numpy (BSD license, not compatible with GPL3) were substituted by hard-coded ones which took extra time. The final results worked really well as players were detected consistently but the not so much the ball. The players detection had a initial issue of producing redundant and overlapping detection for the player. This was fixed by applying a non-maximum surpression given the people bounding boxes to then filtering out those predictions.
+The blender 3d model was a big task because it was meant to recreate a realistic football pitch that could be photographed and extracted data from. This model followed the official measurements and included the grass, the lines, the goals and, corner flags and, most important, the 3d model markers. These objects were built from scratch following online resources and took a while to refine them up to a decent level. Following that was the creation of a referential map upon which the dataset generating algorithm would map the 3d model markers from the their Cartesian coordinates to the camera screen 2d coordinates. Once these tasks were finished, the next step was to automate the geometric and imaging data using Blender's Python API. This was at times challenging because the API is quiet advanced and sophisticated so it has a steep learning curve associated with it. One issue before completion of automating the model, was the rendering option which would return a negative colour pallet that would not be appropriate to train with. This issue was solved by tweaking the rendering option until it returned the correct image output.
+
+
 \begin{itemize}
-\item
-  data processing
-
-  \begin{itemize}
-  \item
-    encode and decode positional data
-  \item
-    encode and decode image data
-  \item
-    various changes
-  \end{itemize}
-\item
-  3d modelling
-
-  \begin{itemize}
-  \item
-    creating realistic 3d environments with main features
-  \item
-    create reference map
-  \item
-    automate cameras
-  \item
-    geometric calculations to get outputs
-  \end{itemize}
 \item
   machine learning modeling
 
   \begin{itemize}
   \item
-    test and measure different architectures
-  \item
     preprocess images
-  \end{itemize}
-\item
-  detect humans
-
-  \begin{itemize}
   \item
-    detect players
-  \item
-    track players
-  \item
-    recognise players
-
-    \begin{itemize}
+    test and measure different architectures
     \item
-      identify players numbers
-    \item
-      identify players visual characteristics
-    \end{itemize}
-  \item
-    filter out referee(s)
-  \item
-    detects large human (noise, needs to be removed)
-  \item
-    determine players position
-  \item
-    if camera moves too suddendly, few players will be tracked until
-    next object detection
+    constant thinkering on the encoding and deconding data to determine which is the most effective data structure to input and output data from the pitch recognition system
   \end{itemize}
-\item
-  detect ball
 
-  \begin{itemize}
-  \item
-    detect ball
-  \item
-    track ball
-  \end{itemize}
+
+
+
 \item
   pitch geometry reconstruction
 
@@ -246,6 +175,7 @@ but, for now, it will only process broadcast football matches.
 
 
 
+
 \section{methods}
 
 \begin{itemize}
@@ -255,13 +185,41 @@ but, for now, it will only process broadcast football matches.
   \begin{itemize}
   \item
     video stream processing
+
   \item
-    manual labelling of image
+    image processing before object detection
+
+  \item
+    apply image tracker
+
   \item
     image processing (colour conversion)
   \item
-    image masking to what is green
+    image masking to what is green, reducing noise
+
+  \item
+    if camera moves too suddendly, few players will be tracked until next object detection
+  \item
+    manual labelling of image
   \end{itemize}
+
+
+The first and most important method to work on in the image and video processing operations. These techniques are crucial for the image recognition technologies because they
+
+\item
+  Object tracking (OpenCV tracking)
+
+  \begin{itemize}
+  \item
+    takes detection bounding boxes and creates trackers
+  \item
+    using CSRT tracker to follow humans and ball
+  \item
+    tracker updates every frame
+  \item
+    restarts tracking when yolo detection runs again
+  \end{itemize}
+
 \item
   sythetic image dataset (Blender)
 
@@ -327,24 +285,24 @@ but, for now, it will only process broadcast football matches.
     threshold and the Non-maximum suppression threshold, to remove the
     overly redundant overlapping detections
   \end{itemize}
-\item
-  Object tracking (OpenCV tracking)
 
-  \begin{itemize}
-  \item
-    takes detection bounding boxes and creates trackers
-  \item
-    using CSRT tracker to follow humans and ball
-  \item
-    tracker updates every frame
-  \item
-    restarts tracking when yolo detection runs again
-  \end{itemize}
+\item
+    geometry reconstruction
+
+
+    \begin{itemize}
+        \item
+        determine objs position
+    \end{itemize}
+
 \end{itemize}
 
 
 
 \section{results}
+
+results are below
+
 
 \listoffigures
 
@@ -500,7 +458,6 @@ camera automation)
 
 
 
-
 \section{achievements and limits}
 
 \subsection{achievements}
@@ -513,8 +470,7 @@ creating complete 3d model data generation framework
 
 creating recursively conditional machine learning model
 
-creating geometric framework to map objects from screen on pitch, and
-from pitch on to file
+creating geometric framework to map objects from screen on pitch, and from pitch on to file
 
 
 
@@ -694,14 +650,15 @@ The important idea to remember is that there is already robust technologies and 
 
 
 
-\listofalgorithms
-
 
 
 
 
 To add to methods section
 
+
+
+\listofalgorithms
 
 
 pseudocode for main code
@@ -713,22 +670,20 @@ pseudocode for main code
 \begin{algorithm}
 \begin{algorithmic}
 
-\caption{findObjects}\label{alg:findObjects}
-\Require $frame: OpenCVFrame$
-\Require $model: YoloModel$
-\Ensure $objs: ObjectsBoxes$
-\Ensure $ball: BallBox$
+\caption{findObjects procedure}\label{alg:findObjects}
+\Require \\
+    $frame: OpenCVFrame$ \\
+    $model: YoloModel$ \\
+    $c: ObjectConfidenceThreshold$ \\
+    $b: BallConfidenceThreshold$
+\Ensure \\
+    $objs: ObjectsBoxes$ \\
+    $ball: BallBox$
 
-\State
-
-\State $c \gets ObjectConfidenceThreshold$
-\State $b \gets BallConfidenceThreshold$
+\State $$
 
 \State $predictions \gets model.predict(frame)$
-\State $objs \gets \emptyset
-
-
-\State
+\State $objs$ \gets \emptyset
 
 \For {$prediction \in predictions$}
     \If {$prediction \Is person$ \And $c < conf$}
@@ -755,65 +710,57 @@ pseudocode for main code
 
 \caption{main}\label{alg:cap}
 
-\Require $frame: OpenCVFrame$
-\Require $ballTracker: Tracker$
+\Require \\
+    $frame: OpenCVFrame$ \\
+    $ballTracker: Tracker$ \\
+    $objTracker: Tracker$
 
 \State $$
 
-\State $box$ \gets $OpenCV.selectROI(frame)$
-
-\State $ballTracker.init(frame, box)$
-
-\State $frameCount$ \gets $0$
+\State $frameCount \gets 0$
 
 
-\State \For {frame in video}
-
-    \If { $frameCount$ \mathbin{\%} $30$ = $0$ }
-        \State $performDetection$ \gets $true$
+\For { $frame \in video$ }
+    \If { $frameCount \bmod 30 = 0$ }
+        \State $performDetection \gets true$
     \Else
-        \State $performDetection$ \gets $false$
+        \State $performDetection \gets false$
     \EndIf
 
-    \State $objTracker$ \gets $ObjTracker()$
-    \State $ballTracker$ \gets $ObjTracker()$
 
     \If { $performDetection$ }
-        \State $objs,$ $ball$ \gets $findObjects(frame)$
+        \State $objs, ball \gets findObjects(frame)$
 
-        \If {$length(objs)$ > $0$ }
-            \For { $o$ $in$ $objs$ }
+        \If {$length(objs) > 0$ }
+            \For { $o \in objs$ }
                 \State $objTracker.add(o)$
+            \EndFor
 
-            \State $frameCount$ $+=$ $1$
-        \EnfIf
+            \State $frameCount = frameCount + 1$
+        \EndIf
 
         \If { $ball$ }
             \State $ballTracker.init(ball)$
         \Else
-            \State $labelBall(frame)$
-        \EnfIf
+            \State $ball = labelBall(frame)$
+            \State $ballTracker = Tracker(ball)$
+        \EndIf
 
     \Else
 
-        \State $isTracking,$ $boxes$ \gets $objTracker.update(frame)$
+        \State $isTracking, boxes \gets objTracker.update(frame)$
 
         \If { $isTracking$ }
-            \State $draw(boxes)$
-
-            \State $frameCount$ $+=$ $1$
-
+            \State $frameCount = frameCount + 1$
         \Else
-            \State $frameCount$ \gets $0$
+            \State $frameCount \gets 0$
         \EndIf
 
-        \State $isTracking,$ $box$ \gets $ballTracker.update(frame)$
+        \State $isTracking, box \gets ballTracker.update(frame)$
 
-        \If { $isTracking$ }
-            \State $draw(ball)$
-
-        \Else
-            \State labelBall(frame)
+        \If {$\Not isTracking$}
+            \State $ball = labelBall(frame)$
+            \State $ballTracker = Tracker(ball)$
         \EndIf
 
     \EndIf
@@ -836,27 +783,68 @@ pseudocode for main code
 
 \caption{encodeData}\label{alg:cap}
 
-\Require $n \geq 0$
-\Ensure $y = x^n$
+\Procedure{encode\_vector}{$vector$}
+    \Return $tuple($
+        \State \indent $vector.x,$
+        \State \indent $vector.y,$
+        \State \indent $vector.z$
+    \State $)$
+\EndProcedure
 
-\State $data$
+\Procedure{encode\_vector\_list}{$list$}
+    \Return $reduce($
+        \State \indent $lambda x, y: x + encode\_vector(y),$
+        \State \indent $list,$
+        \State \indent $[]$ \Comment{$initial value$}
+    \State $)$
+\EndProcedure
 
-\State $origin,$ $framesVectors,$ $pitchVectors$ \gets $data$
 
-\State $encodedOrigin$ = $encode(origin)$
+\Procedure{corner\_vecs\_pitch\_vecs}{$pitch\_vectors$}
+    \State $corner\_vectors = \emptyset$
+    \State $p\_corners = \emptyset$
+    \For {$i \in pitch\_vectors$}
+        \If {$i \in [0, 9, 29, 38]$}
+            \State $corner\_vectors.append(pitch\_vectors[i])$
+        \Else
+            \State $p\_corners.append(pitch\_vectors[i])$
+        \EndIf
+    \EndFor
+    \State
+    \Return $($
+        \State $corner\_vectors,$
+        \State $p\_corners$
+    \State $)$
+\EndProcedure
 
-\State $encodedFramesVectors$ = $encode(framesVectors)$
+\State
 
-\State $encodedPitchVectors$ = $encode(pitchVectors)$
+\Procedure{encodeData}{$data$}
+    \State $origin, framesVectors, pitchVectors \gets data$
 
-\State $return$ $tuple($
-    \State $encodedOrigin$ $+$
-    \State $encodedFramesVectors$ $+$
-    \State $encodedPitchVectors$
-\State $)$
+    \State
+
+    \State $encodedOrigin = encode\_vector(origin)$
+
+    \State $encodedFramesVectors = encode\_vector\_list(framesVectors)$
+
+    \State $corner\_vectors, pitch\_vectors = corner\_vecs\_pitch\_vecs(pitch\_vectors)$
+
+    \State $encodedCornerVectors = encode\_vector\_list(pitchVectors)$
+
+    \State $encodedPitchVectors = encode\_vector\_list(pitchVectors)$
+
+    \Return $($
+        \State \indent $encodedOrigin +$
+        \State \indent $encodedFramesVectors +$
+        \State \indent $encodedCornerVectors +$
+        \State \indent $encodedPitchVectors$
+    \State $)$
+\EndProcedure
 
 \end{algorithmic}
 \end{algorithm}
+
 
 
 \begin{algorithm}
@@ -865,34 +853,36 @@ pseudocode for main code
 
 \caption{An algorithm with caption}\label{alg:cap}
 
-\Require $n \geq 0$
-\Ensure $y = x^n$
+\State
 
-\State $fun$ $getData(camera):$
+\Procedure{getData}{$camera$}
 
-\State $camOriginVector$ \gets $camera.matrix.translation()$
+    \State $camOriginVector \gets camera.matrix.translation()$
 
+    \State $framesVectors \gets camOrigin.frames()$
 
-\State $framesVectors$ \gets $camOrigin.frames()$
+    \State $pitchVectors \gets \emptyset$
 
+    \For {$marker \in blender.collection("pitch markers")$}
+        \State $pitchVectors.append(marker)$
+    \EndFor
 
-\State $pitchVectors$ \gets $[]$
-\State $for$ $marker$ $in$ $blender.collection("pitch$ $markers"):$
-    \State $append(marker,$ $pitchVectors)$
+    \Return $origin, framesVectors, pitchVectors$
+\EndProcedure
 
+\State
 
-\Return $origin,$ $framesVectors,$ $pitchVectors$
+\For {$camera \in cameras$}
+    \State $fileName \gets blender.renderImage(camera)$
+\EndFor
 
-    \For {$camera$ $in$ $cameras:$ $fileName$ \gets $blender.renderImage(camera)$ }
+\State
 
-\State $data$ \gets $getData(camera)$
+\State $data \gets getData(camera)$
 
+\State $encodedData \gets encodeData(data)$
 
-\State $encodedData$ \gets $encodeData(data)$
-
-
-\State $writeToCsv(fileName,$ $encodedData)$
-
+\State $writeToCsv(fileName, encodedData)$
 
 \State $camera.changeAngle()$
 
@@ -912,61 +902,100 @@ pseudocode for main code
 
 \caption{An algorithm with caption}\label{alg:cap}
 
-\Require $n \geq 0$
-\Ensure $y = x^n$
-\State $fun$ $trainModel(data,$ $params):$
 
-\State $outputSize$ \gets $params.outputSize$
+\Procedure{trainModel}{$data, params$}
+\State $outputSize \gets params.outputSize$
 
 
-\State $secondaryInputLen$ \gets $params.secondaryInputLen$
+\State $secondaryInputLen \gets params.secondaryInputLen$
 
 
-\State $convolutionLayers$ \gets $[$
-    \State $Input(IMGWIDTH,$ $IMGHEIGHT),$
-    \State $Convolution2D(),$
-    $flatten()$
+\State $convolutionLayers \gets [$
+    \State \indent $Input(IMG\_WIDTH, IMG\_HEIGHT),$
+    \State \indent $Convolution2D(),$
+    \State \indent $flatten()$
 \State $]$
 
 
-\State $output$ \gets $Output(outputSize)$
+\State $output \gets Output(outputSize)$
 
 
-\If {$secondaryInputLen$ $>$ $0$ }
+\If {$secondaryInputLen > 0$ }
 
-    \State $secondaryInput$ \gets $[$
-        \State $Input(secondaryInputLen)$
+    \State $secondaryInput \gets [$
+        \State \indent $Input(secondaryInputLen)$
     \State $]$
 
-    \State $model$ \gets $Model($
-        \State $input$ \gets $concatenate($
-            \State $secondaryInput,$
-            \State $convolutionLayers$
-        \State $),$
-        \State $outputs$ \gets $output$
+    \State $model \gets Model($
+        \State \indent $input \gets concatenate($
+            \State \indent \indent $secondaryInput,$
+            \State \indent \indent $convolutionLayers$
+            \State \indent $),$
+            \State \indent $outputs \gets output$
     \State $)$
 
 \Else
 
-    \State $model$ \gets $Model($
-        \State $input$ \gets $convolutionLayers,$
-        \State $outputs$ \gets $output$
+    \State $model \gets Model($
+        \State \indent $input \gets convolutionLayers,$
+        \State \indent $outputs \gets output$
     \State $)$
 
+\EndIf
 
-\State $compileModel(model,$ $data,$ $params)$
+\State $compileModel(model, data, params)$
 
-\State trainModel( data, {[} model \gets ``camOriginVec'', outputSize \gets
-3, secondaryInputLen \gets 0, \ldots params {]} )
+\EndProcedure
 
-\State trainModel( data, {[} model \gets ``frameVectors'', outputSize \gets 12,
-secondaryInputLen \gets 3, \ldots params {]} )
+\end{algorithmic}
+\end{algorithm}
 
-\State trainModel( data, {[} model \gets ``pitchCornerVecs'', outputSize
-\gets 8, secondaryInputLen \gets 15, \ldots params {]} )
 
-\State trainModel( data, {[} model \gets ``pitchVectors'', outputSize \gets 70,
-secondaryInputLen \gets 23, \ldots params {]} )
+
+\begin{algorithm}
+\begin{algorithmic}
+
+
+\caption{An algorithm with caption}\label{alg:cap}
+
+\State
+
+\State $trainModel( data, [$
+    \State \indent $model \gets "camOriginVec",$
+    \State \indent $outputSize \gets 3,$
+    \State \indent $secondaryInputLen \gets 0,$
+    \State \indent $\ldots params$
+\State $] )$
+
+\State
+
+\State $trainModel( data, [$
+    \State \indent $model \gets "frameVectors",$
+    \State \indent $outputSize \gets 12,$
+    \State \indent $secondaryInputLen \gets 3,$
+    \State \indent $\ldots params$
+\State $] )$
+
+\State
+
+\State $trainModel( data, [$
+    \State \indent $model \gets "pitchCornerVecs",$
+    \State \indent $outputSize \gets 8,$
+    \State \indent $secondaryInputLen \gets 15,$
+    \State \indent $\ldots params$
+\State $] )$
+
+\State
+
+\State $trainModel( data, [$
+    \State \indent $model \gets "pitchVectors",$
+    \State \indent $outputSize \gets 70,$
+    \State \indent $secondaryInputLen \gets 23,$
+    \State \indent $\ldots params$
+\State $] )$
+
+\State
+
 
 \end{algorithmic}
 \end{algorithm}
@@ -978,49 +1007,172 @@ secondaryInputLen \gets 23, \ldots params {]} )
 
 \caption{An algorithm with caption}\label{alg:cap}
 
-\Require $n \geq 0$
-\Ensure $y = x^n$
-\State fun getFramePrediction(frame):
 
-\State def getModelPred(modelNames, X):
-    \State if modelNames = []:
-        \State return X
+\State
 
+\Procedure{getModelPred}{$modelNames, X$}
 
-    \State model \gets modelNames[0]
+    \If {$modelNames = \emptyset $}
+        \State
+        \Return $X$
+    \EndIf
 
+    \If {$X = \emptyset$}
+        \State $curr\_X \gets \emptyset$
+    \Else
+        \State $curr\_X \gets [X]$
+    \EndIf
 
-    pred = model.predict([
-            frame,
-            (
-                [] if X = [] else np.array([X])
-            )
-        ]
-    )
-
-
-    return getModelPred(
-        modelNames[1:],
-        X + pred
-    )
+    \State $curr\_model \gets modelNames[0]$
+    \State $pred = curr\_model.predict([$
+            \State \indent $frame,$
+            \State \indent $curr\_X$
+    \State $])$
 
 
-return getModelPred(
-    [
-        "camOriginVec",
-        "frameVectors",
-        "pitchCornerVecs",
-        "pitchVectors"
-    ],
-    []
-)
+    \Return $getModelPred($
+        \State \indent $modelNames[1:],$
+        \State \indent $X + pred$
+    \State $)$
+
+
+\EndProcedure
+
+\State
+\State
+
+
+\Procedure{getFramePrediction}{$frame$}
+    \State
+    \Return $getModelPred([$
+        \State \indent $"camOriginVectors",$
+        \State \indent $"frameVectors",$
+        \State \indent $"pitchCornerVectors",$
+        \State \indent $"pitchVectors"$
+        \State \indent $],$
+        \State \indent \emptyset
+        \State
+    \State $)$
+
+\EndProcedure
+
+
 \end{algorithmic}
 \end{algorithm}
+
+
+
 
 \begin{itemize}
 \item
   geometry reconstruction algorithm
 \end{itemize}
+
+
+\begin{algorithm}
+\begin{algorithmic}
+
+
+\caption{decodeData}\label{alg:cap}
+
+\Procedure{dec\_vec3d}{$l$}
+    return (
+        dec(l[0]),
+        dec(l[1]),
+        dec(l[2])
+    )
+\EndProcedure
+
+
+\Procedure{dec\_list}{$data\_list, decode\_fun, unit\_length$}
+    if len(data\_list) == 0:
+        return data\_list
+
+    data\_to\_decode = data\_list[len(data\_list) - unit\_length:]
+    decoded = decode\_fun(data\_to\_decode)
+
+    rest\_of\_data = data\_list[:len(data\_list) - unit\_length]
+
+    return dec\_list(
+            rest\_of\_data,
+            decode\_fun,
+            unit\_length
+    ) + [decoded]
+\EndProcedure
+
+
+\Procedure{decode\_vector\_list}{$lst, length$}
+    return dec\_list(
+        lst,
+        lambda x: dec\_vec(x, length),
+        length
+    )
+\EndProcedure
+
+
+
+\Procedure{decode\_camera\_data}{$enc\_data$}
+    \State $origin\_enc\_data = enc\_data[:3]$
+
+    \State $origin\_decoded = dec\_vec(origin\_enc\_data, 3)$
+    \State $enc\_data = enc\_data[3: ]$
+
+    \State $len\_vectors\_section = (3 * 4)$
+    \State $frames\_vectors\_data = enc\_data[ :len\_vectors\_section]$
+    \State $frames\_vectors\_decoded = decode\_vector\_list($
+            \State $frames\_vectors\_data,$
+            \State $3$
+    \State $)$
+    \State $enc\_data = enc\_data[len\_vectors\_section: ]$
+
+    \State $len\_vectors\_section = (2 * 4)$
+    \State $corner\_vectors\_data = enc\_data[ :len\_vectors\_section]$
+    \State $corner\_vectors\_decoded = decode\_vector\_list($
+            \State $corner\_vectors\_data,$
+            \State $2$
+    \State $)$
+    \State $enc\_data = enc\_data[len\_vectors\_section: ]$
+
+    \State $pitch\_vectors\_decoded = decode\_vector\_list($
+            \State $enc\_data,$
+            \State $2$
+    \State $)$
+
+    \State $pitch\_vectors\_decoded = get\_pitch\_vectors($
+        \State $corner\_vectors\_decoded,$
+        \State $pitch\_vectors\_decoded$
+    \State $)$
+
+    \State $def get\_pitch\_vec(v, i):$
+        \State $index = i + 1$
+        \State $z = 0$
+
+        \State $if index in [5, 7, 34, 36]: z = 2.4$
+
+        \State $return (v[0], v[1], z)$
+
+
+    \State $pitch\_vectors\_decoded = [$
+        \State $get\_pitch\_vec($
+            \State $pitch\_vectors\_decoded[i],$
+            \State $i$
+        \State $) for i in range(len($
+            \State $pitch\_vectors\_decoded$
+        \State $))$
+    \State $]$
+
+    \State $return ($
+        \State $origin\_decoded,$
+        \State $frames\_vectors\_decoded,$
+        \State $pitch\_vectors\_decoded$
+    \State $)$
+
+\EndProcedure
+
+
+\end{algorithmic}
+\end{algorithm}
+
 
 
 
@@ -1034,6 +1186,8 @@ return getModelPred(
 
 
 text
+
+
 
 
 \begin{figure}[H]
@@ -1092,6 +1246,9 @@ text
     \label{img:1}
 \end{figure}
 \ref{img:1} The final step is to create 15 cameras which will rotate within a range and will render images for the dataset from these different position to emulate the real camera which will be put in different positions.
+
+
+
 
 
 
@@ -1170,8 +1327,6 @@ text
   cannot recognise players on camera frame. could create AI model for
   calculating their identity based on position/appearence
 \item
-  is not real-time, at this moment
-\item
   Currently not able to track 3d trajectory of objects
 \item
   green masking may not work for non-green pitches and green kits
@@ -1181,68 +1336,63 @@ text
 
 \section{possible extensions and future work}
 
-use of cloud computing instead of local machine
+
+
+
+
+
+
+
+
+
+
 
 \begin{itemize}
 \item
-  use Google Research Football Environment
+  image/video processing operations (openCV)
 
   \begin{itemize}
   \item
-    train models and track their movements and actions
+    manual segmentation of video
   \item
-    predict off-screen player positioning
+    correction of ball labelling
   \item
-    actions recognition
+    video/play segmentation
+  \item
+    detects "large human" (noise, needs to be removed), not removed until finding a neat algorithm, not priority for now
+  \item
+    recognise players
+
+    \begin{itemize}
+    \item
+      identify players numbers
+    \item
+      identify players visual characteristics
+    \end{itemize}
   \end{itemize}
-\item
-  modularise all modules and algorithms to allow other sports
 \item
   dataset generation
 
   \begin{itemize}
   \item
+    scale the blender model back to scale of 1, improve vector scaling function
+  \item
+      horizon problem, since some camera perspective may point to an infinite point, which is a problem( may put blender model in a box and check the intersection instead of infinite)
+  \item
     add random noise to improve dataset and model
-  \end{itemize}
-\item
-  video segment detection (also replays)
-
-  \begin{itemize}
   \item
-    recognise video segments
-  \item
-    set-pieces recognition
-  \item
-    clustering/unsopervised problem!!!!!
-  \end{itemize}
-\item
-  methods will not apply
-
-  \begin{itemize}
-  \item
-    spatio temporal data stream correction
-  \item
-    Human pose estimation
-  \item
-    3D human interaction
-  \item
-    Machine learning (Extrapolation; training against current data)
-  \item
-    spatio-temporal training (pitch detection, player position
-    detection, actions \ldots.)
-  \item
-    Object interaction tracking
-  \item
-    Multi-algorithm implementation (Detection -\textgreater{} tracking
-    -\textgreater{} identification)
+    video/play segmentation, maybe image clustering/unsopervised model to detect if it is repetition, different angle
   \end{itemize}
 \item
   data collection
 
   \begin{itemize}
   \item
-    create data format (possibly logical ontology to leverage a logical
-    reasoner) to create a richer dataset
+    spatio temporal data stream correction (pitch detection, player position detection, actions \ldots.)
+  \item
+    create data format (possibly logical ontology to leverage a logical reasoner) to create a richer dataset
+  \item
+    create algorithm to correct, smoth and fix data output stream
   \item
     collect event data
   \item
@@ -1252,48 +1402,29 @@ use of cloud computing instead of local machine
   \item
     synchronise footage and data timestamps
 
-    -----\textgreater{} space and spatial multiple image semantic
-    matching
+  \item
+    space and spatial multiple image semantic matching
+    \item
+      is not real-time data collection algorithm
   \end{itemize}
 \item
-  image/video processing operations (openCV)
+The greatest future improvement could be the integration of a 3d simulation environment which can be used to firstly enhance the current capabilities and additionally add extra functions that could take this project to the next level as a another source of synthetic data which could be complementary to the existing blender generation dataset environment. The Google Research Football Environment \ref{gfootball_env}, is a former open-source football computer game that was repurposed by Google's Artificial intelligence department to test and train AI adversary models in a highly stochastic environment. The project has been successful and it was used in many different AI events and competitions. It can be controlled by humans but the ultimate goal is to each team/players to be controlled by an intelligent agent in a realistic 3d physical environment that generates 3d positional data of all objects in the pitch. After training these models, the teams play against each other and generate important data that is used to evaluate the models performance. This final output data, along the corresponding visual data recorded, could be used to improve the training/validation/testing of the existing machine learning models for object and geometric detection models since the data collected intersects the one generated on blender. Although promissing, the real value is to use the in-game simulator to extract data that signals actions undertaken by players, 3d player pose estimation, objects 3d trajectory, in-game play segments and set piece recognition. These additional features are very valuable to increase the data points and enrich the data which contributes to automate ever more some manual operation that are performed by the operator. It is also concievable to create an extra model that corrects players tracking (to smoothing it out), and even augumenting the off-screen player positions (by combining spatio-temporal in-game data) which is trully groundbracking. Predicting the off-screen players position is critical because it mitigates one of the biggest limitations of this approach of using regular match-streams.
+The Google Fooball environment \ref{gfootball_env} is specific to football what is contrary to objective of being a general solution for any sports. The long term solution in to create free- and open-source modular game environment to simulate other sports and even be used as bases for standalone sports games. This proposal is far fetched as it is a whole another project by itself but is is a sustainable project to leverage sports data science and gaming development. For these reasons this could be added to the community's long term roadmap.
+\item
+  methods will not apply this stage
 
   \begin{itemize}
   \item
-    image cannying
+    Human pose estimation
   \item
-    manual segmentation of video
+    3D human interaction
   \item
-    correction of ball labelling
+    Extrapolation; training against current data, to train and test action detection
   \item
-    video/play segmentation
-  \end{itemize}
-\item
-  sythetic image dataset (Blender)
-
-  \begin{itemize}
+    Object interaction tracking
   \item
-    create 2d pitch png image
-  \item
-    create pitch texture
-  \item
-    create goals objects
-  \item
-    create cameras and automate them
-  \item
-    create script to render images and automate camera movement
-  \item
-    pitch construction in blender
-  \item
-    camera positioning
-  \item
-    data generation scripting
-  \item
-    create script to extract data from 3d world
-  \item
-    encode data onto file
-  \item
-    create decoding data
+    Multi-algorithm implementation (Detection -\textgreater{} tracking
+    -\textgreater{} identification)
   \end{itemize}
 \item
   general
@@ -1306,15 +1437,18 @@ use of cloud computing instead of local machine
   \item
     detect refs by colour
   \item
+    accomodate differnt pitch colours
+  \item
     ignoring people outside of the pitch
   \item
     short video (replay/sudden angles) segments interrupt data
     collection
+    \item
+     paralelise and multithread program
+    \item
+     move data generation and training to cloud.
+    use of cloud computing instead of local machine
   \end{itemize}
-\item
-  paralelise and multithread program
-\item
-  move data generation and training to cloud
 \end{itemize}
 
 
