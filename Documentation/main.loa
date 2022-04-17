@@ -1,8 +1,10 @@
-\contentsline {algorithm}{\numberline {1}{\ignorespaces findObjects procedure}}{36}{algorithm.1}%
-\contentsline {algorithm}{\numberline {2}{\ignorespaces main}}{37}{algorithm.2}%
-\contentsline {algorithm}{\numberline {3}{\ignorespaces encodeData}}{38}{algorithm.3}%
-\contentsline {algorithm}{\numberline {4}{\ignorespaces An algorithm with caption}}{39}{algorithm.4}%
-\contentsline {algorithm}{\numberline {5}{\ignorespaces An algorithm with caption}}{40}{algorithm.5}%
-\contentsline {algorithm}{\numberline {6}{\ignorespaces An algorithm with caption}}{41}{algorithm.6}%
-\contentsline {algorithm}{\numberline {7}{\ignorespaces An algorithm with caption}}{42}{algorithm.7}%
-\contentsline {algorithm}{\numberline {8}{\ignorespaces decodeData}}{43}{algorithm.8}%
+\contentsline {algorithm}{\numberline {1}{\ignorespaces findObjects procedure}}{34}{algorithm.1}%
+\contentsline {algorithm}{\numberline {2}{\ignorespaces Object detection and tracking procedure}}{35}{algorithm.2}%
+\contentsline {algorithm}{\numberline {3}{\ignorespaces encoding helper procedures}}{36}{algorithm.3}%
+\contentsline {algorithm}{\numberline {4}{\ignorespaces encodeData procedure}}{37}{algorithm.4}%
+\contentsline {algorithm}{\numberline {5}{\ignorespaces Dataset generation procedure}}{38}{algorithm.5}%
+\contentsline {algorithm}{\numberline {6}{\ignorespaces Model compiling procedure}}{39}{algorithm.6}%
+\contentsline {algorithm}{\numberline {7}{\ignorespaces Models training procedure}}{40}{algorithm.7}%
+\contentsline {algorithm}{\numberline {8}{\ignorespaces Recursive model prediction}}{41}{algorithm.8}%
+\contentsline {algorithm}{\numberline {9}{\ignorespaces Decoding helper procedures}}{42}{algorithm.9}%
+\contentsline {algorithm}{\numberline {10}{\ignorespaces Decoding camera data}}{43}{algorithm.10}%

@@ -50,3 +50,12 @@ expected results
 evaluation techniques
 testing techniques
 
+
+\section{Extra}
+
+\begin{itemize}
+\item
+  when downloading copyrighted recordings or process data, reference source and its copyright
+\item
+  set up public dataset for public use by academics
+\end{itemize}

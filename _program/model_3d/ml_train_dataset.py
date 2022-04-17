@@ -126,12 +126,12 @@ def train_model(data, params):
         Conv2D(filters=num_filters_1, kernel_size=(kernel_size_1, kernel_size_1), activation="relu"),
         MaxPooling2D(pool_size=(poolsize_1, poolsize_1)),
         Dropout(dropout_1),
-        Conv2D(filters=num_filters_2, kernel_size=(kernel_size_2, kernel_size_2), activation="relu"),
-        MaxPooling2D(pool_size=(poolsize_2, poolsize_2)),
-        Dropout(dropout_2),
+        #Conv2D(filters=num_filters_2, kernel_size=(kernel_size_2, kernel_size_2), activation="relu"),
+        #MaxPooling2D(pool_size=(poolsize_2, poolsize_2)),
+        #Dropout(dropout_2),
         Flatten(),
-        #Dense(num_dense_3, activation="sigmoid"),
-        #Dropout(dropout_3),
+        Dense(num_dense_3, activation="sigmoid"),
+        Dropout(dropout_3),
     ]
 
     out = Dense(output_size, activation="sigmoid")
@@ -141,11 +141,10 @@ def train_model(data, params):
 
         model_sec = Sequential([
             Input(shape=(Xx_input_len,)),
-            #Dense(Xx_input_len, activation="sigmoid"),
+            Dense(Xx_input_len, activation="sigmoid"),
         ])
 
-        m = Sequential( convolution_layers
-            #+ [
+        m = Sequential( convolution_layers #+ [
                 #Dense(num_dense_4, activation="sigmoid"),
                 #Dropout(dropout_4),
             #]
@@ -323,41 +322,32 @@ random.shuffle(rows)
 rows = rows[ :int(len(rows) * 0.2)]
 
 
-for num_filters_1 in [20, 50]:
-    for kernel_size_1 in [2, 4]:
-        for poolsize_1 in [2, 4]:
-            for dropout_1 in [0.1, 0.4]:
-                for num_filters_2 in [20, 50]:
-                    for kernel_size_2 in [2, 4]:
-                        for poolsize_2 in [2, 4]:
-                            for dropout_2 in [0.1, 0.4]:
-                                train_model(
-                                    get_train_test(rows, 0.1),
-                                    get_params(
-                                        #model_name,
-                                        "cam_origin_vec",
-                                        #epochs,
-                                        10,
-                                        #output_size,
-                                        3,
-                                        #Xx_input_len,
-                                        0,
-                                        # model params: Input 1
-                                        num_filters_1=num_filters_1,
-                                        kernel_size_1=kernel_size_1,
-                                        poolsize_1=poolsize_1,
-                                        dropout_1=dropout_1,
-                                        num_filters_2=num_filters_2,
-                                        kernel_size_2=kernel_size_2,
-                                        poolsize_2=poolsize_2,
-                                        dropout_2=dropout_2,
-                                        num_dense_3=0,
-                                        dropout_3=0,
-                                    )
-                                )
-
-                                #for num_dense_3 in [512, 1024]:
-                                    #for dropout_3 in [0.1, 0.4]:
+for num_filters_1 in [30, 40, 50]:
+    for kernel_size_1 in [2, 3, 4]:
+        for poolsize_1 in [2, 3, 4]:
+            for dropout_1 in [0.1, 0.3,0.4]:
+                for num_dense_3 in [128, 256, 512]:
+                    for dropout_3 in [0.1, 0.3,0.4]:
+                        train_model(
+                            get_train_test(rows, 0.1),
+                            get_params(
+                                #model_name,
+                                "pitch_vectors",
+                                #epochs,
+                                10,
+                                #output_size,
+                                70,
+                                #Xx_input_len,
+                                23,
+                                # model params: Input 1
+                                num_filters_1=num_filters_1,
+                                kernel_size_1=kernel_size_1,
+                                poolsize_1=poolsize_1,
+                                dropout_1=dropout_1,
+                                num_dense_3=0,
+                                dropout_3=0,
+                            )
+                        )
 
 
 """
