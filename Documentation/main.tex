@@ -19,6 +19,7 @@ hmargin=1in
 \usepackage{graphicx}
 \graphicspath{{resources/images/}}
 
+\usepackage[toc,title,page]{appendix}
 
 
 \usepackage[ backend=biber ]{biblatex}
@@ -52,20 +53,24 @@ hmargin=1in
 \fancyfoot{}
 \fancyfoot[C]{\thepage}
 
+\usepackage[UKenglish]{datetime2}
 
 
 \newcommand{\ThesisTitle}{Computational Imaging}
-\newcommand{\TheAuthor}{Jose Fernandes}
+\newcommand{\TheAuthor}{Jose Carlos Cerqueira Fernandes}
+
+
 \title{
 {\ThesisTitle}\\
 \hfill \\
-{\large Heriot-Watt University}\\
+{\large Final Year Dissertation}\\
+{\large \TheAuthor} \\
 \hfill \\
 {\includegraphics[scale=2.5]{hw.jpg}} \\
-\hfill \\
+{\large Masters Software Engineering} \\
+{\large Benjamin Kenwright} \\
+\date{\today}
 }
-\author{\TheAuthor}
-\date{22 November 2021}
 
 
 \doublespacing
@@ -83,7 +88,7 @@ I, \TheAuthor, confirm that this work submitted for assessment is my own and is 
 Signed: \TheAuthor
 
 
-Date: 22/11/2021
+Date: \today
 
 \chapter*{Acknowledgement}
 
@@ -340,10 +345,13 @@ The object detection is not perfect at this moment either. Humans are detected c
 
 
 
+\iffalse
 \subsection{Dissertation organisation sketch}
-
-
 to fill in
+\fi
+
+
+
 
 
 \chapter{Background}
@@ -504,11 +512,7 @@ To add to methods section
 
 
 
-
-pseudocode for main code
-
-
-
+\section{Object detection and tracking}
 
 
 \begin{algorithm}[H]
@@ -584,9 +588,10 @@ pseudocode for main code
 \ref{alg:detect_tracking} text
 
 
-\item
-  pseudocode for 3-d modelling data set generation
-\end{itemize}
+
+
+
+\section{Dataset generation}
 
 
 \begin{algorithm}[H]
@@ -679,10 +684,10 @@ pseudocode for main code
 \ref{alg:data_gen} text
 
 
-\begin{itemize}
-\item
-  machine learning model and algorithm
-\end{itemize}
+
+
+\section{Machine learning model}
+
 
 
 \begin{algorithm}[H]
@@ -778,11 +783,6 @@ pseudocode for main code
 \ref{alg:rec_pred} text
 
 
-\begin{itemize}
-\item
-  geometry reconstruction algorithm
-\end{itemize}
-
 
 \begin{algorithm}[H]
 \begin{algorithmic}
@@ -843,7 +843,7 @@ pseudocode for main code
 \ref{alg:dec_data} text
 
 
-\section{Not yet fully implemented}
+\section{Geometric construction}
 
 - not integrated the geometric reconstruction
 
@@ -895,11 +895,11 @@ text
 
 
 \begin{figure}[H]
-    \includegraphics[keepaspectratio, width=\columnwidth]{coordinates.png}{text
+    \includegraphics[keepaspectratio, width=\columnwidth]{coordinates.png}
     \caption{Reference Map}
     \label{img:ref_map}
 \end{figure}
-\ref{img:ref_map} description} created 3d reference system that maps the points recognisable by the camera. This will be used for the artificial intelligence model to train the model and to process the video stream to perform the homographic transformation.
+\ref{img:ref_map} description, created 3d reference system that maps the points recognisable by the camera. This will be used for the artificial intelligence model to train the model and to process the video stream to perform the homographic transformation.
 \begin{figure}[H]
     \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_from_2021-10-22_13-59-52.png}
     \caption{Development of 3D blender model}
@@ -912,7 +912,6 @@ text
     \label{img:cam_grass}
 \end{figure}
 \ref{img:cam_grass} The result is a realistic pitch replica that can be rendered by a blender camera to produce the synthetic dataset
-
 \begin{figure}[H]
     \includegraphics[keepaspectratio, width=\columnwidth]{image.png}
     \caption{Camera rendered image}
@@ -959,11 +958,9 @@ text
   testing with random camera, get accuracy
 \item
   testing machine learning model accuracity over many layers
-
   \begin{itemize}
   \item
     configuration of convolution
-
     \begin{itemize}
     \item
       their kernels sizes
@@ -975,10 +972,23 @@ text
   \item
     dropout rate
   \item
-    number of flat dense layer when it has 2 inputs
+    number of flat dense third layer when it has 2 inputs
   \end{itemize}
 \end{itemize}
 
+
+
+
+
+
+
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-04-17_23-06-29.png}
+    \caption{Tensorboard gui}
+    \label{img:tensorboard_gui}
+\end{figure}
+
+\ref{img:tensorboard_gui} text
 
 
 \section{Performance assessment}
@@ -1058,10 +1068,34 @@ The Google Fooball environment \cite{gfootball_env} is specific to football what
 \printbibliography
 
 
+
+
+
+\appendix
+\renewcommand{\thesection}{\Alph{section}.\arabic{section}}
+\setcounter{section}{0}
+\begin{appendices}
+
+
+\section{Images}
 \listoffigures
 
+\subsection{foo title}
+Some text
+\subsection{another title}
+Another text
 
+
+
+\section{Algorithms}
 \listofalgorithms
+
+
+
+\end{appendices}
+
+
+
 
 
 \end{document}

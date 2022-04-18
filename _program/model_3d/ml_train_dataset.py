@@ -204,7 +204,7 @@ def train_model(data, params):
         epochs,
         model_name,
         (
-            model_name + get_ml_arch(
+            get_ml_arch(
                 Xx_input_len,
                 num_filters_1,
                 kernel_size_1,
@@ -263,9 +263,9 @@ def get_ml_arch(
         num_dense_4=0,
         dropout_4=0,
     ):
-    arch='__f_1:_' + str(num_filters_1) + ',_k_1:_' + str(kernel_size_1) + ',_p_1:_' + str(poolsize_1) + ',_dp_1:_' + str(dropout_1) + ',_f_2:_' + str(num_filters_2) + ',_k_2:_' + str(kernel_size_2) + ',_p_2:_' + str(poolsize_2) + ',_dp_2:_' + str(dropout_2) + ',_dn_3:_' + str(num_dense_3) + ',_dp_3:_' + str(dropout_3)
+    arch='__f1_' + str(num_filters_1) + '_k1_' + str(kernel_size_1) + '_p1_' + str(poolsize_1) + '_dp1_' + str(dropout_1) + '_f2_' + str(num_filters_2) + '_k2_' + str(kernel_size_2) + '_p2_' + str(poolsize_2) + '_dp2_' + str(dropout_2) + '_dn3_' + str(num_dense_3) + '_dp3_' + str(dropout_3)
     if Xx_input_len > 0:
-        arch = arch + ',_dn_4:_' + str(num_dense_4) + ',_dp_4:_' + str(dropout_4)
+        arch = arch + '_dn4_' + str(num_dense_4) + '_dp4_' + str(dropout_4)
     return arch + '__'
 
 
@@ -322,12 +322,12 @@ random.shuffle(rows)
 rows = rows[ :int(len(rows) * 0.2)]
 
 
-for num_filters_1 in [30, 40, 50]:
-    for kernel_size_1 in [2, 3, 4]:
-        for poolsize_1 in [2, 3, 4]:
-            for dropout_1 in [0.1, 0.3,0.4]:
-                for num_dense_3 in [128, 256, 512]:
-                    for dropout_3 in [0.1, 0.3,0.4]:
+for num_filters_1 in [30, 50]:
+    for kernel_size_1 in [2, 4]:
+        for poolsize_1 in [2, 4]:
+            for dropout_1 in [0.1, 0.4]:
+                for num_dense_3 in [128, 512]:
+                    for dropout_3 in [0.1, 0.4]:
                         train_model(
                             get_train_test(rows, 0.1),
                             get_params(
