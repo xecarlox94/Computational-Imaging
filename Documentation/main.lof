@@ -1,30 +1,30 @@
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {1.1}{\ignorespaces First detection, no ball detected}}{12}{figure.1.1}%
-\contentsline {figure}{\numberline {1.2}{\ignorespaces Manually labelling ball}}{13}{figure.1.2}%
-\contentsline {figure}{\numberline {1.3}{\ignorespaces Ball tracking error}}{14}{figure.1.3}%
-\contentsline {figure}{\numberline {1.4}{\ignorespaces New players on screen are not detected}}{14}{figure.1.4}%
-\contentsline {figure}{\numberline {1.5}{\ignorespaces Ball tracking lost}}{15}{figure.1.5}%
-\contentsline {figure}{\numberline {1.6}{\ignorespaces New ball labelling}}{16}{figure.1.6}%
-\contentsline {figure}{\numberline {1.7}{\ignorespaces Ball tracking running, some players go off screen and tracking lost}}{16}{figure.1.7}%
-\contentsline {figure}{\numberline {1.8}{\ignorespaces Player's tracking is lost again, ball tracking continues}}{17}{figure.1.8}%
-\contentsline {figure}{\numberline {1.9}{\ignorespaces Players is running but some players are not detected, ball tracking is wrong}}{18}{figure.1.9}%
-\contentsline {figure}{\numberline {1.10}{\ignorespaces Different camera angle}}{18}{figure.1.10}%
-\contentsline {figure}{\numberline {1.11}{\ignorespaces One wrong human detection and ball detection is wrong as well}}{19}{figure.1.11}%
-\contentsline {figure}{\numberline {1.12}{\ignorespaces Detection bug continues, fan is detected and ball tracking is lost}}{20}{figure.1.12}%
-\contentsline {figure}{\numberline {1.13}{\ignorespaces New perspective, players were detected and ball is being labelled}}{20}{figure.1.13}%
-\contentsline {figure}{\numberline {1.14}{\ignorespaces New perspective, players and ball are being tracked}}{21}{figure.1.14}%
-\contentsline {figure}{\numberline {1.15}{\ignorespaces Yet another perspective, most players detected but ball tracking is wrong}}{22}{figure.1.15}%
-\contentsline {figure}{\numberline {1.16}{\ignorespaces Half of players are detected, all in the most important zone}}{23}{figure.1.16}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {3.1}{\ignorespaces Reference Map}}{43}{figure.3.1}%
-\contentsline {figure}{\numberline {3.2}{\ignorespaces Development of 3D blender model}}{44}{figure.3.2}%
-\contentsline {figure}{\numberline {3.3}{\ignorespaces Camera view in blender}}{44}{figure.3.3}%
-\contentsline {figure}{\numberline {3.4}{\ignorespaces Camera rendered image}}{45}{figure.3.4}%
-\contentsline {figure}{\numberline {3.5}{\ignorespaces Preview of the finished blender model}}{46}{figure.3.5}%
-\contentsline {figure}{\numberline {3.6}{\ignorespaces Penalty box view}}{46}{figure.3.6}%
-\contentsline {figure}{\numberline {3.7}{\ignorespaces Goal}}{47}{figure.3.7}%
-\contentsline {figure}{\numberline {3.8}{\ignorespaces Cameras}}{47}{figure.3.8}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {4.1}{\ignorespaces Tensorboard gui}}{50}{figure.4.1}%
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Tensorboard gui}}{38}{figure.4.1}%
 \addvspace {10\p@ }
+\contentsline {figure}{\numberline {1}{\ignorespaces First detection, no ball detected}}{49}{figure.1..1}%
+\contentsline {figure}{\numberline {2}{\ignorespaces Manually labelling ball}}{50}{figure.1..2}%
+\contentsline {figure}{\numberline {3}{\ignorespaces Ball tracking error}}{50}{figure.1..3}%
+\contentsline {figure}{\numberline {4}{\ignorespaces New players on screen are not detected}}{51}{figure.1..4}%
+\contentsline {figure}{\numberline {5}{\ignorespaces Ball tracking lost}}{51}{figure.1..5}%
+\contentsline {figure}{\numberline {6}{\ignorespaces New ball labelling}}{52}{figure.1..6}%
+\contentsline {figure}{\numberline {7}{\ignorespaces Ball tracking running, some players go off screen and tracking lost}}{52}{figure.1..7}%
+\contentsline {figure}{\numberline {8}{\ignorespaces Player's tracking is lost again, ball tracking continues}}{53}{figure.1..8}%
+\contentsline {figure}{\numberline {9}{\ignorespaces Players is running but some players are not detected, ball tracking is wrong}}{53}{figure.1..9}%
+\contentsline {figure}{\numberline {10}{\ignorespaces Different camera angle}}{54}{figure.1..10}%
+\contentsline {figure}{\numberline {11}{\ignorespaces One wrong human detection and ball detection is wrong as well}}{54}{figure.1..11}%
+\contentsline {figure}{\numberline {12}{\ignorespaces Detection bug continues, fan is detected and ball tracking is lost}}{55}{figure.1..12}%
+\contentsline {figure}{\numberline {13}{\ignorespaces New perspective, players were detected and ball is being labelled}}{55}{figure.1..13}%
+\contentsline {figure}{\numberline {14}{\ignorespaces New perspective, players and ball are being tracked}}{56}{figure.1..14}%
+\contentsline {figure}{\numberline {15}{\ignorespaces Yet another perspective, most players detected but ball tracking is wrong}}{56}{figure.1..15}%
+\contentsline {figure}{\numberline {16}{\ignorespaces Half of players are detected, all in the most important zone}}{57}{figure.1..16}%
+\contentsline {figure}{\numberline {17}{\ignorespaces Reference Map}}{58}{figure.1..17}%
+\contentsline {figure}{\numberline {18}{\ignorespaces Development of 3D blender model}}{59}{figure.1..18}%
+\contentsline {figure}{\numberline {19}{\ignorespaces Camera view in blender}}{59}{figure.1..19}%
+\contentsline {figure}{\numberline {20}{\ignorespaces Camera rendered image}}{60}{figure.1..20}%
+\contentsline {figure}{\numberline {21}{\ignorespaces Preview of the finished blender model}}{60}{figure.1..21}%
+\contentsline {figure}{\numberline {22}{\ignorespaces Penalty box view}}{61}{figure.1..22}%
+\contentsline {figure}{\numberline {23}{\ignorespaces Goal}}{61}{figure.1..23}%
+\contentsline {figure}{\numberline {24}{\ignorespaces Cameras}}{62}{figure.1..24}%

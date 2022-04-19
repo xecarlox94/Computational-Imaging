@@ -130,8 +130,8 @@ def train_model(data, params):
         #MaxPooling2D(pool_size=(poolsize_2, poolsize_2)),
         #Dropout(dropout_2),
         Flatten(),
-        Dense(num_dense_3, activation="sigmoid"),
-        Dropout(dropout_3),
+        #Dense(num_dense_3, activation="relu"),
+        #Dropout(dropout_3),
     ]
 
     out = Dense(output_size, activation="sigmoid")
@@ -263,10 +263,10 @@ def get_ml_arch(
         num_dense_4=0,
         dropout_4=0,
     ):
-    arch='__f1_' + str(num_filters_1) + '_k1_' + str(kernel_size_1) + '_p1_' + str(poolsize_1) + '_dp1_' + str(dropout_1) + '_f2_' + str(num_filters_2) + '_k2_' + str(kernel_size_2) + '_p2_' + str(poolsize_2) + '_dp2_' + str(dropout_2) + '_dn3_' + str(num_dense_3) + '_dp3_' + str(dropout_3)
-    if Xx_input_len > 0:
-        arch = arch + '_dn4_' + str(num_dense_4) + '_dp4_' + str(dropout_4)
-    return arch + '__'
+    arch='f1_' + str(num_filters_1) + '_k1_' + str(kernel_size_1) + '_p1_' + str(poolsize_1) + '_dp1_' + str(dropout_1) #+ '_f2_' + str(num_filters_2) + '_k2_' + str(kernel_size_2) + '_p2_' + str(poolsize_2) + '_dp2_' + str(dropout_2) + '_dn3_' + str(num_dense_3) + '_dp3_' + str(dropout_3)
+    #if Xx_input_len > 0:
+        #arch = arch + '_dn4_' + str(num_dense_4) + '_dp4_' + str(dropout_4)
+    return arch + '_'
 
 
 
@@ -316,38 +316,32 @@ def compile_fit_save_model(
 
 rows = read_csv_data("./dataset/data.csv")
 
-rows
-
 random.shuffle(rows)
-rows = rows[ :int(len(rows) * 0.2)]
+rows = rows[ :int(len(rows) * 0.1)]
 
 
-for num_filters_1 in [30, 50]:
-    for kernel_size_1 in [2, 4]:
-        for poolsize_1 in [2, 4]:
-            for dropout_1 in [0.1, 0.4]:
-                for num_dense_3 in [128, 512]:
-                    for dropout_3 in [0.1, 0.4]:
-                        train_model(
-                            get_train_test(rows, 0.1),
-                            get_params(
-                                #model_name,
-                                "pitch_vectors",
-                                #epochs,
-                                10,
-                                #output_size,
-                                70,
-                                #Xx_input_len,
-                                23,
-                                # model params: Input 1
-                                num_filters_1=num_filters_1,
-                                kernel_size_1=kernel_size_1,
-                                poolsize_1=poolsize_1,
-                                dropout_1=dropout_1,
-                                num_dense_3=0,
-                                dropout_3=0,
-                            )
-                        )
+for num_filters_1 in [20, 30, 40, 50]:
+    for kernel_size_1 in [2, 3, 4, 5]:
+        for poolsize_1 in [2, 3, 4, 5]:
+            for dropout_1 in [0.1, 0.2, 0.3, 0.4]:
+                train_model(
+                    get_train_test(rows, 0.1),
+                    get_params(
+                        #model_name,
+                        "pitch_vectors",
+                        #epochs,
+                        10,
+                        #output_size,
+                        3,
+                        #Xx_input_len,
+                        0,
+                        # model params: Input 1
+                        num_filters_1=num_filters_1,
+                        kernel_size_1=kernel_size_1,
+                        poolsize_1=poolsize_1,
+                        dropout_1=dropout_1,
+                    )
+                )
 
 
 """

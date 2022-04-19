@@ -1,10 +1,10 @@
-\contentsline {algorithm}{\numberline {1}{\ignorespaces findObjects procedure}}{34}{algorithm.1}%
-\contentsline {algorithm}{\numberline {2}{\ignorespaces Object detection and tracking procedure}}{35}{algorithm.2}%
-\contentsline {algorithm}{\numberline {3}{\ignorespaces encoding helper procedures}}{36}{algorithm.3}%
-\contentsline {algorithm}{\numberline {4}{\ignorespaces encodeData procedure}}{37}{algorithm.4}%
-\contentsline {algorithm}{\numberline {5}{\ignorespaces Dataset generation procedure}}{38}{algorithm.5}%
-\contentsline {algorithm}{\numberline {6}{\ignorespaces Model compiling procedure}}{39}{algorithm.6}%
-\contentsline {algorithm}{\numberline {7}{\ignorespaces Models training procedure}}{40}{algorithm.7}%
-\contentsline {algorithm}{\numberline {8}{\ignorespaces Recursive model prediction}}{41}{algorithm.8}%
-\contentsline {algorithm}{\numberline {9}{\ignorespaces Decoding helper procedures}}{41}{algorithm.9}%
-\contentsline {algorithm}{\numberline {10}{\ignorespaces Decoding camera data}}{42}{algorithm.10}%
+\contentsline {algorithm}{\numberline {1}{\ignorespaces findObjects procedure}}{25}{algorithm.1}%
+\contentsline {algorithm}{\numberline {2}{\ignorespaces Object detection and tracking procedure}}{27}{algorithm.2}%
+\contentsline {algorithm}{\numberline {3}{\ignorespaces encoding helper procedures}}{28}{algorithm.3}%
+\contentsline {algorithm}{\numberline {4}{\ignorespaces encodeData procedure}}{29}{algorithm.4}%
+\contentsline {algorithm}{\numberline {5}{\ignorespaces Dataset generation procedure}}{30}{algorithm.5}%
+\contentsline {algorithm}{\numberline {6}{\ignorespaces Model compiling procedure}}{31}{algorithm.6}%
+\contentsline {algorithm}{\numberline {7}{\ignorespaces Models training procedure}}{32}{algorithm.7}%
+\contentsline {algorithm}{\numberline {8}{\ignorespaces Recursive model prediction}}{33}{algorithm.8}%
+\contentsline {algorithm}{\numberline {9}{\ignorespaces Decoding helper procedures}}{33}{algorithm.9}%
+\contentsline {algorithm}{\numberline {10}{\ignorespaces Decoding camera data}}{34}{algorithm.10}%

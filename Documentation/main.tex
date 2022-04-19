@@ -1,20 +1,24 @@
 \documentclass[
-11pt,
-twoside
+    11pt,
+    twoside
 ]{report}
 
 
 \usepackage[
-a4paper,
-vmargin=1in,
-hmargin=1in
+    a4paper,
+    vmargin=1in,
+    hmargin=1in
 ]{geometry}
 
 \usepackage{setspace}
 \usepackage[utf8]{inputenc}
-\usepackage{hyperref}
 \usepackage{multirow}
 
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks = false,
+    linkbordercolor = {white}
+}
 
 \usepackage{graphicx}
 \graphicspath{{resources/images/}}
@@ -22,9 +26,10 @@ hmargin=1in
 \usepackage[toc,title,page]{appendix}
 
 
-\usepackage[ backend=biber ]{biblatex}
-\addbibresource{./resources/references.bib}
 
+\usepackage[ maxnames=5,backend=biber ]{biblatex}
+\DefineBibliographyStrings{english}{andothers={\&~others\adddot}}
+\addbibresource{./resources/references.bib}
 
 
 \usepackage{algpseudocode}
@@ -158,7 +163,7 @@ As mentioned before, the OpenCV object detection pre-trained models were not suc
 
 
 
-The blender 3d model was a big task because it was meant to recreate a realistic football pitch that could be photographed and extracted data from. This model followed the official measurements and included the grass, the lines, the goals and, corner flags and, most important, the 3d model markers. These objects were built from scratch following online resources and took a while to refine them up to a decent level. Following that was the creation of a referential map upon which the dataset generating algorithm would map the 3d model markers from the their Cartesian coordinates to the camera screen 2d coordinates. Once these tasks were finished, the next step was to automate the geometric and imaging data using Blender's Python API. This was at times challenging because the API is quiet advanced and sophisticated so it has a steep learning curve associated with it. One issue before completion of automating the model, was the rendering option which would return a negative colour pallet that would not be appropriate to train with. This issue was solved by tweaking the rendering option until it returned the correct image output.
+The blender 3D model was a big task because it was meant to recreate a realistic football pitch that could be photographed and extracted data from. This model followed the official measurements and included the grass, the lines, the goals and, corner flags and, most important, the 3D model markers. These objects were built from scratch following online resources and took a while to refine them up to a decent level. Following that was the creation of a referential map upon which the dataset generating algorithm would map the 3D model markers from the their Cartesian coordinates to the camera screen 2D coordinates. Once these tasks were finished, the next step was to automate the geometric and imaging data using Blender's Python API. This was at times challenging because the API is quiet advanced and sophisticated so it has a steep learning curve associated with it. One issue before completion of automating the model, was the rendering option which would return a negative colour pallet that would not be appropriate to train with. This issue was solved by tweaking the rendering option until it returned the correct image output.
 
 
 
@@ -185,7 +190,7 @@ The OpenCV library has also some manual controls that are very useful for the vi
 The human and ball recognition is undertaken using the YOLO version 3, as mentioned before, that is already widely used in similar tasks. It is a pre-trained and -configured convolutional network that detects many a extensive range of types of objects that are contained in the ``coco.names'' helper file which comes along with the ``yolov3.cfg'' (for configuration) and ``yolov3.weights'' (for neurons' weights). The algorithm used in this project filters out all detections except the humans and the ball and applies another filtering to humans and ball detections (the ones below their threshold). The OpenCV's ``Non-maximum suppression'' \cite{nms} function is ran since, even after the filtering of predictions, the model was outputting many redundant and overlapping detections. This last function manages to reduce most redundancy and still capture some players even when they crossing (can be calibrated with a threshold value).
 
 
-The synthetic image dataset production started out by creating a 2d png image file of a football pitch (transparent with white lines, done with GNU image manipulator program (GIMP)). This file was then merged into a 2d plane texture compositor to recreate the look of a football match. Some objects where also created using the blender's tools to add some more realism to model. Apart from 3d modelling, the blender file was ran through a python script that automates the movement, data collection and rendering of images of a set of cameras. The image data is stored into individual files and the geometric data is written to a single file
+The synthetic image dataset production started out by creating a 2D png image file of a football pitch (transparent with white lines, done with GNU image manipulator program (GIMP)). This file was then merged into a 2D plane texture compositor to recreate the look of a football match. Some objects where also created using the blender's tools to add some more realism to model. Apart from 3D modelling, the blender file was ran through a python script that automates the movement, data collection and rendering of images of a set of cameras. The image data is stored into individual files and the geometric data is written to a single file
 
 
 The resultant data must then be decoded and manipulated, running the Numpy library, into the deep learning convolutional network. The recursiveness of this model forces the pipeline to be very flexible to handle single and multiple inputs (with varying input shapes). The recursive prediction is also conditional operation because it uses the current prediction to feed it (along the same image) to the next recursive prediction
@@ -194,120 +199,52 @@ The resultant data must then be decoded and manipulated, running the Numpy libra
 
 \section{Results}
 
-results are below
+The project results have been so far promising. The main proof of concept (detecting and tracking humans and ball) was implemented without having many issues. This section will describe sequentially the results of running the algorithm for a short period of time.
 
-(sshot\textgreater{} image recognition, ball and humans)
 
-\begin{figure}[H]
-    \includegraphics[keepaspectratio, width=\columnwidth]{first.png}
-    \caption{First detection, no ball detected}
-    \label{img:1}
-\end{figure}
-\ref{img:1}
-players are detected but ball is not (purple means that object recognition just ran). multiple players are detected in the same bounding box. refs are detected as well. one steward is also detected. streaming is stopped because ball is not found.
-\begin{figure}[H]
-    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_21-32-51.png}
-    \caption{Manually labelling ball}
-    \label{img:2}
-\end{figure}
-\ref{img:2} players bounding boxes in green means that it is tracking. manually labelling ball to continue stream.
-\begin{figure}[H]
-    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_21-35-39.png}
-    \caption{Ball tracking error}
-    \label{img:3}
-\end{figure}
-\ref{img:3} ball tracking is lost and tracks the numbers on the players back.
-\begin{figure}[H]
-    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_21-36-05.png}
-    \caption{New players on screen are not detected}
-    \label{img:4}
-\end{figure}
-\ref{img:4} player tracking continues. new players appear on the screen but they are not
-detected until 30frame period runs object detection again.
-\begin{figure}[H]
-    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_21-38-04.png}
-    \caption{Ball tracking lost}
-    \label{img:5}
-\end{figure}
-\ref{img:5} ball
-tracking is lost again because of the pitch lines and player boots. some players previously detected are lost because of the backgroup from ads or pitch (not enough constract).
-\begin{figure}[H]
-    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_21-36-47.png}
-    \caption{New ball labelling}
-    \label{img:6}
-\end{figure}
-\ref{img:6} ball needs
-to be labelled again to be tracked again.
-\begin{figure}[H]
-    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_23-05-49.png}
-    \caption{Ball tracking running, some players go off screen and tracking lost}
-    \label{img:7}
-\end{figure}
-\ref{img:7} the object
-detection is ran. all the human trackers are removed but the ball tracker. the ball tracker is not reset if the ball is still being tracked.
-\begin{figure}[H]
-    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_23-06-03.png}
-    \caption{Player's tracking is lost again, ball tracking continues}
-    \label{img:8}
-\end{figure}
-\ref{img:8} the
-players tracker had to be reset again from the because the detected players moved out of the screen in the meantime. ball tracker continues to run, regardless.
-\begin{figure}[H]
-    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_23-06-18.png}
-    \caption{Players is running but some players are not detected, ball tracking is wrong}
-    \label{img:9}
-\end{figure}
-\ref{img:9} the ball
-tracker is wrong again, by tracking the player's back number.
-\begin{figure}[H]
-    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_21-39-53.png}
-    \caption{Different camera angle}
-    \label{img:10}
-\end{figure}
-\ref{img:10} this is a
-video segment imposed by the director. data cannot be collected. this is a short moment.
-\begin{figure}[H]
-    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_23-06-43.png}
-    \caption{One wrong human detection and ball detection is wrong as well}
-    \label{img:11}
-\end{figure}
-\ref{img:11} ball is
-tracked from the since the label needs to be labelled for the stream to continue (needs to cut the scene). there is a bug, a human is recognised due to noise.
-\begin{figure}[H]
-    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_23-08-00.png}
-    \caption{Detection bug continues, fan is detected and ball tracking is lost}
-    \label{img:12}
-\end{figure}
-\ref{img:12} players
-are detected again. the bug still persists. a fan is recognised in the crowd. the ball is again not recognised.
-\begin{figure}[H]
-    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_23-09-45.png}
-    \caption{New perspective, players were detected and ball is being labelled}
-    \label{img:13}
-\end{figure}
-\ref{img:13} most
-players are visible from this new perspective. The ball is not recognised.
-\begin{figure}[H]
-    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_23-10-58.png}
-    \caption{New perspective, players and ball are being tracked}
-    \label{img:14}
-\end{figure}
-\ref{img:14} most of
-the players are recognised from this perspective. The ball is visible and being tracked.
-\begin{figure}[H]
-    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_23-12-29.png}
-    \caption{Yet another perspective, most players detected but ball tracking is wrong}
-    \label{img:15}
-\end{figure}
-\ref{img:15} in this
-frame few players were recognised because the camera view moved very suddendly (from the previous frame ) in betwee the object detection cycle. The ball tracker was lost and it is tracking the payer's leg instead.
-\begin{figure}[H]
-    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_23-13-18.png}
-    \caption{Half of players are detected, all in the most important zone}
-    \label{img:16}
-\end{figure}
-\ref{img:16} In this
-frame most players are detected including all players inside the box which is the region of interest when a team is attacking. The ball tracker has lost the ball because the camera view is being blocked by the crossing player's leg. (sshot\textgreater{} pitch 3d modelling and camera automation)
+
+In the figure \ref{img:1}, most players are detected, as well as referees and a steward, but ball is not (purple means that object recognition just ran). Note that there is a bug in which some players are detected in the same box what. In this case the video stream is stopped until the manual labelling of the ball is done. The purple boxes mean that the algorithm is in the detection step
+
+
+
+This image \ref{img:2}, shows the algorithm's labelling step, the program is stopped until the manual labelling is done. The blue bounding box shows the region that the operator set the program to track the ball. The humans' bounding boxes in green means that it is tracking mode.
+
+
+
+The video stream ran for a few more frames \ref{img:3} before the ball tracker lost track of the bal and instead is tracking the back number of a player. Presumably due to the its light colour, similar colour to the ball.
+
+
+
+Following the bug in the ball tracking \ref{img:4}, the operator pressed the "f" key to trigger the ball tracking again. The ball is again being correctly tracked. In the other hand, the humans' detection has ran again (probably after 30 frames period of tracking) and it missed 4 players. This was due to the sudden zoom out of the camera perspective right after the detection.
+
+
+
+The ball tracking is lost yet again as shown in the figure \ref{img:5}. It happened probably due to the pitch lines and player boots visual interference as their colour are very bright. In this instance some players previously not detected are now recovered. One player, next to the ads' barriers, has its tracking stopped because the colour tones of its kit blend completely (not enough contrast) with the current ad being shown. The ball is, in the same instance \ref{img:6}, labelled again to proceed with the program.
+
+
+
+The figures \ref{img:7} and \ref{img:8}, capture the moment where a player does a long pass. The ball tracking works perfectly, as ball and players tracking are independent, but the initial players' tracking is reset for 2 times as the camera angle leaves currently tracked players behind.
+The players tracking stabilises \ref{img:9} since the camera angle does stabilise as well. However the ball tracker is wrong again because the ball was bouncing against the floor and the tracker got "stucked" to the player's back number. Both referees are being tracked as well.
+
+
+
+This image \ref{img:10}, is the following camera angle triggered by the match recording director. The data cannot be collected for is a short period of time. The ball had to be labelled for the program to continue. This "forced" labelling caused an erroneous signal to the next frame \ref{img:11}.
+
+
+
+The image \ref{img:11}, as mentioned in \ref{img:10}, the ball is being tracked wrongly. The key "f" is pressed to fix the ball tracking. Almost all human were detected but there is too much noise on the picture that leads the model to predict a large bounding box which is a clear bug.
+
+
+In \ref{img:12}, following a cross to the stands, the ball tracking was lost. The players are detected again but the bug still persists. Additionally a fan is recognised in the crowd.
+
+
+
+The camera played a replay \ref{img:13} of a play in a new perspective. In this view, most players are visible but the ball is not recognised so it is needs to be labelled as well. Following the detection \ref{img:14}, most of the players continue to be tracked as well as the ball.
+
+
+
+
+The replay continues \ref{img:15} but only a few players were recognised this time, after a sudden angle change (from the previous frame, in between the object detection cycle). The ball tracker was lost and it is tracking the payer's leg instead maybe resultant of low contrast between the ball and the players socks. As the replay progresses \ref{img:16} more players are detected, especially and conveniently all players inside the box which is the region of interest when a team is attacking. The ball tracker has lost the ball, again, due to the camera view is being blocked by the crossing player's leg.
 
 
 
@@ -508,10 +445,6 @@ The important idea to remember is that there is already robust technologies and 
 
 
 
-To add to methods section
-
-
-
 \section{Object detection and tracking}
 
 
@@ -668,7 +601,7 @@ To add to methods section
         \State $pitchVectors.append(marker)$
     \EndFor
     \State
-    \Return $origin, framesVectors, pitchVectors$
+    \Return $tuple(origin, framesVectors, pitchVectors)$
 \EndProcedure
 \For {$camera \in cameras$}
     \State $fileName \gets blender.renderImage(camera)$
@@ -887,61 +820,33 @@ creating geometric framework to map objects from screen on pitch, and from pitch
 
 
 
-\section{3d modelling and dataset generation}
+\section{3D modelling}
 
 
-text
+The 3D model development was a long process that ties together many aspects of this project. It is one of the foundations of the system. The following will describe the process behind the final result.
+
+
+The process started firstly by creating a 3D reference system \ref{img:ref_map} (points 5, 7, 34, 36 are goals' top corners) that maps the points recognisable by the camera. This will be used by the blender's cameras and python API to generate the dataset and by the artificial intelligence model to train the model and to process the video stream to perform the homographic transformation.
 
 
 
-\begin{figure}[H]
-    \includegraphics[keepaspectratio, width=\columnwidth]{coordinates.png}
-    \caption{Reference Map}
-    \label{img:ref_map}
-\end{figure}
-\ref{img:ref_map} description, created 3d reference system that maps the points recognisable by the camera. This will be used for the artificial intelligence model to train the model and to process the video stream to perform the homographic transformation.
-\begin{figure}[H]
-    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_from_2021-10-22_13-59-52.png}
-    \caption{Development of 3D blender model}
-    \label{img:texture}
-\end{figure}
-\ref{img:texture} The 3d model was developed on blender. It is a green 3d texture (to emulate the grass) with a pitch png transparent graphic to produce the white lines.
-\begin{figure}[H]
-    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2021-12-17_19-08-06.png}
-    \caption{Camera view in blender}
-    \label{img:cam_grass}
-\end{figure}
-\ref{img:cam_grass} The result is a realistic pitch replica that can be rendered by a blender camera to produce the synthetic dataset
-\begin{figure}[H]
-    \includegraphics[keepaspectratio, width=\columnwidth]{image.png}
-    \caption{Camera rendered image}
-    \label{img:camera_view}
-\end{figure}
-\ref{img:camera_view} this is the rendered image from a blender camera, this image is then the processed to be then used as the input for the artifical intelligence model.
-\begin{figure}[H]
-    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-05_12-03-42.png}
-    \caption{Preview of the finished blender model}
-    \label{img:blender_preview}
-\end{figure}
-\ref{img:blender_preview} The pitch was then improved by adding 3d markers corresponding to the map reference system. These markers can be accessed by the blender cameras to retrieve their position on the camera view and their relative position to the cartesian origin.
-\begin{figure}[H]
-    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-05_12-45-59.png}
-    \caption{Penalty box view}
-    \label{img:penalty_box}
-\end{figure}
-\ref{img:penalty_box} This is the view of the box which shows the position of the markers from a closer view
-\begin{figure}[H]
-    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-05_12-47-42.png}
-    \caption{Goal}
-    \label{img:goal}
-\end{figure}
-\ref{img:goal} This is the view from the goal which is an important object that is important for image recognition. it has the only markers with a positive z-index to emulate the top corners of the goal. It also includes the corner flag (on the left) because all pitches have them by regulation.
-\begin{figure}[H]
-    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-05_12-05-23.png}
-    \caption{Cameras}
-    \label{img:cameras}
-\end{figure}
-\ref{img:cameras} The final step is to create 15 cameras which will rotate within a range and will render images for the dataset from these different position to emulate the real camera which will be put in different positions.
+The blender model was initiated as a rectangular 2D green plane \ref{img:texture} that would have a transparent image of the pitch with white lines "stamped" on top off as well as developing a 3d texture (emulating real grass) to give the realistic appearance.
+
+
+
+The result \ref{img:cam_grass} is a realistic pitch replica that can be rendered by a blender camera to produce the synthetic dataset. This is the rendered image \ref{img:camera_view} from a blender camera perspective, this image is then the processed to be then used as the input for the artifical intelligence model.
+
+
+
+The pitch was then upgraded by adding 2 goals (for visual referencing) and 3D markers corresponding to the map reference system \ref{img:blender_preview}. These markers can be accessed by the blender cameras to retrieve their position on the camera view and their relative position to the cartesian origin.
+
+
+
+This is the view from the goal which is an important object that is important for image recognition \ref{img:penalty_box}. It has the only markers with a positive z-index to emulate the top corners of the goal \ref{img:goal} as well as the corner flag (on the left) because all pitches have them by regulation.
+
+
+
+The final step is to create 15 cameras \ref{img:cameras} which will rotate within a range and will render images for the dataset from these different position to emulate the real camera which will be put in different positions.
 
 
 
@@ -953,27 +858,32 @@ text
 
 \section{Testing assessment}
 
+testing machine learning model accuracity over many layers
 \begin{itemize}
 \item
-  testing with random camera, get accuracy
-\item
-  testing machine learning model accuracity over many layers
-  \begin{itemize}
-  \item
-    configuration of convolution
-    \begin{itemize}
+configuration of convolution
+\begin{itemize}
     \item
       their kernels sizes
     \item
       number of filters
-    \end{itemize}
-  \item
-    size of pool layers
-  \item
-    dropout rate
-  \item
-    number of flat dense third layer when it has 2 inputs
-  \end{itemize}
+    \item
+      size of pool layers
+    \item
+      dropout rate
+\end{itemize}
+\item
+    metrics be ng analysed along the epochs
+\begin{itemize}
+    \item
+        epoch loss
+    \item
+        epoch mean squared error
+    \item
+        evaluation loss vs iterations
+    \item
+        evaluation mean squared error vs iterations
+\end{itemize}
 \end{itemize}
 
 
@@ -1004,9 +914,19 @@ text
 
 \section{Main achievements}
 
-    (relating them to initial objectives)
-    (as well as similar worh from others)
+The main goal of this project was to create a free- and open-source modular and generic library that collects data from image data. This is a very hard task which is packed with very unexpected obstacles regardless the extensive research and development. Despite the difficulty of the obstacles faced the current work lays the foundations and infrastructure for such a system.
 
+
+The object detection and tracking system has performed well considering the difficult task of tracking a very dynamic environment.The algorithm is neat fulfil the goal and can it improved and extended over time. Although it does not have perfect accuracy (and it is expected to improve over time) there are other future components that will be develop to work on the limits of this module.
+
+
+The dataset generation module is, probably, the most interesting module created because it circumvents the current datasets limitation and allows for great flexibility. Thus allows for new possibilities to train a wide range of different machine learning models.
+
+
+The most significant achievement was the development of a end-to-end data collection infrastructure that is robust and has the potential to be used for a relevant problem in the real world. It was planned and designed towards what the industry and academia are looking for and it is for everyone to use, modify, improve and redistribute without any limits.
+
+
+In all, it is safe to assume that a significant amount of the proposed initial objectives were accomplished. The remaining objectives were also addressed but may need more research and work to be accomplished as they generally pose great technical challenges.
 
 
 \section{Main limitations of work}
@@ -1046,7 +966,7 @@ In the first runs of the human detection algorithm a bug emerged that detected a
 Any team sport is dynamic meaning that a match has many plays (defined as segments of match, segmented by set pieces) and the video stream have regularly replays or sudden angles changes. These events should be processed by the system. These segments should be dealt with firstly manually (following the development strategy) by giving the operator control of segmentation. The final solutions should be a unsupervised clustering machine learning model that processes a stream of images to detect these segmentations.
 
 
-Data generation has significant problem that happens if the camera frame points beyond the horizon in the 3d model. This is important because smaller stadium have lower stands so camera angles will be pointing higher than in bigger stadiums. It is necessary to return a inner segment to detect do the geometric reconstruction. In this issue, the solution may be approximating somehow the inner section to a sensible and workable value. The dataset generation could also improve by adding noise to the images in the dataset to emulate a real-world scenario.
+Data generation has significant problem that happens if the camera frame points beyond the horizon in the 3D model. This is important because smaller stadium have lower stands so camera angles will be pointing higher than in bigger stadiums. It is necessary to return a inner segment to detect do the geometric reconstruction. In this issue, the solution may be approximating somehow the inner section to a sensible and workable value. The dataset generation could also improve by adding noise to the images in the dataset to emulate a real-world scenario.
 
 
 The solution's data collection is expected to be chaotic due to the intermittent nature of object detection and tracking of objects and geometric distortion. This is a serious issue that can only be solved by creating a spatio-temporal data stream correction to smooth and generally fix inconsistencies in the data output.
@@ -1058,7 +978,7 @@ The nature of collective sports is set of relationships between individual playe
 Human pose estimation is a very interesting technique that could be very insightful to analyse the body performance and language of players. It would enrich the data to give much more context to the analysis, especially if it could be used to train an action predicting model. There is already a few dataset of past matches containing a match's event stream (passes, shots, tackles, etc.) and that could be used to undertake extrapolation and use it to predict many kind of types of actions with really good accuracy, at least in theory.
 
 
-The greatest future improvement could be the integration of a 3d simulation environment which can be used to firstly enhance the current capabilities and additionally add extra functions that could take this project to the next level as a another source of synthetic data which could be complementary to the existing blender generation dataset environment. The Google Research Football Environment \cite{gfootball_env}, is a former open-source football computer game that was repurposed by Google's Artificial intelligence department to test and train AI adversary models in a highly stochastic environment. The project has been successful and it was used in many different AI events and competitions. It can be controlled by humans but the ultimate goal is to each team/players to be controlled by an intelligent agent in a realistic 3d physical environment that generates 3d positional data of all objects in the pitch. After training these models, the teams play against each other and generate important data that is used to evaluate the models performance. This final output data, along the corresponding visual data recorded, could be used to improve the training/validation/testing of the existing machine learning models for object and geometric detection models since the data collected intersects the one generated on blender. Although promising, the real value is to use the in-game simulator to extract data that signals actions undertaken by players, 3d player pose estimation, objects 3d trajectory, in-game play segments and set piece recognition. These additional features are very valuable to increase the data points and enrich the data which contributes to automate ever more some manual operation that are performed by the operator. It is also conceivable to create an extra model that corrects players tracking (to smoothing it out), and even augmenting the off-screen player positions (by combining spatio-temporal in-game data) which is truly groundbreaking. Predicting the off-screen players position is critical because it mitigates one of the biggest limitations of this approach of using regular match-streams.
+The greatest future improvement could be the integration of a 3D simulation environment which can be used to firstly enhance the current capabilities and additionally add extra functions that could take this project to the next level as a another source of synthetic data which could be complementary to the existing blender generation dataset environment. The Google Research Football Environment \cite{gfootball_env}, is a former open-source football computer game that was repurposed by Google's Artificial intelligence department to test and train AI adversary models in a highly stochastic environment. The project has been successful and it was used in many different AI events and competitions. It can be controlled by humans but the ultimate goal is to each team/players to be controlled by an intelligent agent in a realistic 3D physical environment that generates 3D positional data of all objects in the pitch. After training these models, the teams play against each other and generate important data that is used to evaluate the models performance. This final output data, along the corresponding visual data recorded, could be used to improve the training/validation/testing of the existing machine learning models for object and geometric detection models since the data collected intersects the one generated on blender. Although promising, the real value is to use the in-game simulator to extract data that signals actions undertaken by players, 3D player pose estimation, objects 3D trajectory, in-game play segments and set piece recognition. These additional features are very valuable to increase the data points and enrich the data which contributes to automate ever more some manual operation that are performed by the operator. It is also conceivable to create an extra model that corrects players tracking (to smoothing it out), and even augmenting the off-screen player positions (by combining spatio-temporal in-game data) which is truly groundbreaking. Predicting the off-screen players position is critical because it mitigates one of the biggest limitations of this approach of using regular match-streams.
 
 
 The Google Fooball environment \cite{gfootball_env} is specific to football what is contrary to objective of being a general solution for any sports. The long term solution in to create free- and open-source modular game environment to simulate other sports and even be used as bases for standalone sports games. This proposal is far fetched as it is a whole another project by itself but is is a sustainable project to leverage sports data science and gaming development. For these reasons this could be added to the community's long term roadmap.
@@ -1080,10 +1000,147 @@ The Google Fooball environment \cite{gfootball_env} is specific to football what
 \section{Images}
 \listoffigures
 
-\subsection{foo title}
-Some text
-\subsection{another title}
-Another text
+\subsection{Results section}
+
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{first.png}
+    \caption{First detection, no ball detected}
+    \label{img:1}
+\end{figure}
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_21-32-51.png}
+    \caption{Manually labelling ball}
+    \label{img:2}
+\end{figure}
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_21-35-39.png}
+    \caption{Ball tracking error}
+    \label{img:3}
+\end{figure}
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_21-36-05.png}
+    \caption{New players on screen are not detected}
+    \label{img:4}
+\end{figure}
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_21-38-04.png}
+    \caption{Ball tracking lost}
+    \label{img:5}
+\end{figure}
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_21-36-47.png}
+    \caption{New ball labelling}
+    \label{img:6}
+\end{figure}
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_23-05-49.png}
+    \caption{Ball tracking running, some players go off screen and tracking lost}
+    \label{img:7}
+\end{figure}
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_23-06-03.png}
+    \caption{Player's tracking is lost again, ball tracking continues}
+    \label{img:8}
+\end{figure}
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_23-06-18.png}
+    \caption{Players is running but some players are not detected, ball tracking is wrong}
+    \label{img:9}
+\end{figure}
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_21-39-53.png}
+    \caption{Different camera angle}
+    \label{img:10}
+\end{figure}
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_23-06-43.png}
+    \caption{One wrong human detection and ball detection is wrong as well}
+    \label{img:11}
+\end{figure}
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_23-08-00.png}
+    \caption{Detection bug continues, fan is detected and ball tracking is lost}
+    \label{img:12}
+\end{figure}
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_23-09-45.png}
+    \caption{New perspective, players were detected and ball is being labelled}
+    \label{img:13}
+\end{figure}
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_23-10-58.png}
+    \caption{New perspective, players and ball are being tracked}
+    \label{img:14}
+\end{figure}
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_23-12-29.png}
+    \caption{Yet another perspective, most players detected but ball tracking is wrong}
+    \label{img:15}
+\end{figure}
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-03_23-13-18.png}
+    \caption{Half of players are detected, all in the most important zone}
+    \label{img:16}
+\end{figure}
+
+
+
+\subsection{3D Modelling}
+
+
+
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{coordinates.png}
+    \caption{Reference Map}
+    \label{img:ref_map}
+\end{figure}
+
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_from_2021-10-22_13-59-52.png}
+    \caption{Development of 3D blender model}
+    \label{img:texture}
+\end{figure}
+
+
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2021-12-17_19-08-06.png}
+    \caption{Camera view in blender}
+    \label{img:cam_grass}
+\end{figure}
+
+
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{image.png}
+    \caption{Camera rendered image}
+    \label{img:camera_view}
+\end{figure}
+
+
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-05_12-03-42.png}
+    \caption{Preview of the finished blender model}
+    \label{img:blender_preview}
+\end{figure}
+
+
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-05_12-45-59.png}
+    \caption{Penalty box view}
+    \label{img:penalty_box}
+\end{figure}
+
+
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-05_12-47-42.png}
+    \caption{Goal}
+    \label{img:goal}
+\end{figure}
+
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-03-05_12-05-23.png}
+    \caption{Cameras}
+    \label{img:cameras}
+\end{figure}
 
 
 
