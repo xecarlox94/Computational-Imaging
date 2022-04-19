@@ -1,10 +1,11 @@
 *.bbl
+*.loa
+*.lof
 *.aux
 *.bcf
 *.out
 *.toc
 *.blg
 *.log
-*.pdf
 *.run.xml
 *.toc

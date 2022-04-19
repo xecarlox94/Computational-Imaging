@@ -1,10 +1,20 @@
+\defcounter {refsection}{0}\relax 
 \contentsline {algorithm}{\numberline {1}{\ignorespaces findObjects procedure}}{25}{algorithm.1}%
+\defcounter {refsection}{0}\relax 
 \contentsline {algorithm}{\numberline {2}{\ignorespaces Object detection and tracking procedure}}{27}{algorithm.2}%
+\defcounter {refsection}{0}\relax 
 \contentsline {algorithm}{\numberline {3}{\ignorespaces encoding helper procedures}}{28}{algorithm.3}%
+\defcounter {refsection}{0}\relax 
 \contentsline {algorithm}{\numberline {4}{\ignorespaces encodeData procedure}}{29}{algorithm.4}%
+\defcounter {refsection}{0}\relax 
 \contentsline {algorithm}{\numberline {5}{\ignorespaces Dataset generation procedure}}{30}{algorithm.5}%
+\defcounter {refsection}{0}\relax 
 \contentsline {algorithm}{\numberline {6}{\ignorespaces Model compiling procedure}}{31}{algorithm.6}%
+\defcounter {refsection}{0}\relax 
 \contentsline {algorithm}{\numberline {7}{\ignorespaces Models training procedure}}{32}{algorithm.7}%
+\defcounter {refsection}{0}\relax 
 \contentsline {algorithm}{\numberline {8}{\ignorespaces Recursive model prediction}}{33}{algorithm.8}%
+\defcounter {refsection}{0}\relax 
 \contentsline {algorithm}{\numberline {9}{\ignorespaces Decoding helper procedures}}{33}{algorithm.9}%
+\defcounter {refsection}{0}\relax 
 \contentsline {algorithm}{\numberline {10}{\ignorespaces Decoding camera data}}{34}{algorithm.10}%
