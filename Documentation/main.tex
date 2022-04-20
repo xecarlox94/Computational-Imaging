@@ -1,6 +1,6 @@
 \documentclass[
     11pt,
-    twoside
+    oneside
 ]{report}
 
 
@@ -16,8 +16,7 @@
 
 \usepackage{hyperref}
 \hypersetup{
-    colorlinks = false,
-    linkbordercolor = {white}
+    hidelinks
 }
 
 \usepackage{graphicx}
@@ -83,7 +82,10 @@
 
 \maketitle
 
+
+
 \chapter*{Declaration}
+\thispagestyle{empty}
 
 I, \TheAuthor, confirm that this work submitted for assessment is my own and is expressed in my own words. Any uses made within it of the results of other authors in any form (e.g., ideas, equations, figures, text, tables, programs) are adequately acknowledged at any point of their use. A list of the references employed is included.
 
@@ -96,6 +98,7 @@ Signed: \TheAuthor
 Date: \today
 
 \chapter*{Acknowledgement}
+\thispagestyle{empty}
 
 
 Acknowledgements go here
@@ -106,16 +109,16 @@ Acknowledgements go here
 
 
 \chapter*{Abstract}
+\thispagestyle{empty}
 
-This Project describes creating a multi-stage algorithm to track and extract features from football matches' 2D video recording. The solution will track and map the players and ball's position relative to the court lines with minimal human assistance or monitoring. This algorithm will require implementing image processing and machine learning tools and techniques to allow visual recognition of intended elements. Although there are significant technical challenges, similar solutions were already attempted, which lay down the groundwork and references for guidance in this Project.
-
-
-This solution aims to be an open platform for computer and sports scientists to collaborate and make invaluable contributions to the advancement of sports data science.
+This Project describes creating a multi-stage algorithm to track and extract features from football matches' 2D video recording. The solution will track and map the players and ball's position relative to the court lines with minimal human assistance or monitoring. This algorithm will require implementing image processing and machine learning tools and techniques to allow visual recognition of intended elements. Although there are significant technical challenges, similar solutions were already attempted, which lay down the groundwork and references for guidance in this Project. This solution aims to be an open platform for computer and sports scientists to collaborate and make invaluable contributions to the advancement of sports data science.
 
 
 
+\setcounter{page}{0}
 
 \tableofcontents
+
 
 
 \chapter{Introduction}
@@ -228,11 +231,11 @@ The players tracking stabilises \ref{img:9} since the camera angle does stabilis
 
 
 
-This image \ref{img:10}, is the following camera angle triggered by the match recording director. The data cannot be collected for is a short period of time. The ball had to be labelled for the program to continue. This "forced" labelling caused an erroneous signal to the next frame \ref{img:11}.
+This figure \ref{img:10}, is the following camera angle triggered by the match recording director. The data cannot be collected for is a short period of time. The ball had to be labelled for the program to continue. This "forced" labelling caused an erroneous signal to the next frame \ref{img:11}.
 
 
 
-The image \ref{img:11}, as mentioned in \ref{img:10}, the ball is being tracked wrongly. The key "f" is pressed to fix the ball tracking. Almost all human were detected but there is too much noise on the picture that leads the model to predict a large bounding box which is a clear bug.
+The figure \ref{img:11}, as mentioned in \ref{img:10}, the ball is being tracked wrongly. The key "f" is pressed to fix the ball tracking. Almost all human were detected but there is too much noise on the picture that leads the model to predict a large bounding box which is a clear bug.
 
 
 In \ref{img:12}, following a cross to the stands, the ball tracking was lost. The players are detected again but the bug still persists. Additionally a fan is recognised in the crowd.
@@ -279,13 +282,6 @@ This project has many limits at this stage of development. As mentioned before, 
 
 
 The object detection is not perfect at this moment either. Humans are detected consistently but sometimes the same detection may be catching two players instead of doing two individual detections. This limitation must be mitigated because it may cause noise to the out put data. The ball detection is more problematic because it is not consistent and forces the operator to frequently manually label the ball. The manual labelling of the ball is not efficient in terms of time so it is a major priority to improve the ball detection success rate before the system's production or release.
-
-
-
-\iffalse
-\subsection{Dissertation organisation sketch}
-to fill in
-\fi
 
 
 
@@ -441,6 +437,9 @@ The important idea to remember is that there is already robust technologies and 
 
 
 
+High level diagram
+
+
 
 
 
@@ -553,10 +552,7 @@ The important idea to remember is that there is already robust technologies and 
         \EndIf
     \EndFor
     \State
-    \Return $($
-        \State \indent $corner\_vectors,$
-        \State \indent $p\_corners$
-    \State $)$
+    \Return $tuple(corner\_vectors, p\_corners)$
 \EndProcedure
 \end{algorithmic}
 \end{algorithm}
@@ -643,10 +639,7 @@ The important idea to remember is that there is already robust technologies and 
             \State \indent $outputs \gets output$
     \State $)$
 \Else
-    \State $model \gets Model($
-        \State \indent $input \gets convolutionLayers,$
-        \State \indent $outputs \gets output$
-    \State $)$
+    \State $model \gets Model(input \gets convolutionLayers, outputs \gets output)$
 \EndIf
 \State $compileModel(model, data, params)$
 \end{algorithmic}
@@ -763,8 +756,7 @@ The important idea to remember is that there is already robust technologies and 
     \State $corner\_vectors\_decoded \gets decode\_vector\_list(corner\_vectors\_data, 3)$
     \State $pitch\_vectors\_decoded \gets decode\_vector\_list(pitch\_vectors\_data, 3)$
     \State $pitch\_vectors\_decoded \gets merge($
-        \State \indent $corner\_vectors\_decoded,$
-        \State \indent $pitch\_vectors\_decoded$
+        \State \indent $corner\_vectors\_decoded, pitch\_vectors\_decoded$
     \State $)$
     \State
     \Return $tuple(origin\_decoded, frames\_vectors\_decoded, pitch\_vectors\_decoded)$
@@ -888,10 +880,6 @@ configuration of convolution
 
 
 
-
-
-
-
 \begin{figure}[H]
     \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-04-17_23-06-29.png}
     \caption{Tensorboard gui}
@@ -901,10 +889,20 @@ configuration of convolution
 \ref{img:tensorboard_gui} text
 
 
+
+
 \section{Performance assessment}
 
 
 text
+
+
+
+\section{Performance evaluation}
+
+
+text
+
 
 
 
@@ -989,8 +987,6 @@ The Google Fooball environment \cite{gfootball_env} is specific to football what
 
 
 
-
-
 \appendix
 \renewcommand{\thesection}{\Alph{section}.\arabic{section}}
 \setcounter{section}{0}
@@ -998,9 +994,6 @@ The Google Fooball environment \cite{gfootball_env} is specific to football what
 
 
 \section{Images}
-
-
-\listoffigures
 
 
 \subsection{Results section}
@@ -1146,9 +1139,6 @@ The Google Fooball environment \cite{gfootball_env} is specific to football what
 \end{figure}
 
 
-
-\section{Algorithms}
-\listofalgorithms
 
 
 
