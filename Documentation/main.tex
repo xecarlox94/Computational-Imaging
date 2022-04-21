@@ -4,6 +4,9 @@
 ]{report}
 
 
+\usepackage{xcolor}
+
+
 \usepackage[
     a4paper,
     vmargin=1in,
@@ -16,7 +19,10 @@
 
 \usepackage{hyperref}
 \hypersetup{
-    hidelinks
+    colorlinks,
+    linkcolor={black!50!black},
+    citecolor={black!50!black},
+    urlcolor={black!80!black}
 }
 
 \usepackage{graphicx}
@@ -159,10 +165,10 @@ The option for a free- and open-source library is, as mentioned before, a priori
 \section{Issues Resolved}
 
 
-Processing the image is the first step when trying to extract data from the video stream. The OpenCV library \cite{opencv} is very useful for this matter since it has all the utilities necessary to manipulate images and video streams. Many strategies were attempted such as using the library to recognise objects or poses estimation using OpenCV pre-trained models but they were not successful because of the scale the players and ball on the camera screen. Detecting objects is only the first step in extracting data, tracking objects over the screen is critical and it was not easy to implement and integrate into the detection system. The main issue was that tracked players, due to change in the camera angle, would move away from the camera screen which would then disabled their tracker. The algorithm was then modified to perform the detection every 30 seconds or whenever a tracker loses sight of its tracker. In this was we accomplish a reasonable result that will be the foundation for further development and improvement of detection and tracking. Additionally, the library was very effective in reading the video stream to the machine learning algorithms because it had to, for example, remove noise, resize and encode images before piping it to a model input. These operations are very important not only to provide the input (machine learning models have strict interfaces) to the models but also to improve their performance.
+Processing the image is the first step when trying to extract data from the video stream. The OpenCV library \cite{opencv} is very useful for this matter since it has all the utilities necessary to manipulate images and video streams. Many strategies were attempted such as using the library to recognise objects or poses estimation using OpenCV \cite{opencv} pre-trained models but they were not successful because of the scale the players and ball on the camera screen. Detecting objects is only the first step in extracting data, tracking objects over the screen is critical and it was not easy to implement and integrate into the detection system. The main issue was that tracked players, due to change in the camera angle, would move away from the camera screen which would then disabled their tracker. The algorithm was then modified to perform the detection every 30 seconds or whenever a tracker loses sight of its tracker. In this was we accomplish a reasonable result that will be the foundation for further development and improvement of detection and tracking. Additionally, the library was very effective in reading the video stream to the machine learning algorithms because it had to, for example, remove noise, resize and encode images before piping it to a model input. These operations are very important not only to provide the input (machine learning models have strict interfaces) to the models but also to improve their performance.
 
 
-As mentioned before, the OpenCV object detection pre-trained models were not successful in achieving a decent result. The YOLO convolution network model (based on PyTorch) was implemented to detect humans and the ball on the screen. Its setup had some issues mostly because the pre-trained weights and the network configuration is specific to the version 3 which has a different implementation from previous ones. Up to this moment, all libraries used were compatible with the desired General Public License version 3 (GPL3) so some functionalities applied with Numpy \cite{numpy} (BSD license, not compatible with GPL3) were substituted by hard-coded ones which took extra time. The final results worked really well as players were detected consistently but the not so much the ball. The players detection had a initial issue of producing redundant and overlapping detection for the player. This was fixed by applying the non-maximum suppression algorithm given the people bounding boxes to then filtering out those predictions.
+As mentioned before, the OpenCV \cite{opencv} object detection pre-trained models were not successful in achieving a decent result. The YOLO \cite{yolo} convolution network model (based on PyTorch) was implemented to detect humans and the ball on the screen. Its setup had some issues mostly because the pre-trained weights and the network configuration is specific to the version 3 which has a different implementation from previous ones. Up to this moment, all libraries used were compatible with the desired General Public License version 3 (GPL3) so some functionalities applied with Numpy \cite{numpy} (BSD license, not compatible with GPL3) were substituted by hard-coded ones which took extra time. The final results worked really well as players were detected consistently but the not so much the ball. The players detection had a initial issue of producing redundant and overlapping detection for the player. This was fixed by applying the non-maximum suppression algorithm given the people bounding boxes to then filtering out those predictions.
 
 
 
@@ -178,19 +184,19 @@ A new machine learning model had to be developed to train, test and apply it usi
 \section{Methods}
 
 
-The first and most important method is to work on in the image and video processing operations. These techniques are crucial for the image recognition technologies because they read the video stream as a sequence on images which are processed before the detection and tracking operations. The reading of the stream is in charge of the OpenCV library by running a while loop that reads the image sequence from the video capture object.
+The first and most important method is to work on in the image and video processing operations. These techniques are crucial for the image recognition technologies because they read the video stream as a sequence on images which are processed before the detection and tracking operations. The reading of the stream is in charge of the OpenCV \cite{opencv} library by running a while loop that reads the image sequence from the video capture object.
 
 
 The pitch recognition required some extra image processing that concerned applying a colour conversion, resizing and a bitwise ``and'' operation to return a ``green'' masking to remove the image noise from the outside of the pitch.
 
 
-The tracking is the domain of the OpenCV library by running a ``MultiTracker'' which aggregates a set of trackers for human tracking and a single one for the ball one. The type of tracker use is called ``CSRT'' based on the paper ``Discriminative Correlation Filter with Channel and Spatial Reliability'' \cite{csrt}. This type of tracker has a slower execution time but has the best result of all other available trackers on the computer vision library, even when the camera moves drastically.
+The tracking is the domain of the OpenCV \cite{opencv} library by running a ``MultiTracker'' which aggregates a set of trackers for human tracking and a single one for the ball one. The type of tracker use is called ``CSRT'' based on the paper ``Discriminative Correlation Filter with Channel and Spatial Reliability'' \cite{csrt}. This type of tracker has a slower execution time but has the best result of all other available trackers on the computer vision library, even when the camera moves drastically.
 
 
-The OpenCV library has also some manual controls that are very useful for the video stream manual operation and to aid ball tracking. It has some event handlers for key presses that are used to quit the streaming (by pressing the ``q'' key) and to trigger the manual ball labelling. The ball labelling is a GUI control that is triggered by the ``f'' key press.
+The OpenCV \cite{opencv} library has also some manual controls that are very useful for the video stream manual operation and to aid ball tracking. It has some event handlers for key presses that are used to quit the streaming (by pressing the ``q'' key) and to trigger the manual ball labelling. The ball labelling is a GUI control that is triggered by the ``f'' key press.
 
 
-The human and ball recognition is undertaken using the YOLO version 3, as mentioned before, that is already widely used in similar tasks. It is a pre-trained and -configured convolutional network that detects many a extensive range of types of objects that are contained in the ``coco.names'' helper file which comes along with the ``yolov3.cfg'' (for configuration) and ``yolov3.weights'' (for neurons' weights). The algorithm used in this project filters out all detections except the humans and the ball and applies another filtering to humans and ball detections (the ones below their threshold). The OpenCV's ``Non-maximum suppression'' \cite{nms} function is ran since, even after the filtering of predictions, the model was outputting many redundant and overlapping detections. This last function manages to reduce most redundancy and still capture some players even when they crossing (can be calibrated with a threshold value).
+The human and ball recognition is undertaken using the YOLO \cite{yolo} version 3, as mentioned before, that is already widely used in similar tasks. It is a pre-trained and -configured convolutional network that detects many a extensive range of types of objects that are contained in the ``coco.names'' helper file which comes along with the ``yolov3.cfg'' (for configuration) and ``yolov3.weights'' (for neurons' weights). The algorithm used in this project filters out all detections except the humans and the ball and applies another filtering to humans and ball detections (the ones below their threshold). The OpenCV's \cite{opencv} ``Non-maximum suppression'' \cite{nms} function is ran since, even after the filtering of predictions, the model was outputting many redundant and overlapping detections. This last function manages to reduce most redundancy and still capture some players even when they crossing (can be calibrated with a threshold value).
 
 
 The synthetic image dataset production started out by creating a 2D png image file of a football pitch (transparent with white lines, done with GNU image manipulator program (GIMP)). This file was then merged into a 2D plane texture compositor to recreate the look of a football match. Some objects where also created using the blender's tools to add some more realism to model. Apart from 3D modelling, the blender file was ran through a python script that automates the movement, data collection and rendering of images of a set of cameras. The image data is stored into individual files and the geometric data is written to a single file
@@ -319,7 +325,7 @@ Despite this article being a helpful starting point for research, it lacks acade
 This project \cite{baskettrack} focuses on creating automated player detection and tracking system using the Matlab programming language. The basketball court detection in this Project is accomplished solely by using image processing techniques such as converting the colour format, eroding and dilating the image before applying the canny edge detector, and Hough transform. This process of court detecting appears to be very efficient as it is not a complex algorithm. This is highly effective for basketball, but it might not work as well in a football match. A football pitch is bigger than in basketball, and the camera is zoomed in to focus on a particular pitch zone. This fact, in football, forces a possible solution to find a way of augmenting the possible location the camera is focused on. The same pipeline, created by ``Player tracking and analysis of basketball plays'' research, should be used in our Project, but it needs to be complemented by machine learning and augmentation because basketball recordings have a significantly bigger percentage on the court \cite{baskettrack}.
 
 
-The player detection is applied inside the court detection region by executing the OpenCV's \cite{opencv} HOG detector (histogram of oriented gradients) to create bounding boxes around players. This detector focuses on measuring the gradients' orientation on image's regions to detect patterns that recognise human bodies. This technique needs to be adjusted, during the testing stage, by adjusting the detection threshold adjusted to filter out false positives or just general noise. The approach is generally very effective unless two or more players are crossing in the camera view field. The authors decided to run the OpenCV's BGR detector inside the HOG detector bounding box since teams usually have different colours. This player detection algorithm is simple and accomplishes most of its purposes; however, it does not address players from the same team crossing the camera view. This event is very common in collective sports and should be a high requirement due to its occurrence frequency. An algorithm that uses human pose posture detection or other machine learning algorithms should effectively mitigate this important issue.
+The player detection is applied inside the court detection region by executing the OpenCV's \cite{opencv} HOG detector (histogram of oriented gradients) to create bounding boxes around players. This detector focuses on measuring the gradients' orientation on image's regions to detect patterns that recognise human bodies. This technique needs to be adjusted, during the testing stage, by adjusting the detection threshold adjusted to filter out false positives or just general noise. The approach is generally very effective unless two or more players are crossing in the camera view field. The authors decided to run the OpenCV's \cite{opencv} BGR detector inside the HOG detector bounding box since teams usually have different colours. This player detection algorithm is simple and accomplishes most of its purposes; however, it does not address players from the same team crossing the camera view. This event is very common in collective sports and should be a high requirement due to its occurrence frequency. An algorithm that uses human pose posture detection or other machine learning algorithms should effectively mitigate this important issue.
 
 
 The team, following the implementation of the player detection algorithm, moved to work on player tracking. After some development, they identified four common tracking scenarios:
@@ -400,7 +406,7 @@ This Project is a solution that generates visual analytics and player statistics
 
 
 
-The first part of this algorithm is to locate, track the player and detect the team. The location is done by running the YOLO algorithm, which predicts the bounding boxes containing every player on the camera view. These bounding boxes are then tracked during the consecutive by another model also using the YOLO algorithm. This tracking phase is then finished by running a Histogram Matching algorithm inside the bounding box to identify the player's team. The Histogram Matching algorithm was chosen because it is fast at detecting different colours (teams' kits are always different), and the task is relatively simple since the player is inside a small region \cite{cvpr_2018}.
+The first part of this algorithm is to locate, track the player and detect the team. The location is done by running the YOLO \cite{yolo} algorithm, which predicts the bounding boxes containing every player on the camera view. These bounding boxes are then tracked during the consecutive by another model also using the YOLO \cite{yolo} algorithm. This tracking phase is then finished by running a Histogram Matching algorithm inside the bounding box to identify the player's team. The Histogram Matching algorithm was chosen because it is fast at detecting different colours (teams' kits are always different), and the task is relatively simple since the player is inside a small region \cite{cvpr_2018}.
 
 
 
@@ -437,7 +443,11 @@ The important idea to remember is that there is already robust technologies and 
 
 
 
-High level diagram
+
+{\color{red}SUBMISSION INCLUDE: DECLARATION FORM/MITIGATING CIRCUMSTANCES FORM/CODE} \color
+
+This chapter will describe various implementation aspects that are relevant for the understanding of the solution. The Github repository is available at the \href{https://github.com/xecarlox94/Computational-Imaging}{url} and its planning can be viewed at the \href{URL}{url}.
+
 
 
 
@@ -445,6 +455,8 @@ High level diagram
 
 
 \section{Object detection and tracking}
+
+This system's component is paramount to the project's main goal. It is the foundation on which to "plug" the other modules on top off so it needs to be efficient and robust to its purpose. The current algorithm has shown these characteristics and it has plenty of potential for future integration with other components thanks to its neat implementation (considering the problem's complexity).
 
 
 \begin{algorithm}[H]
@@ -475,7 +487,7 @@ High level diagram
 \end{algorithm}
 
 
-\ref{alg:findObjs} text
+The procedure "findObjects" \ref{alg:findObjs} is responsible for running the convolutional network that detects many different multiple object of various types from a single frame. These return values need to be then filtered based on their type and the respective confidence threshold. The model's predict function is computationally very intensive but it has an impressive effectiveness for this dynamic environment.
 
 
 \begin{algorithm}[H]
@@ -517,13 +529,73 @@ High level diagram
 \end{algorithm}
 
 
-\ref{alg:detect_tracking} text
+
+
+The "Object detection and tracking" \ref{alg:detect_tracking} procedure is the function processes the video stream, sequentially frame by frame. Despite the convoluted appearance, it is a while loop that essentially applies the object detection \ref{alg:findObjs} function every 30 frames (or in case of losing the tracking signal for a player, triggering the "frameCount" value to be 0) and runs the multiple object trackers for human and the ball on the all other frames because the detection function is expensive. It is important to note that, although the players and ball detections are done together, the ball tracking is completely independent as the camera is naturally focusing on the ball and its detection is not as reliable as the players detection. This means that if the ball is already being tracked, the eventual new ball detection will be ignored to favour an existing correct and trustworthy tracking of the ball. When the ball detection is not successful (and there is not an existing tracking signal) the while loop is interrupted until the operator labels the location of the ball correctly.
+
+
+
 
 
 
 
 
 \section{Dataset generation}
+
+
+\begin{algorithm}[H]
+\begin{algorithmic}
+\caption{Dataset generation procedure}\label{alg:data_gen}
+\Procedure{getData}{$camera$}
+    \State $camOriginVector \gets camera.matrix.translation()$
+    \State $framesVectors \gets camOrigin.frames()$
+    \State $pitchVectors \gets \emptyset$
+    \For {$marker \in blender.collection(``pitch markers'')$}
+        \State $pitchVectors.append(marker)$
+    \EndFor
+    \State
+    \Return $tuple(origin, framesVectors, pitchVectors)$
+\EndProcedure
+\For {$camera \in cameras$}
+    \State $fileName \gets blender.renderImage(camera)$
+    \State $data \gets getData(camera)$
+    \State $encodedData \gets encodeData(data)$
+    \State $writeToCsv(fileName, encodedData)$
+    \State $camera.changeAngle()$
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+
+
+As explained before, the blender is used to produce a synthetic dataset. This solution includes a entire end-to-end dataset generation and machine learning training pipeline. It leverages the native blender's python API (and intern python libraries) to manipulate the 3d environment and extract the data.
+
+It all starts in the "getData" \ref{alg:data_gen} procedure that immediately collects the 3D geometric vector of the camera origin, frames and of the pitch's markers. This geometric data is then associated with a image file, rendered by the same camera at the same time, and written to a csv file.
+
+
+
+\begin{algorithm}[H]
+\begin{algorithmic}
+\caption{encodeData procedure}\label{alg:enc_data}
+\Procedure{encodeData}{$data$}
+    \State $origin, framesVectors, pitchVectors \gets data$
+    \State $encodedOrigin \gets encode\_vector(origin)$
+    \State $encodedFramesVectors \gets encode\_vector\_list(framesVectors)$
+    \State $corner\_vectors, pitch\_vectors \gets corner\_vecs\_pitch\_vecs(pitch\_vectors)$
+    \State $encodedCornerVectors \gets encode\_vector\_list(pitchVectors)$
+    \State $encodedPitchVectors \gets encode\_vector\_list(pitchVectors)$
+    \State
+    \Return $($
+        \State \indent $encodedOrigin +$
+        \State \indent $encodedFramesVectors +$
+        \State \indent $encodedCornerVectors +$
+        \State \indent $encodedPitchVectors$
+    \State $)$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+
+The "encodeData" procedure \ref{alg:enc_data} takes the tuple of sets of blender's geometric vectors and encodes them into a list of integers, ready for writing. The data layout (its order and the splitting of pitch and corner pitch vectors) is restricted by the way the machine learning model is executed. It is also important to mention that the pseudocode does not capture the encoding of the 3D pitch vectors is actually to 2D ones as almost all pitch vectors have "z" index 0. This reduces greatly the size of the input/output of the machine learning model since it is redundant data. The four top goal corner's (5, 7, 34, 36) have a fixed heigh so, in decoding, when all 2D pitch vectors are converted back to 3D the normal vectors get assigned 0 to their height and the top goal corner get their known height back.
 
 
 \begin{algorithm}[H]
@@ -558,156 +630,15 @@ High level diagram
 \end{algorithm}
 
 
-\ref{alg:enc_help} text
-
-
-\begin{algorithm}[H]
-\begin{algorithmic}
-\caption{encodeData procedure}\label{alg:enc_data}
-\Procedure{encodeData}{$data$}
-    \State $origin, framesVectors, pitchVectors \gets data$
-    \State $encodedOrigin \gets encode\_vector(origin)$
-    \State $encodedFramesVectors \gets encode\_vector\_list(framesVectors)$
-    \State $corner\_vectors, pitch\_vectors \gets corner\_vecs\_pitch\_vecs(pitch\_vectors)$
-    \State $encodedCornerVectors \gets encode\_vector\_list(pitchVectors)$
-    \State $encodedPitchVectors \gets encode\_vector\_list(pitchVectors)$
-    \State
-    \Return $($
-        \State \indent $encodedOrigin +$
-        \State \indent $encodedFramesVectors +$
-        \State \indent $encodedCornerVectors +$
-        \State \indent $encodedPitchVectors$
-    \State $)$
-\EndProcedure
-\end{algorithmic}
-\end{algorithm}
-
-
-\ref{alg:enc_data} text
-
-
-\begin{algorithm}[H]
-\begin{algorithmic}
-\caption{Dataset generation procedure}\label{alg:data_gen}
-\Procedure{getData}{$camera$}
-    \State $camOriginVector \gets camera.matrix.translation()$
-    \State $framesVectors \gets camOrigin.frames()$
-    \State $pitchVectors \gets \emptyset$
-    \For {$marker \in blender.collection(``pitch markers'')$}
-        \State $pitchVectors.append(marker)$
-    \EndFor
-    \State
-    \Return $tuple(origin, framesVectors, pitchVectors)$
-\EndProcedure
-\For {$camera \in cameras$}
-    \State $fileName \gets blender.renderImage(camera)$
-    \State $data \gets getData(camera)$
-    \State $encodedData \gets encodeData(data)$
-    \State $writeToCsv(fileName, encodedData)$
-    \State $camera.changeAngle()$
-\EndFor
-\end{algorithmic}
-\end{algorithm}
-
-
-\ref{alg:data_gen} text
+The figure \ref{alg:enc_help} has the procedures that encode the individual vectors, their list and the procedure that separates the pitch's corners from all the other corners.
 
 
 
 
-\section{Machine learning model}
+\section{Machine learning training}
 
 
-
-\begin{algorithm}[H]
-\begin{algorithmic}
-\caption{Model compiling procedure}\label{alg:model_comp}
-\Require \\
-    data: ModelData \\
-    params: ModelParameters \\
-    w: IMG\_WIDTH \\
-    h: IMG\_HEIGHT
-\State
-\State $outputSize \gets params.outputSize$
-\State $secondaryInputLen \gets params.secondaryInputLen$
-\State $convolutionLayers \gets [Input(w, h), Convolution2D(), flatten()]$
-\State $output \gets Output(outputSize)$
-\If {$secondaryInputLen > 0$ }
-    \State $secondaryInput \gets [Input(secondaryInputLen)]$
-    \State $model \gets Model($
-        \State \indent $input \gets concatenate(secondaryInput, convolutionLayers),$
-            \State \indent $outputs \gets output$
-    \State $)$
-\Else
-    \State $model \gets Model(input \gets convolutionLayers, outputs \gets output)$
-\EndIf
-\State $compileModel(model, data, params)$
-\end{algorithmic}
-\end{algorithm}
-
-
-\ref{alg:model_comp} text
-
-
-
-\begin{algorithm}[H]
-\begin{algorithmic}
-\caption{Models training procedure}\label{alg:model_train}
-\Require \\
-    data: ModelData \\
-    params: ModelParameters
-\State
-\State $trainModel( data, ($
-    \State \indent $model \gets ``camOriginVec'', outputSize \gets 3, secondaryInputLen \gets 0,$
-    \State \indent $\ldots params$ \Comment{$rest$}
-\State $) )$
-\State $trainModel( data, ($
-    \State \indent $model \gets ``frameVectors'', outputSize \gets 12, secondaryInputLen \gets 3,$
-    \State \indent $\ldots params$ \Comment{$rest$}
-\State $) )$
-\State $trainModel( data, ($
-    \State \indent $model \gets ``pitchCornerVecs'', outputSize \gets 8, secondaryInputLen \gets 15,$
-    \State \indent $\ldots params$ \Comment{$rest$}
-\State $) )$
-\State $trainModel( data, ($
-    \State \indent $model \gets ``pitchVectors'', outputSize \gets 70, secondaryInputLen \gets 23,$
-    \State \indent $\ldots params$ \Comment{$rest$}
-\State $) )$
-\end{algorithmic}
-\end{algorithm}
-
-
-\ref{alg:model_train} text
-
-
-\begin{algorithm}[H]
-\begin{algorithmic}
-\caption{Recursive model prediction}\label{alg:rec_pred}
-\Procedure{getModelPred}{$modelNames, X$}
-    \If {$modelNames = \emptyset $}
-        \State
-        \Return $X$
-    \EndIf
-    \State $curr\_model \gets modelNames[0]$
-    \State $rest\_models \gets modelNames[1:]$
-    \State $pred \gets curr\_model.predict(frame, X)$
-    \State
-    \Return $getModelPred(rest\_models, X + pred)$
-\EndProcedure
-\Procedure{getFramePrediction}{$frame$}
-    \State
-    \Return $getModelPred($
-        \State \indent $[``camOriginVectors'', ``frameVectors'', ``pitchCornerVectors'', ``pitchVectors''],$
-        \State \indent \emptyset
-        \State
-    \State $)$
-\EndProcedure
-\end{algorithmic}
-\end{algorithm}
-
-
-\ref{alg:rec_pred} text
-
+The machine learning training comprehends the reading of imagery and numerical data from the dataset, image pre-processing and decoding of numerical data. This section will describe the infrastructure behind the training and application of this model.
 
 
 \begin{algorithm}[H]
@@ -734,7 +665,10 @@ High level diagram
 \end{algorithm}
 
 
-\ref{alg:dec_help} text
+After loading the images and reading the csv file it is necessary to decode the numerical data so that it is on the correct form for the model. The decoding is broke down into smaller bits which start from the helper functions \ref{alg:dec_help}. The "dec\_vec" decodes a segment of the given array while the "dec\_list" breaks down the array based on the size of the data unit and then appends the decoded data segment to the rest of the data.
+
+
+
 
 
 \begin{algorithm}[H]
@@ -765,49 +699,106 @@ High level diagram
 \end{algorithm}
 
 
-\ref{alg:dec_data} text
+The "decoding camera data" \ref{alg:dec_data} procedure is the main decoding function that takes the entire array and returns a tuple of data in the same for as it was first loaded in blender. It does that by first breaking down the data into ranges correspondent to the data segments to be read by the machine learning predicting model, decodes each one and merges the corner vectors with the reamining pitch vectors. The "decoding camera data" applies the "decode\_vector\_list" procedure that breaks down and decodes an array segment into many data units of the same size.
 
 
-\section{Geometric construction}
-
-- not integrated the geometric reconstruction
-
-
-\begin{itemize}
-\item
-creating geometric framework to map objects from screen on pitch, and from pitch on to file
-\end{itemize}
-
-\begin{itemize}
-\item
-  pitch geometry reconstruction
-
-  \begin{itemize}
-  \item
-    optical distortion
-  \item
-    algorithm to determine inner section
-  \item
-    image homographical transformation
-  \item
-    grid positioning
-  \item
-    map players and ball to pitch
-  \end{itemize}
-\end{itemize}
+\begin{algorithm}[H]
+\begin{algorithmic}
+\caption{Model compiling procedure}\label{alg:model_comp}
+\Require \\
+    data: ModelData \\
+    params: ModelParameters \\
+    w: IMG\_WIDTH \\
+    h: IMG\_HEIGHT
+\State
+\State $outputSize \gets params.outputSize$
+\State $secondaryInputLen \gets params.secondaryInputLen$
+\State $convolutionLayers \gets [Input(w, h), Convolution2D(), flatten()]$
+\State $output \gets Output(outputSize)$
+\If {$secondaryInputLen > 0$ }
+    \State $secondaryInput \gets [Input(secondaryInputLen)]$
+    \State $model \gets Model($
+        \State \indent $input \gets concatenate(secondaryInput, convolutionLayers),$
+            \State \indent $outputs \gets output$
+    \State $)$
+\Else
+    \State $model \gets Model(input \gets convolutionLayers, outputs \gets output)$
+\EndIf
+\State $compileModel(model, data, params)$
+\end{algorithmic}
+\end{algorithm}
 
 
-\begin{itemize}
-\item
-    geometry reconstruction
-    \begin{itemize}
-      \item
-        determine objs position
-      \item
-        homographical transformation ???
-    \end{itemize}
-\end{itemize}
+The "model compiling" procedure \ref{alg:model_comp} is interesting because it was developed to build 2 kinds of machine learning model. One that takes only one input (the frame) and another that takes 2 inputs (the frame and additional numeric data). The compiling of either one depends on the "secondaryInputLen" variable that if it is equal to zero means that the model takes only one input.
 
+
+
+\begin{algorithm}[H]
+\begin{algorithmic}
+\caption{Models training procedure}\label{alg:model_train}
+\Require \\
+    data: ModelData \\
+    params: ModelParameters
+\State
+\State $trainModel( data, ($
+    \State \indent $model \gets ``camOriginVec'', secondaryInputLen \gets 0, outputSize \gets 3,$
+    \State \indent $\ldots params$ \Comment{$rest$}
+\State $) )$
+\State $trainModel( data, ($
+    \State \indent $model \gets ``frameVectors'', secondaryInputLen \gets 3, outputSize \gets 12,$
+    \State \indent $\ldots params$ \Comment{$rest$}
+\State $) )$
+\State $trainModel( data, ($
+    \State \indent $model \gets ``pitchCornerVecs'', secondaryInputLen \gets 15, outputSize \gets 8,$
+    \State \indent $\ldots params$ \Comment{$rest$}
+\State $) )$
+\State $trainModel( data, ($
+    \State \indent $model \gets ``pitchVectors'', secondaryInputLen \gets 23, outputSize \gets 70,$
+    \State \indent $\ldots params$ \Comment{$rest$}
+\State $) )$
+\end{algorithmic}
+\end{algorithm}
+
+
+The models are trained by running calling the train model procedures \ref{alg:model_train}. The "secondaryInputLen" takes the most left data segment from the training data set and the "outputSize" takes the immediate data segment after. This is the reason the data was encoded in this layout. The first model ("camOriginVec") predicts the camera origin 3D vector (given the frame) only so that is the reason the "secondaryInputLen" is set to 0. The "framesVectors" model detects the camera's frame corner 3D vectors, given the camera location (and frame). The "pitchCornerVecs" (the pitch corners) is predicted given the camera origin, the camera frames and the pitch corners (and the frame). The intent of this algorithm is to recursively predict the image given the image and the previous prediction.
+
+
+\begin{algorithm}[H]
+\begin{algorithmic}
+\caption{Recursive model prediction}\label{alg:rec_pred}
+\Procedure{getModelPred}{$modelNames, frame, X$}
+    \If {$modelNames = \emptyset $}
+        \State
+        \Return $X$
+    \EndIf
+    \State $curr\_model \gets models[modelNames[0]]$ \Comment{$getting\_value\_from\_list$}
+    \State $rest\_models \gets modelNames[1:]$
+    \State $pred \gets curr\_model.predict(frame, X)$
+    \State
+    \Return $getModelPred(rest\_models, X + pred)$
+\EndProcedure
+\Procedure{getFramePrediction}{$frame$}
+    \State
+    \Return $getModelPred($
+        \State \indent $[``camOriginVectors'', ``frameVectors'', ``pitchCornerVectors'', ``pitchVectors''],$
+        \State \indent $frame,$
+        \State \indent \emptyset
+        \State
+    \State $)$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+
+This is the end of the pipeline, the recursive machine learning predicting function \ref{alg:rec_pred}. The "getFramePrediction" takes the frame and calls the "getModelPred" with the frame, the list of individual models and the empty as initial parameters. The later function predicts the data recursively using each model and the data predicted previously.
+
+
+\section{Geometric reconstruction}
+
+The goal of building the previous machine learning system is to apply it to determine the positions of players on the pitch (the main data being collected) and the intersection of the camera frames and the pitch corners to determine the region being tracked.
+
+
+The current implementation was not completed yet so it will not be included in here as it may change dramatically in the near future. It is an highly complex problem that requires extra research by itself to be correctly implemented.
 
 
 
@@ -850,43 +841,40 @@ The final step is to create 15 cameras \ref{img:cameras} which will rotate withi
 
 \section{Testing assessment}
 
-testing machine learning model accuracity over many layers
-\begin{itemize}
-\item
-configuration of convolution
+
+The goal of this testing is to determine the ideal configuration by measuring the accuracy for the convolution layer of the machine learning.
+
+The parameters being measured are:
 \begin{itemize}
     \item
-      their kernels sizes
+      kernel size
     \item
       number of filters
     \item
-      size of pool layers
+      size of pool layer
     \item
-      dropout rate
+      random dropout rate
 \end{itemize}
-\item
-    metrics be ng analysed along the epochs
+
+
+The accuracy metrics being measured are:
 \begin{itemize}
     \item
         epoch loss
     \item
         epoch mean squared error
     \item
-        evaluation loss vs iterations
+        validation loss vs iterations
     \item
-        evaluation mean squared error vs iterations
+        validation mean squared error vs iterations
 \end{itemize}
-\end{itemize}
+
+
+The camera origin model was trained over a nested for loop that produced the cartesian product of all possible configurations. The resultant testing models were named after the parameter values given.
 
 
 
-\begin{figure}[H]
-    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-04-17_23-06-29.png}
-    \caption{Tensorboard gui}
-    \label{img:tensorboard_gui}
-\end{figure}
-
-\ref{img:tensorboard_gui} text
+The testing environment is Tensorboard \ref{img:tensorboard_gui}. This GUI can plot the various models on the given accuracy metrics which allows for visualisation of their performance. Additionally the models can be selected by running regex code.
 
 
 
@@ -894,14 +882,39 @@ configuration of convolution
 \section{Performance assessment}
 
 
-text
+
+In the first run of this testing it could be visible the 2 groups of models in terms of performance \ref{img:1best_cases}.
+
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-04-20_23-15-30.png}
+    \caption{first run of best validation cases}
+    \label{img:1best_cases}
+\end{figure}
+
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-04-20_23-20-48.png}
+    \caption{first run of worst validation cases}
+    \label{img:1worst_cases}
+\end{figure}
+
+
+The least performant models \ref{img:1worst_cases} showed that the dropout of 0.1 was too little and that kernels of size 4 and 5 were too big.
+
+
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-04-20_23-36-21.png}
+    \caption{Final set selected}
+    \label{img:final_set}
+\end{figure}
+
+Following analysing the first run conclusions the next step was to create a regex mask that, by trial and error, filtered out the least performant models down to the 8 best ones \ref{img:final_set}. The regex selected a dropout rate of 0.4, a kernel of size 2 and a pooling of sizes 2 and 3.
+
 
 
 
 \section{Performance evaluation}
 
-
-text
+The testing determined that the best convolution layer for the image processing has 20 filters, a kernel and pooling layer of size 2 and a dropout rate of 0.4, based on the final filtering and ascending ordering \ref{img:final_set}.
 
 
 
@@ -1138,6 +1151,13 @@ The Google Fooball environment \cite{gfootball_env} is specific to football what
     \label{img:cameras}
 \end{figure}
 
+\section{Testing}
+
+\begin{figure}[H]
+    \includegraphics[keepaspectratio, width=\columnwidth]{Screenshot_2022-04-17_23-06-29.png}
+    \caption{Tensorboard gui}
+    \label{img:tensorboard_gui}
+\end{figure}
 
 
 
